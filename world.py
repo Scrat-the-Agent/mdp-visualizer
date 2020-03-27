@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QSize, Qt
 
+
 from settings import COLS, ROWS
 from pad import FlippablePad
 from player import Player
