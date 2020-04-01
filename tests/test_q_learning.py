@@ -32,7 +32,7 @@ def test_q_learning_frozen_lake():
     r_all = []
     for e in range(num_episodes):
         s = env.reset()
-        r, Q = q_learning(env, s, e, n_steps=100, Q=Q, lr=0.8, gamma=0.95)
+        r, Q, done, info = q_learning(env, s, e, n_steps=100, Q=Q, lr=0.8, gamma=0.95)
         r_all.append(r)
 
     mean_reward = np.mean(r_all)
