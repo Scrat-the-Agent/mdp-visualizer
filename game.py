@@ -4,7 +4,7 @@
 
 import sys
 
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QTimer
 from PyQt5.QtGui import QPainter, QPixmap, QBrush
 from PyQt5.QtWidgets import QApplication, QGraphicsScene, QGraphicsView, QMainWindow, QHBoxLayout, QLabel, QWidget, \
     QStackedWidget, QPushButton, QComboBox, QVBoxLayout, QGridLayout
@@ -13,6 +13,7 @@ from PyQt5.QtOpenGL import QGL, QGLFormat, QGLWidget
 from settings import BACKGROUND_IMAGE
 from splash import SplashItem
 from world import World
+from env_game_interface import EnvGameInterface
 
 
 class GameWindow(QMainWindow):
@@ -100,29 +101,76 @@ class IAmRLAgent(QWidget):
 class AutomaticRL(QWidget):
     clicked_mode = pyqtSignal()
 
-    def __init__(self, parent=None):
-        super(AutomaticRL, self).__init__(parent)
+    def _init_ui(self):
+        # left layout
+        self._command_layout = QVBoxLayout()
 
+        # mode switcher
+        self._list_modes = ModesComboBox(1)
+        self._command_layout.addWidget(self._list_modes)
+
+        # mode label
         self._label = QLabel()
         self._label.setText("Automatic RL mode")
+        self._command_layout.addWidget(self._label)
 
-        self._game = Game()
-        self._list_modes = ModesComboBox(1)
+        # rl buttons
+        self._buttons = QWidget()
+        self._play_button = QPushButton("Play")
+        self._next_step_button = QPushButton("Step")
+        self._reset_button = QPushButton("Reset")
 
+        self._buttons_layout = QVBoxLayout()
+        self._buttons_layout.addWidget(self._play_button)
+        self._buttons_layout.addWidget(self._next_step_button)
+        self._buttons_layout.addWidget(self._reset_button)
+        self._buttons.setLayout(self._buttons_layout)
+        self._command_layout.addWidget(self._buttons)
+
+        # info labels
         self._reward_label = QLabel()
         self._reward_label.setText("Last reward: 10")
-
-        self._command_layout = QVBoxLayout()
-        self._command_layout.addWidget(self._list_modes)
-        self._command_layout.addWidget(self._label)
         self._command_layout.addWidget(self._reward_label)
 
+        # main layout and game widgets
         self._layout = QHBoxLayout()
+        self._game = Game()
         self._layout.addLayout(self._command_layout)
         self._layout.addWidget(self._game)
 
         self.setLayout(self._layout)
         self._list_modes.currentIndexChanged.connect(self.clicked_mode.emit)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._init_ui()
+        self._env_game_interface = EnvGameInterface(self._game.world)
+        self._playing = False
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._next_step)
+
+        self._play_button.clicked.connect(self._play)
+        self._next_step_button.clicked.connect(self._next_step)
+        self._reset_button.clicked.connect(self._env_game_interface.reset)
+
+    def _next_step(self):
+        reward, done, info = self._env_game_interface.next_step()
+        action = info['actions'][-1]
+        if done:
+            self._reward_label.setText("Done!")
+        else:
+            self._reward_label.setText(f"Last reward: {reward}; Last action: {action}")
+
+    def _play(self):
+        if self._playing:
+            self._playing = False
+            self._timer.stop()
+            self._play_button.setText("Play")
+            return
+
+        self._playing = True
+        self._timer.start(500)
+        self._play_button.setText("Stop")
 
 
 class ModesComboBox(QComboBox):
