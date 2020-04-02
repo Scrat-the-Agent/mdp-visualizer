@@ -50,18 +50,22 @@ class GameWindow(QMainWindow):
 class IAmRLAgent(QWidget):
     clicked_mode = pyqtSignal()
 
-    def __init__(self, parent=None):
-        super(IAmRLAgent, self).__init__(parent)
-
+    def _init_ui(self):
+        # game
         self._game = Game()
+
+        # mode switcher
         self._list_modes = ModesComboBox(0)
 
+        # reward label
         self._reward_label = QLabel()
         self._reward_label.setText("Your last reward: 5")
 
+        # hint for buttons
         self._actions_label = QLabel()
         self._actions_label.setText("Choose your next action")
 
+        # buttons layout
         self._actions_layout = QGridLayout()
         self._actions_layout.setColumnStretch(0, 10)
         self._actions_layout.setColumnStretch(1, 10)
@@ -69,21 +73,21 @@ class IAmRLAgent(QWidget):
         self._actions_layout.setRowStretch(0, 10)
         self._actions_layout.setRowStretch(1, 10)
 
-        self._action_1 = QPushButton()
-        self._action_2 = QPushButton()
-        self._action_3 = QPushButton()
-        self._action_4 = QPushButton()
-        self._action_5 = QPushButton()
-        self._action_6 = QPushButton()
+        self._action_1 = QPushButton("1")
+        self._action_2 = QPushButton("2")
+        self._action_3 = QPushButton("3")
+        self._action_4 = QPushButton("4")
+        self._action_5 = QPushButton("5")
+        self._action_6 = QPushButton("6")
 
         self._actions_layout.addWidget(self._action_1, 0, 0)
         self._actions_layout.addWidget(self._action_2, 0, 1)
         self._actions_layout.addWidget(self._action_3, 0, 2)
-        # self._actions_layout.addWidget(self._actions_label, 1, 1)
         self._actions_layout.addWidget(self._action_4, 1, 0)
         self._actions_layout.addWidget(self._action_5, 1, 1)
         self._actions_layout.addWidget(self._action_6, 1, 2)
 
+        # overall layout
         self._command_layout = QVBoxLayout()
         self._command_layout.addWidget(self._list_modes)
         self._command_layout.addWidget(self._actions_label)
@@ -96,6 +100,10 @@ class IAmRLAgent(QWidget):
 
         self.setLayout(self._layout)
         self._list_modes.currentIndexChanged.connect(self.clicked_mode.emit)
+
+    def __init__(self, parent=None):
+        super(IAmRLAgent, self).__init__(parent)
+        self._init_ui()
 
 
 class AutomaticRL(QWidget):
