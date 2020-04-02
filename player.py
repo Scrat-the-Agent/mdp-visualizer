@@ -46,7 +46,7 @@ class Player():
         self.x += dx
         self.y += dy
 
-        icon = self.pad.iconAt(self.x, self.y).visit()
+        self.pad.iconAt(self.x, self.y).visit()
         self.move(MOVE_TIME)
 
     def move(self, time):

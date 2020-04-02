@@ -14,13 +14,14 @@ class Cell(RoundRectItem):
     leave_signal = pyqtSignal()
 
     def __init__(self, x, y, bounds, parent, value):
+        self.reward = value  # TODO: wtf?
         self.value = value
-        super().__init__(bounds, self.color(), parent)
+        super().__init__(bounds, self._compute_color(), parent)
 
         self.setAcceptHoverEvents(True)
         self.x, self.y = x, y
 
-    def color(self):
+    def _compute_color(self):
         mid = (MIN_REWARD + MAX_REWARD) / 2
         if self.value < mid:
             c = (self.value - MIN_REWARD) / (mid - MIN_REWARD)
@@ -43,6 +44,7 @@ class Cell(RoundRectItem):
         pass
 
     def paint(self, painter, option, widget):
+        self.color = self._compute_color()
         super().paint(painter, option, widget)
 
         if self.value is not None:
@@ -60,3 +62,7 @@ class Cell(RoundRectItem):
     def hoverLeaveEvent(self, event):
         self.anim = animate(self, "opacity", 100, BASE_CELL_OPACITY)
         self.leave_signal.emit()
+
+    def set_value(self, new_value):
+        self.value = new_value
+        self.update()

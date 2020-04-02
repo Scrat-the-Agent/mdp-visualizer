@@ -24,7 +24,7 @@ REWARD_COLOR = QColor(0, 0, 0, 255)
 REWARD_FONT = QFont("Impact", weight=QFont.Bold)
 REWARD_FONT.setPixelSize(36)
 
-COLS = 5
+COLS = 6
 ROWS = 5
 REDS = {(3,4), (1,2), (4,0)}
 GREENS = {(2,4)}

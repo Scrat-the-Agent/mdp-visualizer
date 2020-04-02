@@ -15,12 +15,12 @@ class FlippablePad(RoundRectItem):
         super().__init__(self.boundsFromSize(), PAD_COLOR, parent)
         
         iconRect = QRectF(-54, -54, 108, 108)
-        self.iconGrid = []
+        self._iconGrid = []
 
-        for y in range(COLS):
+        for y in range(ROWS):
             row = []
 
-            for x in range(ROWS):
+            for x in range(COLS):
                 if (x, y) in REDS:
                     rect = Cell(x, y, iconRect, self, MIN_REWARD)
                 elif (x, y) in GREENS:
@@ -34,7 +34,7 @@ class FlippablePad(RoundRectItem):
 
                 row.append(rect)
 
-            self.iconGrid.append(row)
+            self._iconGrid.append(row)
 
         # rotation
         self.goal_rotation = 0
@@ -43,17 +43,17 @@ class FlippablePad(RoundRectItem):
         self.setTransformations([self.yRotation])
 
     def iconAt(self, column, row):
-        return self.iconGrid[row][column]
+        return self._iconGrid[row][column]
 
     @staticmethod
     def boundsFromSize():
-        return QRectF((-ROWS / 2.0) * 150,
-                (-COLS / 2.0) * 150, ROWS * 150,
-                COLS * 150)
+        return QRectF((-COLS / 2.0) * 150,
+                (-ROWS / 2.0) * 150, COLS * 150,
+                ROWS * 150)
 
     @staticmethod
     def posForLocation(column, row):
-        return QPointF(column * 150, row * 150) - QPointF((ROWS - 1) * 75, (COLS - 1) * 75)
+        return QPointF(column * 150, row * 150) - QPointF((COLS - 1) * 75, (ROWS - 1) * 75)
 
     def rotate(self):
         self.goal_rotation = ROTATION_ANGLE if self.goal_rotation == 0 else 0

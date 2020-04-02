@@ -164,13 +164,17 @@ class AutomaticRL(QWidget):
         self._reset_button.clicked.connect(self._env_game_interface.reset)
 
         # connecting mouse hover from cells to our q-values visualization        
-        for cell_row in self._game.world.pad.iconGrid:
+        for cell_row in self._game.world.pad._iconGrid:  # WTF?
             for cell in cell_row:
                 cell.enter_signal.connect(self._cell_entered)
                 cell.leave_signal.connect(self._cell_left)
 
     def _next_step(self):
+        x, y = self._game.world.player.x, self._game.world.player.y
         reward, done, info = self._env_game_interface.next_step()
+        new_value = self._env_game_interface.get_value(x, y)
+        self._game.world.pad.iconAt(x, y).set_value(new_value)
+
         action = info['actions'][-1]
         if done:
             self._reward_label.setText("Done!")
@@ -191,7 +195,7 @@ class AutomaticRL(QWidget):
     def _cell_entered(self):
         cell = self.sender()
         x, y = cell.x, cell.y
-        qvalues = self._env_game_interface.Q_values(x, y)
+        qvalues = self._env_game_interface.get_Q_values(x, y)
 
         for i in range(4):
            self._q_labels[i].setText(str(qvalues[i]))

@@ -9,14 +9,7 @@ class RoundRectItem(QGraphicsObject):
         self.fillRect = False
         self.bounds = QRectF(bounds)
         self.pix = QPixmap()
-
-        if color is None: self.gradient = None
-        else:
-            self.gradient = QLinearGradient()
-            self.gradient.setStart(self.bounds.topLeft())
-            self.gradient.setFinalStop(self.bounds.bottomRight())
-            self.gradient.setColorAt(0, color)
-            self.gradient.setColorAt(1, color.darker(200))
+        self.color = color            
 
         self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
 
@@ -24,8 +17,17 @@ class RoundRectItem(QGraphicsObject):
         self.fillRect = fill
         self.update()
 
+    @property
+    def gradient(self):
+        gradient = QLinearGradient()
+        gradient.setStart(self.bounds.topLeft())
+        gradient.setFinalStop(self.bounds.bottomRight())
+        gradient.setColorAt(0, self.color)
+        gradient.setColorAt(1, self.color.darker(200))
+        return gradient
+
     def paint(self, painter, option, widget):
-        if self.gradient:
+        if self.color:
             painter.setPen(Qt.NoPen)
             painter.setBrush(QColor(0, 0, 0, 64))
             painter.drawRoundedRect(self.bounds.translated(2, 2), 25.0, 25.0)

@@ -8,8 +8,8 @@ class WorldEnv:
         self._episode_len = None
         self.reset()
 
-    def _value_at(self, x, y):
-        return self.world.pad.iconAt(x, y).value
+    def _reward_at(self, x, y):
+        return self.world.pad.iconAt(x, y).reward
 
     @property
     def _player(self):
@@ -17,12 +17,12 @@ class WorldEnv:
 
     def _xy_to_state(self, x, y):
         _, w = self._pad_size
-        return w * x + y
+        return w * y + x
 
     def _state_to_xy(self, state):
         _, w = self._pad_size   # TODO needs testing on rectangle field
-        x = state // w
-        y = state % w
+        x = state % w
+        y = state // w
         return x, y
 
     @property
@@ -34,9 +34,9 @@ class WorldEnv:
         return self._xy_to_state(self._player.x, self._player.y)
 
     @property
-    def _pad_size(self):
-        height = len(self.world.pad.iconGrid)
-        width = len(self.world.pad.iconGrid[0])
+    def _pad_size(self): # WTF?
+        height = len(self.world.pad._iconGrid)
+        width = len(self.world.pad._iconGrid[0])
         return height, width
 
     def step(self, action):
@@ -60,7 +60,7 @@ class WorldEnv:
         if action == 3 and self._player.y > 0:
             self._player.change_pos(0, -1)
 
-        reward = self._value_at(self._player_pos[0], self._player_pos[1])
+        reward = self._reward_at(self._player_pos[0], self._player_pos[1])
         done = self._episode_len >= 100
         return self._state, reward, done, {}
 
@@ -96,6 +96,10 @@ class EnvGameInterface:
     def reset(self):
         self._state = self._env.reset()
 
-    def Q_values(self, x, y):
+    def get_Q_values(self, x, y):
         state = self._env._xy_to_state(x, y)
         return self._Q[state]
+
+    def get_value(self, x, y):
+        state = self._env._xy_to_state(x, y)
+        return max(self._Q[state])
