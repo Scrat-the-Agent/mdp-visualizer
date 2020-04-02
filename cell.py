@@ -60,6 +60,3 @@ class Cell(RoundRectItem):
     def hoverLeaveEvent(self, event):
         self.anim = animate(self, "opacity", 100, BASE_CELL_OPACITY)
         self.leave_signal.emit()
-
-    def get_q_values(self):
-        return [self.value]*4

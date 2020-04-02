@@ -114,6 +114,15 @@ class AutomaticRL(QWidget):
         self._label.setText("Automatic RL mode")
         self._command_layout.addWidget(self._label)
 
+        # q-values visualization
+        self._q_labels = [QLabel() for i in range(4)]
+        self._q_layout = QHBoxLayout()
+        for _q_label in self._q_labels:
+            self._q_layout.addWidget(_q_label)
+        self._q_labels_widget = QWidget()
+        self._q_labels_widget.setLayout(self._q_layout)
+        self._command_layout.addWidget(self._q_labels_widget)
+
         # rl buttons
         self._buttons = QWidget()
         self._play_button = QPushButton("Play")
@@ -149,9 +158,16 @@ class AutomaticRL(QWidget):
         self._timer = QTimer()
         self._timer.timeout.connect(self._next_step)
 
+        # connecting player buttons
         self._play_button.clicked.connect(self._play)
         self._next_step_button.clicked.connect(self._next_step)
         self._reset_button.clicked.connect(self._env_game_interface.reset)
+
+        # connecting mouse hover from cells to our q-values visualization        
+        for cell_row in self._game.world.pad.iconGrid:
+            for cell in cell_row:
+                cell.enter_signal.connect(self._cell_entered)
+                cell.leave_signal.connect(self._cell_left)
 
     def _next_step(self):
         reward, done, info = self._env_game_interface.next_step()
@@ -169,8 +185,20 @@ class AutomaticRL(QWidget):
             return
 
         self._playing = True
-        self._timer.start(500)
+        self._timer.start(500)  # TODO: move to settings
         self._play_button.setText("Stop")
+
+    def _cell_entered(self):
+        cell = self.sender()
+        x, y = cell.x, cell.y
+        qvalues = self._env_game_interface.Q_values(x, y)
+
+        for i in range(4):
+           self._q_labels[i].setText(str(qvalues[i]))
+
+    def _cell_left(self):
+        for i in range(4):
+            self._q_labels[i].setText("")
 
 
 class ModesComboBox(QComboBox):

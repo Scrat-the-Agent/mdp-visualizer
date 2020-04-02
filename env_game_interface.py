@@ -17,12 +17,12 @@ class WorldEnv:
 
     def _xy_to_state(self, x, y):
         _, w = self._pad_size
-        return w * y + x
+        return w * x + y
 
     def _state_to_xy(self, state):
-        _, w = self._pad_size
-        x = state % w
-        y = state // w
+        _, w = self._pad_size   # TODO needs testing on rectangle field
+        x = state // w
+        y = state % w
         return x, y
 
     @property
@@ -96,6 +96,6 @@ class EnvGameInterface:
     def reset(self):
         self._state = self._env.reset()
 
-    @property
-    def get_Q_table(self):
-        return self._Q
+    def Q_values(self, x, y):
+        state = self._env._xy_to_state(x, y)
+        return self._Q[state]
