@@ -1,40 +1,27 @@
-from PyQt5.QtCore import QPointF, QRectF, Qt, QTimer
-from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QGraphicsRotation
 
-from settings import PAD_COLOR, BASE_CELL_OPACITY
-from settings import REDS, MIN_REWARD, GREENS, MAX_REWARD
-from settings import ROTATION_TIME, ROTATION_ANGLE
-from settings import ROWS, COLS
-from utils import animate
+import settings
 from cell import Cell
 from roundRectItem import RoundRectItem
+from utils import animate
+
 
 class FlippablePad(RoundRectItem):
-    def __init__(self, parent):
-        super().__init__(self.boundsFromSize(), PAD_COLOR, parent)
-        
-        iconRect = QRectF(-54, -54, 108, 108)
-        self._iconGrid = []
+    def __init__(self, world, parent):
+        super().__init__(self.boundsFromSize(), settings.PAD_COLOR, parent)
+        self._world = world
+        self._cells = []
 
-        for y in range(ROWS):
+        height, width = self._world.pad_size
+        for y in range(height):
             row = []
 
-            for x in range(COLS):
-                if (x, y) in REDS:
-                    rect = Cell(x, y, iconRect, self, MIN_REWARD)
-                elif (x, y) in GREENS:
-                    rect = Cell(x, y, iconRect, self, MAX_REWARD)
-                else:
-                    rect = Cell(x, y, iconRect, self, 0)
-
-                rect.setZValue(1)
-                rect.setOpacity(BASE_CELL_OPACITY)
-                rect.setPos(self.posForLocation(x, y))
-
+            for x in range(width):
+                rect = Cell(x, y, pad=self)
                 row.append(rect)
 
-            self._iconGrid.append(row)
+            self._cells.append(row)
 
         # rotation
         self.goal_rotation = 0
@@ -42,19 +29,23 @@ class FlippablePad(RoundRectItem):
         self.yRotation.setAxis(Qt.XAxis)
         self.setTransformations([self.yRotation])
 
+    def reward_at(self, column, row):
+        return self._world.reward_at(column, row)
+
     def iconAt(self, column, row):
-        return self._iconGrid[row][column]
+        return self._cells[row][column]
+
+    @property
+    def cells(self):
+        height, width = self._world.pad_size
+        return (self._cells[y][x] for y in range(height) for x in range(width))
 
     @staticmethod
     def boundsFromSize():
-        return QRectF((-COLS / 2.0) * 150,
-                (-ROWS / 2.0) * 150, COLS * 150,
-                ROWS * 150)
-
-    @staticmethod
-    def posForLocation(column, row):
-        return QPointF(column * 150, row * 150) - QPointF((COLS - 1) * 75, (ROWS - 1) * 75)
+        return QRectF((-settings.COLS / 2.0) * 150,
+                      (-settings.ROWS / 2.0) * 150, settings.COLS * 150,
+                      settings.ROWS * 150)
 
     def rotate(self):
-        self.goal_rotation = ROTATION_ANGLE if self.goal_rotation == 0 else 0
-        self.rot = animate(self.yRotation, 'angle', ROTATION_TIME, self.goal_rotation)
+        self.goal_rotation = settings.ROTATION_ANGLE if self.goal_rotation == 0 else 0
+        self.rot = animate(self.yRotation, 'angle', settings.ROTATION_TIME, self.goal_rotation)

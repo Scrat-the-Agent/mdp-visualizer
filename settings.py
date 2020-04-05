@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QColor, QFont
 
 BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
@@ -13,6 +13,7 @@ BASE_CELL_OPACITY = 0.65
 PAD_COLOR = QColor(226, 255, 92, 64)
 SELECTION_COLOR = QColor(Qt.gray)
 ICON_COLOR = QColor(80, 90, 100, 255)
+ICON_RECT = QRectF(-54, -54, 108, 108)
 
 RED_CELL = QColor(200, 10, 10, 255)
 YELLOW_CELL = QColor(200, 200, 10, 255)

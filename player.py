@@ -3,14 +3,12 @@ from math import cos, sin, pi
 from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QPixmap, QTransform
 
-from settings import SCRAT_IMAGE
-from settings import MOVE_TIME, ROTATION_TIME
-from settings import SELECTION_COLOR
+import settings
 from utils import animate
 from roundRectItem import RoundRectItem
 
 
-class Player():
+class Player:
     def __init__(self, scene, pad):
         self.x = 0
         self.y = 0
@@ -18,7 +16,7 @@ class Player():
         pos = self.pad.iconAt(0, 0).pos()
 
         # selection underneath the cells!
-        self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), SELECTION_COLOR, pad)
+        self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), settings.SELECTION_COLOR, pad)
         self.selection.setZValue(0.5)
         self.selection.setPos(pos)
 
@@ -26,7 +24,7 @@ class Player():
         self.pic = RoundRectItem(QRectF(-50, -50, 100, 100))
         self.pic.setZValue(1.5)
         self.pic.setPos(pos)
-        self.pic.setPixmap(QPixmap(SCRAT_IMAGE))
+        self.pic.setPixmap(QPixmap(settings.SCRAT_IMAGE))
         scene.addItem(self.pic)
 
     def set_position(self, x, y):
@@ -47,7 +45,7 @@ class Player():
         self.y += dy
 
         self.pad.iconAt(self.x, self.y).visit()
-        self.move(MOVE_TIME)
+        self.move(settings.MOVE_TIME)
 
     def move(self, time):
         icon = self.pad.iconAt(self.x, self.y)
@@ -84,4 +82,4 @@ class Player():
         self.pic_sc = animate(self.pic, "scale", time, sc)
 
     def pad_rotated(self):
-        self.move(ROTATION_TIME)
+        self.move(settings.ROTATION_TIME)

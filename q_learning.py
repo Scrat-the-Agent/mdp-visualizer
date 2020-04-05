@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def q_learning(env, s, e, n_steps, Q=None, lr=0.1, gamma=0.95):
+def q_learning(env, s, e, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
     if Q is None:
         Q = np.zeros([env.n_states, env.n_actions])
 
@@ -13,7 +13,10 @@ def q_learning(env, s, e, n_steps, Q=None, lr=0.1, gamma=0.95):
 
     r_all = 0.
     for i in range(n_steps):
-        a = np.argmax(Q[s, :] + np.random.randn(1, env.n_actions) / (e + 1))
+        if np.random.rand() < eps:
+            a = np.random.choice(env.n_actions)
+        else:
+            a = np.argmax(Q[s, :])
         s1, r, done, _ = env.step(a)
         Q[s, a] = Q[s, a] + lr * (r + gamma * np.max(Q[s1, :]) - Q[s, a])
 
@@ -27,4 +30,4 @@ def q_learning(env, s, e, n_steps, Q=None, lr=0.1, gamma=0.95):
         if done:
             break
 
-    return r_all, Q, done, info
+    return r_all, Q, s, done, info
