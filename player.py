@@ -10,12 +10,17 @@ from utils import animate
 from roundRectItem import RoundRectItem
 
 
-class Player():
+class GameObject:
     def __init__(self, scene, pad):
-        self.x = 0
-        self.y = 0
+        self._x = 0
+        self._y = 0
         self.pad = pad
-        pos = self.pad.iconAt(0, 0).pos()
+        pos = self.pad.cellAt(0, 0).pos()
+
+        # additional fields
+
+        self.cur_speed = (0, 0)
+        self.speed_limit = (0, 0)
 
         # selection underneath the cells!
         self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), SELECTION_COLOR, pad)
@@ -23,34 +28,48 @@ class Player():
         self.selection.setPos(pos)
 
         # picture!
+        self.picture_path = None
+
         self.pic = RoundRectItem(QRectF(-50, -50, 100, 100))
         self.pic.setZValue(1.5)
         self.pic.setPos(pos)
         self.pic.setPixmap(QPixmap(SCRAT_IMAGE))
         scene.addItem(self.pic)
 
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def y(self):
+        return self._y
+
+    @property
+    def cur_position(self):
+        return self._x, self._y
+
     def set_position(self, x, y):
-        self.pad.iconAt(self.x, self.y).leave()
+        self.pad.cellAt(self._x, self._y).leave()
 
-        self.x = x
-        self.y = y
+        self._x = x
+        self._y = y
 
-        icon = self.pad.iconAt(self.x, self.y).visit()
-        pos = self.pad.iconAt(self.x, self.y).pos()
+        icon = self.pad.cellAt(self._x, self._y).visit()
+        pos = self.pad.cellAt(self._x, self._y).pos()
         self.pic.setPos(pos)
         self.selection.setPos(pos)
 
-    def change_pos(self, dx, dy):
-        self.pad.iconAt(self.x, self.y).leave()
+    def change_position(self, dx, dy):
+        self.pad.cellAt(self._x, self._y).leave()
 
-        self.x += dx
-        self.y += dy
+        self._x += dx
+        self._y += dy
 
-        icon = self.pad.iconAt(self.x, self.y).visit()
+        icon = self.pad.cellAt(self._x, self._y).visit()
         self.move(MOVE_TIME)
 
     def move(self, time):
-        icon = self.pad.iconAt(self.x, self.y)
+        icon = self.pad.cellAt(self._x, self._y)
 
         # selection marker is inside the pad, so nothing complex here
         pos = icon.pos()
@@ -85,3 +104,62 @@ class Player():
 
     def pad_rotated(self):
         self.move(ROTATION_TIME)
+
+
+class Scrat(GameObject):
+    def __init__(self, params):
+        super().__init__()
+
+        # base
+        self._x = params.scrat_start_position[0]
+        self._y = params.scrat_start_position[1]
+
+        # specific properties
+        self._carrying_watermelon = False
+
+        # picture
+        self.picture_path = SCRAT_IMAGE
+
+    @property
+    def carrying_watermelon(self):
+        return self._carrying_watermelon
+
+
+class Hippo(GameObject):
+    def __init__(self, params):
+        super().__init__()
+
+        # base
+        self._x = params.hippo_start_position[0]
+        self._y = params.hippo_start_position[1]
+        self.speed_limit = params.hippo_speed_limit
+
+        # specific properties
+        self._is_fed = False
+
+        # picture
+        self.picture_path = SCRAT_IMAGE  # HIPPO_IMAGE
+
+    @property
+    def is_fed(self):
+        return self._is_fed
+
+
+class Watermelon(GameObject):
+    def __init__(self, params):
+        super().__init__()
+
+        # base
+        self._x = params.watermelon_start_position[0]
+        self._y = params.watermelon_start_position[1]
+        self.speed_limit = params.watermelon_speed_limit
+
+        # specific properties
+        self._is_being_carried = False
+
+        # picture
+        self.picture_path = SCRAT_IMAGE  # WATERMELON_IMAGE
+
+    @property
+    def is_being_carried(self):
+        return self._is_being_carried
