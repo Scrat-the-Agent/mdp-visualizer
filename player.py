@@ -54,7 +54,7 @@ class Player:
         pos = icon.pos()
         self.sel_pos = animate(self.selection, "pos", 300, pos)
 
-        # turning the Scrat picture turned out to be a quest:(
+        # turning the Scrat picture turned out to be a quest :(
         trans = QTransform()
         trans.translate(pos.x() - self.pad.x(), pos.y() - self.pad.y())
         trans.rotate(-self.pad.goal_rotation, Qt.XAxis)
@@ -69,7 +69,7 @@ class Player:
         new_pos_x = -res.x() - res.width() / 2 + pos.x()
         new_pos_y = -res.y() - res.height() / 2 + pos.y()
 
-        # emperical (!) equation for size of marker
+        # empirical (!) equation for size of marker
         coeff = cos(self.pad.goal_rotation * pi / 180)
         sc = (res.height() / original.height()) ** 0.5 / coeff
 
