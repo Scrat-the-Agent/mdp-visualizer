@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal, Qt, QPointF
+from PyQt5.QtCore import pyqtSignal, Qt, QPointF, QTimer
 from PyQt5.QtGui import QColor
 
 import settings
@@ -11,13 +11,16 @@ class Cell(RoundRectItem):
     leave_signal = pyqtSignal()
 
     @property
-    def reward(self):
+    def reward(self):  # wtf?!?
         return self.pad.reward_at(self.x, self.y)
 
     def __init__(self, x, y, pad):
         self.x, self.y = x, y
         self.pad = pad
+
         self.value = self.reward
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._update_value)
 
         super().__init__(settings.ICON_RECT, self._compute_color(), parent=pad)
         self.setZValue(1)
@@ -60,7 +63,7 @@ class Cell(RoundRectItem):
 
             painter.setPen(settings.REWARD_COLOR)
             painter.setFont(settings.REWARD_FONT)
-            painter.drawText(text_rect, flags, str(self.value))
+            painter.drawText(text_rect, flags, f"{self.value:.1f}")
 
     def hoverEnterEvent(self, event):
         self.anim = animate(self, "opacity", 100, 1)
@@ -71,7 +74,21 @@ class Cell(RoundRectItem):
         self.leave_signal.emit()
 
     def set_value(self, new_value):
-        self.value = new_value
+        self._target_value = new_value
+        self._timer.start(10)  # TODO: settings!
+
+    def _update_value(self):
+        diff = abs(self._target_value - self.value)
+        step = max(0.1, diff / 20)
+
+        if diff < 0.1:
+            self.value = self._target_value
+            self._timer.stop()
+        elif self._target_value > self.value:
+            self.value += 0.1
+        else:
+            self.value -= 0.1
+
         self.update()
 
     @staticmethod
