@@ -1,6 +1,7 @@
 from random import randint
 
-from actions_objects_list import Actions, Objects
+from .actions_objects_list import Actions
+
 
 class GameObject:
     def __init__(self, params):
@@ -10,6 +11,9 @@ class GameObject:
         self._game_width = params.game_width
 
         # additional fields
+        self._prev_x = 0
+        self._prev_y = 0
+
         self._step_num = 0
         self._move_cooldown = -1
 
@@ -25,7 +29,21 @@ class GameObject:
     def cur_position(self):
         return self._x, self._y
 
-    def make_step(self):
+    @property
+    def prev_position(self):
+        return self._prev_x, self._prev_y
+
+    @property
+    def dx_dy(self):
+        return self._x - self._prev_x, self._y - self._prev_y
+
+    def change_position(self, dx, dy):
+        self._prev_x = self._x
+        self._prev_y = self._y
+        self._x += dx
+        self._y += dy
+
+    def take_random_action(self):
         self._step_num += 1
         random_action = None
 
@@ -39,10 +57,10 @@ class GameObject:
                 elif random_action == 1 and self.y > 0:
                     random_action = Actions.UP.value
                     action_taken = True
-                elif random_action == 2 and self.x < self._game_width:
+                elif random_action == 2 and self.x < self._game_width - 1:
                     random_action = Actions.RIGHT.value
                     action_taken = True
-                elif random_action == 3 and self.y < self._game_height:
+                elif random_action == 3 and self.y < self._game_height - 1:
                     random_action = Actions.DOWN.value
                     action_taken = True
 

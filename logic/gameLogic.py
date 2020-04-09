@@ -1,7 +1,7 @@
 from random import shuffle
 
-from actions_objects_list import Actions, Objects
-from gameObject import Scrat, Hippo, Watermelon
+from .actions_objects_list import Actions, Objects
+from .gameObject import Scrat, Hippo, Watermelon
 
 
 class GameCell:
@@ -187,12 +187,12 @@ class GameLogic:
 
         # move objects if they are present
         if self._hippo:
-            direction = self._hippo.make_step()
+            direction = self._hippo.take_random_action()
             if direction:
                 self._move_object(Objects.HIPPO, direction)
 
         if self._watermelon:
-            direction = self._watermelon.make_step()
+            direction = self._watermelon.take_random_action()
             if direction:
                 self._move_object(Objects.WATERMELON, direction)
 
@@ -203,9 +203,9 @@ class GameLogic:
             self._move_object(Objects.SCRAT, Actions.LEFT.value)
         elif action == 1 and self.scrat_position[1] > 0:
             self._move_object(Objects.SCRAT, Actions.UP.value)
-        elif action == 2 and self.scrat_position[0] < self.game_size[0]:
+        elif action == 2 and self.scrat_position[0] < self.game_size[0] - 1:
             self._move_object(Objects.SCRAT, Actions.RIGHT.value)
-        elif action == 3 and self.scrat_position[1] < self.game_size[1]:
+        elif action == 3 and self.scrat_position[1] < self.game_size[1] - 1:
             self._move_object(Objects.SCRAT, Actions.DOWN.value)
         elif action == Actions.TAKE and self.scrat_position == self.watermelon_position:
             self._interact_with_watermelon(Actions.TAKE)
@@ -232,19 +232,13 @@ class GameLogic:
     def _move_object(self, obj, direction):
         if obj == Objects.SCRAT:
             self._scrat.change_position(*direction)
-            self._game_board.move_object(obj, self.scrat_position,
-                                         tuple([self.scrat_position[0] + direction[0],
-                                               self.scrat_position[1] + direction[1]]))
+            self._game_board.move_object(obj, self._scrat.prev_position, self.scrat_position)
         elif obj == Objects.HIPPO:
             self._hippo.change_position(*direction)
-            self._game_board.move_object(obj, self.hippo_position,
-                                         tuple([self.hippo_position[0] + direction[0],
-                                               self.hippo_position[1] + direction[1]]))
+            self._game_board.move_object(obj, self._hippo.prev_position, self.hippo_position)
         elif obj == Objects.WATERMELON:
             self._watermelon.change_position(*direction)
-            self._game_board.move_object(obj, self.watermelon_position,
-                                         tuple([self.watermelon_position[0] + direction[0],
-                                               self.watermelon_position[1] + direction[1]]))
+            self._game_board.move_object(obj, self._watermelon.prev_position, self.watermelon_position)
 
     def _interact_with_watermelon(self, action):
         if action == Actions.TAKE:
@@ -296,6 +290,10 @@ class GameLogic:
 
     # scrat
     @property
+    def scrat(self):
+        return self._scrat
+
+    @property
     def scrat_position(self):
         return self._scrat.cur_position
 
@@ -304,6 +302,10 @@ class GameLogic:
         return self._scrat.carrying_watermelon
 
     # hippo
+    @property
+    def hippo(self):
+        return self._hippo
+
     @property
     def hippo_position(self):
         if self._hippo:
@@ -315,6 +317,10 @@ class GameLogic:
             return self._hippo.is_fed
 
     # watermelon
+    @property
+    def watermelon(self):
+        return self._watermelon
+
     @property
     def watermelon_position(self):
         if self._watermelon:

@@ -11,7 +11,7 @@ class Cell(RoundRectItem):
     enter_signal = pyqtSignal()
     leave_signal = pyqtSignal()
 
-    def __init__(self, x, y, pad):
+    def __init__(self, x, y, pad, logic):
         self.x, self.y = x, y
         self.pad = pad
 
