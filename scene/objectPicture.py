@@ -9,7 +9,7 @@ from utils import animate
 from .roundRectItem import RoundRectItem
 
 
-class ObjectPicture():
+class ObjectPicture:
     def __init__(self, scene, pad):
         self._x = 0
         self._y = 0
@@ -53,7 +53,7 @@ class ObjectPicture():
         self._x = x
         self._y = y
 
-        icon = self.pad.cellAt(self._x, self._y).visit()
+        # icon = self.pad.cellAt(self._x, self._y).visit()
         pos = self.pad.cellAt(self._x, self._y).pos()
         self.pic.setPos(pos)
         self.selection.setPos(pos)
@@ -64,8 +64,8 @@ class ObjectPicture():
         self._x += dx
         self._y += dy
 
-        icon = self.pad.cellAt(self._x, self._y).visit()
-        self.move(MOVE_TIME)
+        # icon = self.pad.cellAt(self._x, self._y).visit()
+        self.move(settings.MOVE_TIME)
 
     def move(self, time):
         icon = self.pad.cellAt(self._x, self._y)
