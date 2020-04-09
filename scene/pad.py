@@ -9,8 +9,8 @@ from .roundRectItem import RoundRectItem
 
 
 class FlippablePad(RoundRectItem):
-    def __init__(self, world, parent):
-        super().__init__(self.boundsFromSize(), settings.PAD_COLOR, parent)
+    def __init__(self, world):
+        super().__init__(self.boundsFromSize(), settings.PAD_COLOR)
         self._world = world
         self._cells = []
 

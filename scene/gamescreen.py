@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QBrush, QPainter
+from PyQt5.QtGui import QPixmap, QBrush, QPainter, QColor, QPalette
 from PyQt5.QtOpenGL import QGLFormat, QGLWidget, QGL
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
@@ -9,19 +9,18 @@ from .objectPicture import ObjectPicture
 
 
 class GameScreen(QGraphicsView):
-    def __init__(self, world, parent=None):
-        super().__init__(parent=None)
+    def __init__(self, world):
+        super().__init__()
 
-        # background
         scene = QGraphicsScene(self)
-        pix = QPixmap(settings.BACKGROUND_IMAGE)
-        scene.setBackgroundBrush(QBrush(pix))
-        scene.setItemIndexMethod(QGraphicsScene.NoIndex)
-        scene.setSceneRect(scene.itemsBoundingRect())
+        #TODO: do we need this? scene.setSceneRect(scene.itemsBoundingRect())
         self.setScene(scene)
+        self.setWindowFlags(Qt.FramelessWindowHint)
+
+        self.setStyleSheet("background: transparent")
 
         # field with cells
-        self.pad = FlippablePad(world, parent=parent)
+        self.pad = FlippablePad(world)
         scene.addItem(self.pad)
 
         # player markers
@@ -36,9 +35,6 @@ class GameScreen(QGraphicsView):
         self.setCacheMode(QGraphicsView.CacheBackground)
         self.setRenderHints(QPainter.Antialiasing |
                             QPainter.SmoothPixmapTransform | QPainter.TextAntialiasing)
-
-        if QGLFormat.hasOpenGL():
-            self.setViewport(QGLWidget(QGLFormat(QGL.SampleBuffers)))
 
     @property
     def cells(self):

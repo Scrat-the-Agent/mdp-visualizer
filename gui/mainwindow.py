@@ -1,5 +1,7 @@
-from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QComboBox, QWidget
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QComboBox, QWidget, QLabel
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QBrush, QPalette
 
 import settings
 from .automaticrl import AutomaticRL
@@ -9,10 +11,12 @@ from scene.gamescreen import GameScreen
 from WTF import World
 
 
-
-
 class MainWindow(QMainWindow):
     def _init_ui(self):
+        # background image
+        sh = f"background-image: url({settings.BACKGROUND_IMAGE})"
+        self.setStyleSheet("MainWindow {" + sh + "}")
+
         # mode switcher
         self._combo_box = QComboBox()
         self._combo_box.addItems(["I Am RL Agent", "Automatic RL, Please"])
@@ -41,9 +45,9 @@ class MainWindow(QMainWindow):
         self._central_layout.addWidget(self._left_widget)
         self._central_layout.addWidget(self._game_screen)
 
-        self._central_widget = QWidget()
+        self._central_widget = QWidget() 
         self._central_widget.setLayout(self._central_layout)
-        self.setCentralWidget(self._central_widget)
+        self.setCentralWidget(self._central_widget)        
 
     def __init__(self):
         super().__init__()
