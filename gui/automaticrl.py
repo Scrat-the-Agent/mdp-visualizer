@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal, QTimer, Qt
+from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton
 from PyQt5.QtGui import QPixmap, QFont
 
@@ -23,8 +23,10 @@ class QLabelsVisualization(QWidget):
             self._layout.addWidget(_q_label, *pos)
             _q_label.setAlignment(Qt.AlignCenter)
             _q_label.setFont(font)
+            _q_label.setFixedSize(QSize(50, 30))
         for _arrow, pos, pic in zip(self._arrows, [(2, 3), (2, 1), (3, 2), (1, 2)], pics):
             self._layout.addWidget(_arrow, *pos)
+            _arrow.setAlignment(Qt.AlignCenter)
             _arrow.setPixmap(QPixmap(pic).scaled(50, 50, Qt.KeepAspectRatio))
             _arrow.setScaledContents(False)
 
