@@ -4,9 +4,8 @@ from PyQt5.QtOpenGL import QGLFormat, QGLWidget, QGL
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
 import settings
-from pad import FlippablePad
-from player import Player
-from splash import SplashItem
+from .pad import FlippablePad
+from .objectPicture import ObjectPicture
 
 
 class GameScreen(QGraphicsView):
@@ -26,14 +25,8 @@ class GameScreen(QGraphicsView):
         scene.addItem(self.pad)
 
         # player markers
-        self.player = Player(scene, self.pad)
-        self.pad.iconAt(0, 0).visit()
-
-        # splash
-        self.splash = SplashItem()
-        self.splash.setZValue(1)
-        self.splash.setPos(-self.splash.boundingRect().width() / 2, scene.sceneRect().top() - 2)
-        scene.addItem(self.splash)
+        self.player = ObjectPicture(scene, self.pad)
+        self.pad.cellAt(0, 0).visit()
 
         # general
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -53,7 +46,7 @@ class GameScreen(QGraphicsView):
 
     def update_screen(self, x, y, value):
         self.player.change_pos(x - self.player.x, y - self.player.y)
-        self.pad.iconAt(x, y).set_value(value)
+        self.pad.cellAt(x, y).set_value(value)
 
     def keyPressEvent(self, event):
         self.splash.disappear()

@@ -2,27 +2,24 @@ from PyQt5.QtCore import pyqtSignal, Qt, QPointF, QTimer
 from PyQt5.QtGui import QColor
 
 import settings
-from roundRectItem import RoundRectItem
 from utils import animate
+
+from .roundRectItem import RoundRectItem
 
 
 class Cell(RoundRectItem):
     enter_signal = pyqtSignal()
     leave_signal = pyqtSignal()
 
-    @property
-    def reward(self):  # wtf?!?
-        return self.pad.reward_at(self.x, self.y)
-
     def __init__(self, x, y, pad):
         self.x, self.y = x, y
         self.pad = pad
 
-        self.value = self.reward
+        self.value = 0   # TODO: gamelogic ref!
         self._timer = QTimer()
         self._timer.timeout.connect(self._update_value)
-
         super().__init__(settings.ICON_RECT, self._compute_color(), parent=pad)
+        
         self.setZValue(1)
         self.setOpacity(settings.BASE_CELL_OPACITY)
 

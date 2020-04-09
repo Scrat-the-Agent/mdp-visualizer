@@ -1,11 +1,14 @@
-from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QComboBox, QWidget, QVBoxLayout, \
-    QHBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QComboBox, QWidget
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout
 
-from automaticrl import AutomaticRL
-from gamescreen import GameScreen
-from iamrlagent import IAmRLAgent
-from env_game_interface import World
 import settings
+from .automaticrl import AutomaticRL
+from .iamrlagent import IAmRLAgent
+
+from scene.gamescreen import GameScreen
+from WTF import World
+
+
 
 
 class MainWindow(QMainWindow):

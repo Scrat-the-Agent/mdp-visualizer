@@ -1,6 +1,7 @@
 import numpy as np
 import settings
-from q_learning import q_learning
+
+from logic.q_learning import q_learning
 
 
 class World:

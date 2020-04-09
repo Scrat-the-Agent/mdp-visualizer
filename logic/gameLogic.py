@@ -1,6 +1,7 @@
 from random import shuffle
-from player import Scrat, Hippo, Watermelon
+
 from actions_objects_list import Actions, Objects
+from gameObject import Scrat, Hippo, Watermelon
 
 
 class GameCell:

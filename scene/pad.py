@@ -2,9 +2,10 @@ from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QGraphicsRotation
 
 import settings
-from cell import Cell
-from roundRectItem import RoundRectItem
 from utils import animate
+
+from .cell import Cell
+from .roundRectItem import RoundRectItem
 
 
 class FlippablePad(RoundRectItem):
@@ -30,7 +31,7 @@ class FlippablePad(RoundRectItem):
         self.setTransformations([self.yRotation])
 
     def cellAt(self, column, row):
-        return self.iconGrid[row][column]
+        return self._cells[row][column]
 
     @property
     def cells(self):

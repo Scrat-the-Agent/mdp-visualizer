@@ -2,12 +2,10 @@ from PyQt5.QtCore import pyqtSignal, QTimer, Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton
 from PyQt5.QtGui import QPixmap, QFont
 
-from env_game_interface import EnvGameInterface
+from WTF import EnvGameInterface
 
 
-# TODO: name confuses with QLabel...
-# IT IS JUST A DIFFERENT Q!!!!1
-class QLabels(QWidget):
+class QLabelsVisualization(QWidget):
     def __init__(self, env):
         super().__init__()
 
@@ -58,7 +56,7 @@ class AutomaticRL(QWidget):
         self._command_layout.addWidget(self._label)
 
         # q-values visualization
-        self._qlabels = QLabels(env)
+        self._qlabels = QLabelsVisualization(env)
         self._command_layout.addWidget(self._qlabels)
 
         # rl buttons
