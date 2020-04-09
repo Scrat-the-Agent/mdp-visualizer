@@ -29,11 +29,8 @@ class FlippablePad(RoundRectItem):
         self.yRotation.setAxis(Qt.XAxis)
         self.setTransformations([self.yRotation])
 
-    def reward_at(self, column, row):
-        return self._world.reward_at(column, row)
-
-    def iconAt(self, column, row):
-        return self._cells[row][column]
+    def cellAt(self, column, row):
+        return self.iconGrid[row][column]
 
     @property
     def cells(self):
