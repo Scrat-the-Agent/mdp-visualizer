@@ -1,15 +1,56 @@
-from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QComboBox, QWidget, QLabel
+from PyQt5.QtWidgets import QMainWindow, QComboBox, QWidget, QLabel
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QBrush, QPalette
+from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtGui import QPixmap, QBrush, QPalette, QFont, QFontDatabase
 
 import settings
+from utils import animate
 from .automaticrl import AutomaticRL
 from .iamrlagent import IAmRLAgent
 
 from scene.gamescreen import GameScreen
 from WTF import World
 
+class ModeSwitcher(QWidget):
+    def __init__(self, contents):
+        super().__init__()
+        self._contents = contents
+        self._id = 0
+
+        for content in self._contents:
+            content.setParent(self)
+
+    def resizeEvent(self, evt=None):
+        for id, content in enumerate(self._contents):
+            content.setGeometry(0 if id == self._id else -1.2 * self.width(), 0, self.width(), self.height())
+
+    # TODO: WHYYYY IT DOES NOT WORK
+    @property
+    def sizeHint(self):
+        return self._contents[self._id].sizeHint
+
+    # TODO: WHYYYY IT DOES NOT WORK
+    @property
+    def minimumSizeHint(self):
+        return self._contents[self._id].minimumSizeHint
+
+    def turn(self, id):
+        if id != self._id:
+            self.disappear_anim = animate(self._contents[self._id], "geometry", 400, 
+                                    QRectF(1.2 * -self.width(), 0, self.width(), self.height()))
+            self.disappear_anim.finished.connect(self._animation_finish)
+            
+            self._id = id
+
+            self._contents[self._id].setVisible(True)
+            self._contents[self._id].setGeometry(1.2 * self.width(), 0, self.width(), self.height())
+            self.appear_anim = animate(self._contents[self._id], "geometry", 400, 
+                                    QRectF(0, 0, self.width(), self.height()))
+    
+    def _animation_finish(self):
+        for id, content in enumerate(self._contents):
+            if id != self._id:
+                content.setVisible(False)
 
 class MainWindow(QMainWindow):
     def _init_ui(self):
@@ -19,7 +60,10 @@ class MainWindow(QMainWindow):
 
         # mode switcher
         self._combo_box = QComboBox()
+        self._combo_box.setFont(QFont("Pacifico", 14, QFont.Normal))
         self._combo_box.addItems(["I Am RL Agent", "Automatic RL, Please"])
+        for i in range(2):
+            self._combo_box.setItemData(i, Qt.AlignCenter)
 
         # game screen
         self._game_screen = GameScreen(self._world)
@@ -29,16 +73,14 @@ class MainWindow(QMainWindow):
         self._automaticRL = AutomaticRL(self._world, self._game_screen)
 
         # mode widget
-        self._mode_widget = QStackedWidget()
-        self._mode_widget.addWidget(self._iAmRLAgent)
-        self._mode_widget.addWidget(self._automaticRL)
+        self._mode_widget = ModeSwitcher([self._iAmRLAgent, self._automaticRL])
 
         # left widget
         self._left_layout = QVBoxLayout()
         self._left_layout.addWidget(self._combo_box)
         self._left_layout.addWidget(self._mode_widget)
         self._left_widget = QWidget()
-        self._left_widget.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred))
+        #self._left_widget.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred))
         self._left_widget.setLayout(self._left_layout)
 
         # central widget
@@ -54,14 +96,15 @@ class MainWindow(QMainWindow):
         super().__init__()
         self._world = World(settings.ROWS, settings.COLS)
         self._init_ui()
-        self._combo_box.currentIndexChanged.connect(self._mode_change)
+        self._combo_box.currentIndexChanged.connect(self._mode_widget.turn)
 
-    def _mode_change(self, mode):
-        if mode == 0:
-            self._automaticRL.setEnabled(False)
-            self._iAmRLAgent.setEnabled(True)
-            self._mode_widget.setCurrentWidget(self._iAmRLAgent)
-        else:
-            self._automaticRL.setEnabled(True)
-            self._iAmRLAgent.setEnabled(False)
-            self._mode_widget.setCurrentWidget(self._automaticRL)
+    # DEL
+    # def _mode_change(self, mode):
+    #     if mode == 0:
+    #         self._automaticRL.setEnabled(False)
+    #         self._iAmRLAgent.setEnabled(True)
+    #         self._mode_widget.setCurrentWidget(self._iAmRLAgent)
+    #     else:
+    #         self._automaticRL.setEnabled(True)
+    #         self._iAmRLAgent.setEnabled(False)
+    #         self._mode_widget.setCurrentWidget(self._automaticRL)
