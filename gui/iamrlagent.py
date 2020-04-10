@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton, QVBoxLayo
 
 class IAmRLAgent(QWidget):
     clicked_mode = pyqtSignal()
+    made_step_signal = pyqtSignal()
 
     def _init_ui(self):
         self._reward_label = QLabel()
@@ -19,20 +20,10 @@ class IAmRLAgent(QWidget):
         self._actions_layout.setRowStretch(0, 10)
         self._actions_layout.setRowStretch(1, 10)
 
-        self._action_1 = QPushButton()
-        self._action_2 = QPushButton()
-        self._action_3 = QPushButton()
-        self._action_4 = QPushButton()
-        self._action_5 = QPushButton()
-        self._action_6 = QPushButton()
-
-        self._actions_layout.addWidget(self._action_1, 0, 0)
-        self._actions_layout.addWidget(self._action_2, 0, 1)
-        self._actions_layout.addWidget(self._action_3, 0, 2)
-        # self._actions_layout.addWidget(self._actions_label, 1, 1)
-        self._actions_layout.addWidget(self._action_4, 1, 0)
-        self._actions_layout.addWidget(self._action_5, 1, 1)
-        self._actions_layout.addWidget(self._action_6, 1, 2)
+        self._action_buttons = []
+        for i in range(self._logic.n_actions):
+            self._action_buttons.append(QPushButton())
+            self._actions_layout.addWidget(self._action_buttons[i], i // 3, i % 3)
 
         self._command_layout = QVBoxLayout()
         self._command_layout.addWidget(self._actions_label)
@@ -41,7 +32,24 @@ class IAmRLAgent(QWidget):
 
         self.setLayout(self._command_layout)
 
-    def __init__(self, world, parent=None):
-        super().__init__(parent)
-        self._world = world
+    def __init__(self, logic, gamescreen):
+        super().__init__()
+        self._logic = logic
         self._init_ui()
+
+        # connecting player buttons
+        for button in self._action_buttons:
+            button.clicked.connect(self._action_chosen)
+
+        self.made_step_signal.connect(gamescreen.update_screen)
+
+    def _action_chosen(self):
+        clicked_button = self.sender()
+        action = -1
+        for i, button in enumerate(self._action_buttons):
+            if clicked_button is button:
+                action = i
+                break
+
+        self._logic.step(action)
+        self.made_step_signal.emit()

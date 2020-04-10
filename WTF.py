@@ -38,11 +38,11 @@ class WorldEnv:
         return self.world.reward_at(x, y)
 
     def xy_to_state(self, x, y):
-        _, w = self.world.pad_size
+        _, w = self.world.game_size
         return w * y + x
 
     def state_to_xy(self, state):
-        _, w = self.world.pad_size
+        _, w = self.world.game_size
         x = state % w
         y = state // w
         return x, y
@@ -63,7 +63,7 @@ class WorldEnv:
         if action not in {0, 1, 2, 3}:
             raise ValueError(f"Unknown action: {action}. Possible actions: [0, 1, 2, 3]")
 
-        if action == 0 and self._player_x < settings.COLS - 1:
+        if action == 0 and self._player_x < settings.COLS - 1:  # TODO Remove dependence on settings.COLS. Use logic
             self._player_x += 1
         if action == 1 and self._player_x > 0:
             self._player_x -= 1
@@ -94,7 +94,7 @@ class WorldEnv:
 
     @property
     def n_states(self):
-        height, width = self.world.pad_size
+        height, width = self.world.game_size
         return height * width
 
     @property

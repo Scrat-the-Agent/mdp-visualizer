@@ -81,7 +81,7 @@ class AutomaticRL(QWidget):
 
         self.setLayout(self._command_layout)
 
-    def __init__(self, world, gamescreen, parent=None):
+    def __init__(self, world, gamescreen, parent=None): # TODO world => logic
         super().__init__(parent)
         self._world = world
         self._env_game_interface = EnvGameInterface(self._world)

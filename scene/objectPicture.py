@@ -7,19 +7,15 @@ import settings
 from utils import animate
 
 from .roundRectItem import RoundRectItem
+from logic.gameObject import Scrat, Hippo, Watermelon
 
 
-class ObjectPicture():
-    def __init__(self, scene, pad):
-        self._x = 0
-        self._y = 0
+class ObjectPicture:
+    def __init__(self, obj, scene, pad):
+        self._obj = obj
+        # self._x, self._y = self._obj.cur_position
         self.pad = pad
-        pos = self.pad.cellAt(0, 0).pos()
-
-        # additional fields
-
-        self.cur_speed = (0, 0)
-        self.speed_limit = (0, 0)
+        pos = self.pad.cellAt(self.x, self.y).pos()
 
         # selection underneath the cells!
         self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), settings.SELECTION_COLOR, pad)
@@ -32,43 +28,52 @@ class ObjectPicture():
         self.pic = RoundRectItem(QRectF(-50, -50, 100, 100))
         self.pic.setZValue(1.5)
         self.pic.setPos(pos)
-        self.pic.setPixmap(QPixmap(settings.SCRAT_IMAGE))
+        if isinstance(obj, Scrat):
+            self.pic.setPixmap(QPixmap(settings.SCRAT_IMAGE))
+        elif isinstance(obj, Hippo):
+            self.pic.setPixmap(QPixmap(settings.HIPPO_IMAGE))
+        elif isinstance(obj, Watermelon):
+            self.pic.setPixmap(QPixmap(settings.WATERMELON_IMAGE))
         scene.addItem(self.pic)
 
     @property
     def x(self):
-        return self._x
+        return self._obj.x
 
     @property
     def y(self):
-        return self._y
+        return self._obj.y
+
+    @property
+    def dx_dy(self):
+        return self._obj.dx_dy
 
     @property
     def cur_position(self):
-        return self._x, self._y
+        return self.x, self.y
 
-    def set_position(self, x, y):
-        self.pad.cellAt(self._x, self._y).leave()
+    # def set_position(self, x, y):
+    #     self.pad.cellAt(self.x, self.y).leave()
+    #
+    #     self._x = x
+    #     self._y = y
+    #
+    #     # icon = self.pad.cellAt(self._x, self._y).visit()
+    #     pos = self.pad.cellAt(self._x, self._y).pos()
+    #     self.pic.setPos(pos)
+    #     self.selection.setPos(pos)
 
-        self._x = x
-        self._y = y
+    def change_position(self):
+        # self.pad.cellAt(self._x, self._y).leave()  # WHAT?
 
-        icon = self.pad.cellAt(self._x, self._y).visit()
-        pos = self.pad.cellAt(self._x, self._y).pos()
-        self.pic.setPos(pos)
-        self.selection.setPos(pos)
+        # self._x += dx
+        # self._y += dy
 
-    def change_position(self, dx, dy):
-        self.pad.cellAt(self._x, self._y).leave()
-
-        self._x += dx
-        self._y += dy
-
-        icon = self.pad.cellAt(self._x, self._y).visit()
-        self.move(MOVE_TIME)
+        # icon = self.pad.cellAt(self._x, self._y).visit()
+        self.move(settings.MOVE_TIME)
 
     def move(self, time):
-        icon = self.pad.cellAt(self._x, self._y)
+        icon = self.pad.cellAt(self.x, self.y)
 
         # selection marker is inside the pad, so nothing complex here
         pos = icon.pos()
@@ -103,5 +108,3 @@ class ObjectPicture():
 
     def pad_rotated(self):
         self.move(settings.ROTATION_TIME)
-
-

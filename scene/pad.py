@@ -9,17 +9,17 @@ from .roundRectItem import RoundRectItem
 
 
 class FlippablePad(RoundRectItem):
-    def __init__(self, world):
-        super().__init__(self.boundsFromSize(), settings.PAD_COLOR)
-        self._world = world
+    def __init__(self, logic):
+        super().__init__(self.boundsFromSize(logic), settings.PAD_COLOR)
+        self._logic = logic
         self._cells = []
 
-        height, width = self._world.pad_size
+        width, height = self._logic.game_size
         for y in range(height):
             row = []
 
             for x in range(width):
-                rect = Cell(x, y, pad=self)
+                rect = Cell(x, y, pad=self, logic=logic)
                 row.append(rect)
 
             self._cells.append(row)
@@ -35,14 +35,15 @@ class FlippablePad(RoundRectItem):
 
     @property
     def cells(self):
-        height, width = self._world.pad_size
+        width, height = self._logic.game_size
         return (self._cells[y][x] for y in range(height) for x in range(width))
 
     @staticmethod
-    def boundsFromSize():
-        return QRectF((-settings.COLS / 2.0) * 150,
-                      (-settings.ROWS / 2.0) * 150, settings.COLS * 150,
-                      settings.ROWS * 150)
+    def boundsFromSize(logic):
+        width, height = logic.game_size
+        return QRectF((-width / 2.0) * 150,
+                      (-height / 2.0) * 150, width * 150,
+                      height * 150)
 
     def rotate(self):
         self.goal_rotation = settings.ROTATION_ANGLE if self.goal_rotation == 0 else 0
