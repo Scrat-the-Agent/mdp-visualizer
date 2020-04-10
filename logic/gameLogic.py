@@ -74,7 +74,7 @@ class GameBoard:
 
 class GameParams:
     def __init__(self, game_height=5, game_width=5,
-                 scrat_start_position=None,
+                 scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
                  lava_random=False, lava_cells=(), lava_reward=-100,
@@ -88,6 +88,7 @@ class GameParams:
         self.lava_reward = lava_reward
 
         # scrat
+        self.scrat_random = scrat_random
         self.scrat_start_position = scrat_start_position
 
         # hippo
@@ -142,21 +143,27 @@ class GameLogic:
         shuffle(positions)
         return positions[:num_of_pos]
 
-    def _generate_new_game(self):
-        if not self._start_params.scrat_start_position:
+    def _fill_start_params(self, resample=False):
+        if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
             self._start_params.scrat_start_position = self._generate_random_positions()[0]
 
-        if not self._start_params.hippo_start_position and self._start_params.hippo_random:
+        if (not self._start_params.hippo_start_position or resample) and self._start_params.hippo_random:
             self._start_params.hippo_start_position = self._generate_random_positions()[0]
 
-        if not self._start_params.watermelon_start_position and self._start_params.watermelon_random:
+        if (not self._start_params.watermelon_start_position or resample) and self._start_params.watermelon_random:
             self._start_params.watermelon_start_position = self._generate_random_positions()[0]
 
-        if len(self._start_params.lava_cells) == 0 and self._start_params.lava_random:
+        if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
             self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
 
-        if len(self._start_params.terminal_cells) == 0 and self._start_params.terminal_random:
+        if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
             self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
+
+    def _generate_new_game(self):
+        # fill params
+        self._fill_start_params()
+
+        # create objects
 
         # game board
         self._game_board = GameBoard(self._start_params)
@@ -337,9 +344,25 @@ class GameLogic:
         return self._start_params.terminal_cells
 
     # reset
-    def reset(self):  # with old start params
-        self._generate_new_game()
+    def _reset_objects(self):
+        # game board
+        self._game_board = GameBoard(self._start_params)
 
-    def full_reset(self, params=GameParams()):  # with new start params
-        self._start_params = params
-        self._generate_new_game()
+        # scrat
+        self._scrat.reset_position(self._start_params)
+
+        # hippo
+        if self._start_params.hippo_start_position:
+            self._hippo.reset_position(self._start_params)
+
+        # watermelon
+        if self._start_params.watermelon_start_position:
+            self._watermelon.reset_position(self._start_params)
+
+    def reset(self):  # with old start params
+        self._fill_start_params()
+        self._reset_objects()
+
+    def full_reset(self, params=None):  # with new start params
+        self._fill_start_params(resample=True)
+        self._reset_objects()

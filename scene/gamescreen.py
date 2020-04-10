@@ -1,9 +1,7 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QBrush, QPainter, QColor, QPalette
-from PyQt5.QtOpenGL import QGLFormat, QGLWidget, QGL
+from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
-import settings
 from .pad import FlippablePad
 from .objectPicture import ObjectPicture
 
@@ -45,6 +43,9 @@ class GameScreen(QGraphicsView):
     @property
     def cells(self):
         return self.pad.cells
+
+    # def change_logic(self, logic):
+    #     self.logic = logic
 
     def update_screen(self):
         for obj in self.objects_pictures:

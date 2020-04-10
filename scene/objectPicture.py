@@ -17,7 +17,7 @@ class ObjectPicture:
         pos = self.pad.cellAt(self.x, self.y).pos()
 
         # selection underneath the cells!
-        self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), settings.SELECTION_COLOR, pad)
+        self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), settings.SELECTION_COLOR, self.pad)
         self.selection.setZValue(0.5)
         self.selection.setPos(pos)
 
@@ -34,6 +34,12 @@ class ObjectPicture:
         elif isinstance(obj, Watermelon):
             self.pic.setPixmap(QPixmap(settings.WATERMELON_IMAGE))
         scene.addItem(self.pic)
+
+        # for animation
+        self.sel_pos = None
+        self.pic_pos_x = None
+        self.pic_pos_y = None
+        self.pic_sc = None
 
     @property
     def x(self):

@@ -11,8 +11,8 @@ class GameObject:
         self._game_width = params.game_width
 
         # additional fields
-        self._prev_x = 0
-        self._prev_y = 0
+        self._prev_x = -1
+        self._prev_y = -1
 
         self._step_num = 0
         self._move_prob = 0
@@ -36,6 +36,9 @@ class GameObject:
     @property
     def dx_dy(self):
         return self._x - self._prev_x, self._y - self._prev_y
+
+    def reset_position(self, params):
+        pass
 
     def change_position(self, dx, dy):
         self._prev_x = self._x
@@ -80,6 +83,12 @@ class Scrat(GameObject):
         # specific properties
         self._carrying_watermelon = False
 
+    def reset_position(self, params):
+        self._x = params.scrat_start_position[0]
+        self._y = params.scrat_start_position[1]
+        self._prev_x = -1
+        self._prev_y = -1
+
     def take_watermelon(self):
         self._carrying_watermelon = True
 
@@ -102,6 +111,12 @@ class Hippo(GameObject):
 
         # specific properties
         self._is_fed = False
+
+    def reset_position(self, params):
+        self._x = params.hippo_start_position[0]
+        self._y = params.hippo_start_position[1]
+        self._prev_x = -1
+        self._prev_y = -1
 
     def become_fed(self):
         self._is_fed = True
@@ -126,6 +141,12 @@ class Watermelon(GameObject):
         # specific properties
         self._is_taken = False
         self._is_eaten = False
+
+    def reset_position(self, params):
+        self._x = params.watermelon_start_position[0]
+        self._y = params.watermelon_start_position[1]
+        self._prev_x = -1
+        self._prev_y = -1
 
     def become_taken(self):
         self._is_taken = True
