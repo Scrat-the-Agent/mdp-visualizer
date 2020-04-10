@@ -25,13 +25,13 @@ class GameScreen(QGraphicsView):
         self.pad = FlippablePad(self.logic)
         scene.addItem(self.pad)
 
-        # objects markers
+        # objects markers, in reverse order for equal zValues case
         self.objects_pictures = []
-        self.objects_pictures.append(ObjectPicture(self.logic.scrat, scene, self.pad))
-        if self.logic.hippo:
-            self.objects_pictures.append(ObjectPicture(self.logic.hippo, scene, self.pad))
         if self.logic.watermelon:
             self.objects_pictures.append(ObjectPicture(self.logic.watermelon, scene, self.pad))
+        if self.logic.hippo:
+            self.objects_pictures.append(ObjectPicture(self.logic.hippo, scene, self.pad))
+        self.objects_pictures.append(ObjectPicture(self.logic.scrat, scene, self.pad))
 
         # general
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)

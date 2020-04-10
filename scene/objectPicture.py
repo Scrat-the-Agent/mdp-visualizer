@@ -25,7 +25,7 @@ class ObjectPicture:
         self.picture_path = None
 
         self.pic = RoundRectItem(QRectF(-50, -50, 100, 100))
-        self.pic.setZValue(1.5)
+        self.pic.setZValue(self.y)
         self.pic.setPos(pos)
         if isinstance(obj, Scrat):
             self.pic.setPixmap(QPixmap(settings.SCRAT_IMAGE))
@@ -52,6 +52,7 @@ class ObjectPicture:
         return self.x, self.y
 
     def change_position(self):
+        self.pic.setZValue(self.y)
         self.move(settings.MOVE_TIME)
 
     def move(self, time):

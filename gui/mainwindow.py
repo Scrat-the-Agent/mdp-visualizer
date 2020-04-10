@@ -96,7 +96,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # I Am RL Agent
-        self._iamrlagent_params = GameParams(hippo_random=True, hippo_move_prob=0.7, watermelon_random=True,
+        self._iamrlagent_params = GameParams(hippo_random=True, hippo_move_prob=0.3, watermelon_random=True,
                                              watermelon_move_prob=0.1)
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
