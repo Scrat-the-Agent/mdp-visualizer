@@ -14,6 +14,7 @@ class Cell(RoundRectItem):
     def __init__(self, x, y, pad, logic):
         self.x, self.y = x, y
         self.pad = pad
+        self.logic = logic
 
         self.value = 0   # TODO: gamelogic ref!
         self._timer = QTimer()
@@ -88,6 +89,7 @@ class Cell(RoundRectItem):
 
         self.update()
 
-    @staticmethod
-    def posForLocation(column, row):
-        return QPointF(column * 150, row * 150) - QPointF((settings.COLS - 1) * 75, (settings.ROWS - 1) * 75)
+    # @staticmethod
+    def posForLocation(self, column, row):
+        width, height = self.logic.game_size
+        return QPointF(column * 150, row * 150) - QPointF((width - 1) * 75, (height - 1) * 75)
