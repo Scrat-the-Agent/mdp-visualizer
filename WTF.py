@@ -63,7 +63,7 @@ class WorldEnv:
         if action not in {0, 1, 2, 3}:
             raise ValueError(f"Unknown action: {action}. Possible actions: [0, 1, 2, 3]")
 
-        if action == 0 and self._player_x < settings.COLS - 1:
+        if action == 0 and self._player_x < settings.COLS - 1:  # TODO Remove dependence on settings.COLS. Use logic
             self._player_x += 1
         if action == 1 and self._player_x > 0:
             self._player_x -= 1
