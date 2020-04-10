@@ -75,8 +75,8 @@ class GameBoard:
 class GameParams:
     def __init__(self, game_height=5, game_width=5,
                  scrat_start_position=None,
-                 hippo_random=False, hippo_start_position=None, hippo_move_cooldown=-1, hippo_fed_reward=100500,
-                 watermelon_random=False, watermelon_start_position=None, watermelon_move_cooldown=-1,
+                 hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
+                 watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
                  lava_random=False, lava_cells=(), lava_reward=-100,
                  terminal_random=False, terminal_cells=()):
         # main
@@ -93,12 +93,12 @@ class GameParams:
         # hippo
         self.hippo_random = hippo_random
         self.hippo_start_position = hippo_start_position
-        self.hippo_move_cooldown = hippo_move_cooldown
+        self.hippo_move_prob = hippo_move_prob
 
         # watermelon
         self.watermelon_random = watermelon_random
         self.watermelon_start_position = watermelon_start_position
-        self.watermelon_move_cooldown = watermelon_move_cooldown
+        self.watermelon_move_prob = watermelon_move_prob
 
         # lava
         self.lava_random = lava_random

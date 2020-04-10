@@ -10,7 +10,6 @@ from .iamrlagent import IAmRLAgent
 from logic.gameLogic import GameLogic, GameParams
 
 from scene.gamescreen import GameScreen
-from WTF import World
 
 
 class ModeSwitcher(QWidget):
@@ -96,11 +95,9 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        # self._world = World(settings.ROWS, settings.COLS)
-
         # I Am RL Agent
-        self._iamrlagent_params = GameParams(hippo_random=True, hippo_move_cooldown=1, watermelon_random=True,
-                                             watermelon_move_cooldown=2)
+        self._iamrlagent_params = GameParams(hippo_random=True, hippo_move_prob=0.7, watermelon_random=True,
+                                             watermelon_move_prob=0.1)
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
@@ -109,14 +106,3 @@ class MainWindow(QMainWindow):
 
         self._init_ui()
         self._combo_box.currentIndexChanged.connect(self._mode_widget.turn)  # TODO change logic
-
-    # DEL
-    # def _mode_change(self, mode):
-    #     if mode == 0:
-    #         self._automaticRL.setEnabled(False)
-    #         self._iAmRLAgent.setEnabled(True)
-    #         self._mode_widget.setCurrentWidget(self._iAmRLAgent)
-    #     else:
-    #         self._automaticRL.setEnabled(True)
-    #         self._iAmRLAgent.setEnabled(False)
-    #         self._mode_widget.setCurrentWidget(self._automaticRL)

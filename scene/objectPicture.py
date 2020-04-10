@@ -13,7 +13,6 @@ from logic.gameObject import Scrat, Hippo, Watermelon
 class ObjectPicture:
     def __init__(self, obj, scene, pad):
         self._obj = obj
-        # self._x, self._y = self._obj.cur_position
         self.pad = pad
         pos = self.pad.cellAt(self.x, self.y).pos()
 
@@ -52,24 +51,7 @@ class ObjectPicture:
     def cur_position(self):
         return self.x, self.y
 
-    # def set_position(self, x, y):
-    #     self.pad.cellAt(self.x, self.y).leave()
-    #
-    #     self._x = x
-    #     self._y = y
-    #
-    #     # icon = self.pad.cellAt(self._x, self._y).visit()
-    #     pos = self.pad.cellAt(self._x, self._y).pos()
-    #     self.pic.setPos(pos)
-    #     self.selection.setPos(pos)
-
     def change_position(self):
-        # self.pad.cellAt(self._x, self._y).leave()  # WHAT?
-
-        # self._x += dx
-        # self._y += dy
-
-        # icon = self.pad.cellAt(self._x, self._y).visit()
         self.move(settings.MOVE_TIME)
 
     def move(self, time):
