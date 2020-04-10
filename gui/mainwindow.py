@@ -8,9 +8,9 @@ from utils import animate
 from .automaticrl import AutomaticRL
 from .iamrlagent import IAmRLAgent
 from logic.gameLogic import GameLogic, GameParams
+from logic.actions_objects_list import Modes
 
 from scene.gamescreen import GameScreen
-from WTF import World
 
 
 class ModeSwitcher(QWidget):
@@ -92,31 +92,28 @@ class MainWindow(QMainWindow):
 
         self._central_widget = QWidget() 
         self._central_widget.setLayout(self._central_layout)
-        self.setCentralWidget(self._central_widget)        
+        self.setCentralWidget(self._central_widget)
+
+        # focus
+        self._game_screen.setFocus()
 
     def __init__(self):
         super().__init__()
-        # self._world = World(settings.ROWS, settings.COLS)
-
         # I Am RL Agent
-        self._iamrlagent_params = GameParams(hippo_random=True, hippo_move_cooldown=1, watermelon_random=True,
-                                             watermelon_move_cooldown=2)
+        self._iamrlagent_params = GameParams(Modes.IAMRLAGENT, hippo_random=True, hippo_move_prob=0.3,
+                                             watermelon_random=True, watermelon_move_prob=0.1, lava_random=2)
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
-        self._automaticrl_params = GameParams()
+        self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=4, game_width=6)
         self._automaticrl_logic = GameLogic(self._automaticrl_params)  # TODO
 
         self._init_ui()
-        self._combo_box.currentIndexChanged.connect(self._mode_widget.turn)  # TODO change logic
+        self._combo_box.currentIndexChanged.connect(self._change_mode)
 
-    # DEL
-    # def _mode_change(self, mode):
-    #     if mode == 0:
-    #         self._automaticRL.setEnabled(False)
-    #         self._iAmRLAgent.setEnabled(True)
-    #         self._mode_widget.setCurrentWidget(self._iAmRLAgent)
-    #     else:
-    #         self._automaticRL.setEnabled(True)
-    #         self._iAmRLAgent.setEnabled(False)
-    #         self._mode_widget.setCurrentWidget(self._automaticRL)
+    def _change_mode(self, id):
+        self._game_screen.change_logic(self._automaticrl_logic if id else self._iamrlagent_logic)
+        self._mode_widget.turn(id)
+
+        # focus
+        self._game_screen.setFocus()
