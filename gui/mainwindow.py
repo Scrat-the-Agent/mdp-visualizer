@@ -8,6 +8,7 @@ from utils import animate
 from .automaticrl import AutomaticRL
 from .iamrlagent import IAmRLAgent
 from logic.gameLogic import GameLogic, GameParams
+from logic.actions_objects_list import Modes
 
 from scene.gamescreen import GameScreen
 
@@ -99,12 +100,12 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # I Am RL Agent
-        self._iamrlagent_params = GameParams(hippo_random=True, hippo_move_prob=0.3, watermelon_random=True,
-                                             watermelon_move_prob=0.1)
+        self._iamrlagent_params = GameParams(Modes.IAMRLAGENT, hippo_random=True, hippo_move_prob=0.3,
+                                             watermelon_random=True, watermelon_move_prob=0.1, lava_random=2)
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
-        self._automaticrl_params = GameParams(game_height=4, game_width=6)
+        self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=4, game_width=6)
         self._automaticrl_logic = GameLogic(self._automaticrl_params)  # TODO
 
         self._init_ui()

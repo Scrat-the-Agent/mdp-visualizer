@@ -1,6 +1,6 @@
 from random import shuffle
 
-from .actions_objects_list import Actions, Objects
+from .actions_objects_list import Actions, Objects, Modes
 from .gameObject import Scrat, Hippo, Watermelon
 
 
@@ -73,13 +73,14 @@ class GameBoard:
 
 
 class GameParams:
-    def __init__(self, game_height=5, game_width=5,
+    def __init__(self, game_mode, game_height=5, game_width=5,
                  scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
                  lava_random=False, lava_cells=(), lava_reward=-100,
                  terminal_random=False, terminal_cells=()):
         # main
+        self.game_mode = game_mode
         self.game_height = game_height
         self.game_width = game_width
 
@@ -269,11 +270,19 @@ class GameLogic:
 
     # main properties
     @property
+    def game_mode(self):
+        return self._start_params.game_mode
+
+    @property
     def game_size(self):
         """
         Returns a tuple of width, height
         """
         return self._start_params.game_width, self._start_params.game_height
+
+    @property
+    def game_board(self):
+        return self._game_board
 
     @property
     def start_params(self):

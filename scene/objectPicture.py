@@ -22,8 +22,6 @@ class ObjectPicture:
         self.selection.setPos(pos)
 
         # picture!
-        self.picture_path = None
-
         self.pic = RoundRectItem(QRectF(-50, -50, 100, 100))
         self.pic.setZValue(self.y)
         self.pic.setPos(pos)

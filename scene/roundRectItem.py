@@ -2,6 +2,7 @@ from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QColor, QLinearGradient, QPalette, QPen, QPixmap
 from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsObject
 
+
 class RoundRectItem(QGraphicsObject):
     def __init__(self, bounds, color=None, parent=None):
         super(RoundRectItem, self).__init__(parent)
@@ -50,6 +51,6 @@ class RoundRectItem(QGraphicsObject):
     def pixmap(self):
         return QPixmap(self.pix)
 
-    def setPixmap(self, pixmap):
-        self.pix = QPixmap(pixmap)
+    def setPixmap(self, pixmap_path):
+        self.pix = QPixmap(pixmap_path)
         self.update()
