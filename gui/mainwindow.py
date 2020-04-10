@@ -91,7 +91,10 @@ class MainWindow(QMainWindow):
 
         self._central_widget = QWidget() 
         self._central_widget.setLayout(self._central_layout)
-        self.setCentralWidget(self._central_widget)        
+        self.setCentralWidget(self._central_widget)
+
+        # focus
+        self._game_screen.setFocus()
 
     def __init__(self):
         super().__init__()
@@ -101,8 +104,15 @@ class MainWindow(QMainWindow):
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
-        self._automaticrl_params = GameParams()
+        self._automaticrl_params = GameParams(game_height=4, game_width=6)
         self._automaticrl_logic = GameLogic(self._automaticrl_params)  # TODO
 
         self._init_ui()
-        self._combo_box.currentIndexChanged.connect(self._mode_widget.turn)  # TODO change logic
+        self._combo_box.currentIndexChanged.connect(self._change_mode)
+
+    def _change_mode(self, id):
+        self._game_screen.change_logic(self._automaticrl_logic if id else self._iamrlagent_logic)
+        self._mode_widget.turn(id)
+
+        # focus
+        self._game_screen.setFocus()
