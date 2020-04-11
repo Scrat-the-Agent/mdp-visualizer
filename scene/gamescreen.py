@@ -54,6 +54,9 @@ class GameScreen(QGraphicsView):
     def cells(self):
         return self.pad.cells
 
+    def set_cell_value(self, column, row, value):
+        self.pad.set_cell_value(column, row, value)
+
     def change_logic(self, logic):
         self._init_with_logic(logic)
 

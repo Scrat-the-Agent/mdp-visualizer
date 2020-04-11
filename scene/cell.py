@@ -86,6 +86,7 @@ class Cell(RoundRectItem):
     def _update_value(self):
         diff = abs(self._target_value - self.value)
         # step = max(0.1, diff / 20)
+        print(diff, self._target_value, self.value)
 
         if diff < 0.1:
             self.value = self._target_value
