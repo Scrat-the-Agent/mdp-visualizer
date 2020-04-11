@@ -99,13 +99,19 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
+
+        # the only game size for both modes
+        height = 5
+        width = 7
+
         # I Am RL Agent
-        self._iamrlagent_params = GameParams(Modes.IAMRLAGENT, hippo_random=True, hippo_move_prob=0.3,
-                                             watermelon_random=True, watermelon_move_prob=0.1, lava_random=2)
+        self._iamrlagent_params = GameParams(Modes.IAMRLAGENT, game_height=height, game_width=width, hippo_random=True,
+                                             hippo_move_prob=0.3, watermelon_random=True, watermelon_move_prob=0.1,
+                                             lava_random=10)
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
-        self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=4, game_width=6)
+        self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=height, game_width=width)
         self._automaticrl_logic = GameLogic(self._automaticrl_params)  # TODO
 
         self._init_ui()

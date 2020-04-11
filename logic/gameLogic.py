@@ -139,26 +139,43 @@ class GameLogic:
         self._generate_new_game()
 
     # generator
-    def _generate_random_positions(self, num_of_pos=1):
-        positions = [(x, y) for y in range(self.game_size[0]) for x in range(self.game_size[1])]
+    def _generate_random_positions(self, num_of_pos=1, exclude_cells=()):
+        positions = [(x, y) for y in range(self.game_size[1]) for x in range(self.game_size[0])]
         shuffle(positions)
-        return positions[:num_of_pos]
+
+        out = []
+        i = 0
+        while len(out) < num_of_pos:
+            if positions[i] not in exclude_cells:
+                out.append(positions[i])
+            i += 1
+
+        return tuple(out)
 
     def _fill_start_params(self, resample=False):
-        if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
-            self._start_params.scrat_start_position = self._generate_random_positions()[0]
-
-        if (not self._start_params.hippo_start_position or resample) and self._start_params.hippo_random:
-            self._start_params.hippo_start_position = self._generate_random_positions()[0]
-
-        if (not self._start_params.watermelon_start_position or resample) and self._start_params.watermelon_random:
-            self._start_params.watermelon_start_position = self._generate_random_positions()[0]
-
+        # firstly lava cells not to set scrat, hippo and watermelon in lava
         if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
             self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
 
+        # secondly terminal cells not to set scrat or waermelon in terminal cell
         if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
             self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
+
+        # scrat: without lava and terminal cells
+        if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
+            exclude = self._start_params.lava_cells + self._start_params.terminal_cells
+            self._start_params.scrat_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
+
+        # hippo without lava cells
+        if (not self._start_params.hippo_start_position or resample) and self._start_params.hippo_random:
+            exclude = self._start_params.lava_cells
+            self._start_params.hippo_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
+
+        # watermelon: without lava and terminal cells
+        if (not self._start_params.watermelon_start_position or resample) and self._start_params.watermelon_random:
+            exclude = self._start_params.lava_cells + self._start_params.terminal_cells
+            self._start_params.watermelon_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
+
 
     def _generate_new_game(self):
         # fill params
@@ -368,10 +385,10 @@ class GameLogic:
         if self._start_params.watermelon_start_position:
             self._watermelon.reset_position(self._start_params)
 
-    def reset(self):  # with old start params
+    def reset(self):  # without resampling of random values
         self._fill_start_params()
         self._reset_objects()
 
-    def full_reset(self, params=None):  # with new start params
+    def full_reset(self):  # with resampling of random values
         self._fill_start_params(resample=True)
         self._reset_objects()
