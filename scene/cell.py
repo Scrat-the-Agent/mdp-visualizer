@@ -1,25 +1,30 @@
 from PyQt5.QtCore import pyqtSignal, Qt, QPointF, QTimer
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QPixmap
 
 import settings
 from utils import animate
 
 from .roundRectItem import RoundRectItem
+from logic.actions_objects_list import Modes
 
 
 class Cell(RoundRectItem):
     enter_signal = pyqtSignal()
     leave_signal = pyqtSignal()
 
-    def __init__(self, x, y, pad):
+    def __init__(self, x, y, pad, logic):
         self.x, self.y = x, y
         self.pad = pad
+        self.logic = logic
 
-        self.value = 0   # TODO: gamelogic ref!
-        self._timer = QTimer()
-        self._timer.timeout.connect(self._update_value)
+        if self.logic.game_mode == Modes.AUTOMATICRL:
+            self.value = 0
+            self._timer = QTimer()
+            self._timer.timeout.connect(self._update_value)
+        else:
+            self.value = None
         super().__init__(settings.ICON_RECT, self._compute_color(), parent=pad)
-        
+
         self.setZValue(1)
         self.setOpacity(settings.BASE_CELL_OPACITY)
 
@@ -28,14 +33,24 @@ class Cell(RoundRectItem):
 
         self.setAcceptHoverEvents(True)
 
+        # lava image
+        if self.logic.game_mode == Modes.IAMRLAGENT:
+            if self.logic.game_board.lava_is_here((self.x, self.y)):
+                self.color = None
+                self.setPixmap(settings.LAVA_IMAGE)
+
     def _compute_color(self):
-        mid = (settings.MIN_REWARD + settings.MAX_REWARD) / 2
-        if self.value < mid:
-            c = (self.value - settings.MIN_REWARD) / (mid - settings.MIN_REWARD)
-            color2 = settings.RED_CELL
+        if self.value:
+            mid = (settings.MIN_REWARD + settings.MAX_REWARD) / 2  # TODO: logic gameboard ref
+            if self.value < mid:
+                c = (self.value - settings.MIN_REWARD) / (mid - settings.MIN_REWARD)
+                color2 = settings.RED_CELL
+            else:
+                c = (settings.MAX_REWARD - self.value) / (settings.MAX_REWARD - mid)
+                color2 = settings.GREEN_CELL
         else:
-            c = (settings.MAX_REWARD - self.value) / (settings.MAX_REWARD - mid)
-            color2 = settings.GREEN_CELL
+            c = 1
+            color2 = settings.RED_CELL  # not important because c = 1
 
         return QColor(
             c * settings.YELLOW_CELL.red() + (1 - c) * color2.red(),
@@ -43,12 +58,6 @@ class Cell(RoundRectItem):
             c * settings.YELLOW_CELL.blue() + (1 - c) * color2.blue(),
             c * settings.YELLOW_CELL.alpha() + (1 - c) * color2.alpha()
         )
-
-    def visit(self):
-        pass
-
-    def leave(self):
-        pass
 
     def paint(self, painter, option, widget):
         self.color = self._compute_color()
@@ -76,7 +85,8 @@ class Cell(RoundRectItem):
 
     def _update_value(self):
         diff = abs(self._target_value - self.value)
-        step = max(0.1, diff / 20)
+        # step = max(0.1, diff / 20)
+        print(diff, self._target_value, self.value)
 
         if diff < 0.1:
             self.value = self._target_value
@@ -88,6 +98,7 @@ class Cell(RoundRectItem):
 
         self.update()
 
-    @staticmethod
-    def posForLocation(column, row):
-        return QPointF(column * 150, row * 150) - QPointF((settings.COLS - 1) * 75, (settings.ROWS - 1) * 75)
+    # @staticmethod
+    def posForLocation(self, column, row):
+        width, height = self.logic.game_size
+        return QPointF(column * 150, row * 150) - QPointF((width - 1) * 75, (height - 1) * 75)

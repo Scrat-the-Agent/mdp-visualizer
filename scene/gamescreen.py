@@ -1,31 +1,33 @@
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap, QBrush, QPainter, QColor, QPalette
-from PyQt5.QtOpenGL import QGLFormat, QGLWidget, QGL
+from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
-import settings
 from .pad import FlippablePad
 from .objectPicture import ObjectPicture
 
 
 class GameScreen(QGraphicsView):
-    def __init__(self, world):
-        super().__init__()
+    def _init_with_logic(self, logic):
+        self.logic = logic
 
         scene = QGraphicsScene(self)
-        #TODO: do we need this? scene.setSceneRect(scene.itemsBoundingRect())
+        # TODO: do we need this? scene.setSceneRect(scene.itemsBoundingRect())
         self.setScene(scene)
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.setStyleSheet("background: transparent")
 
         # field with cells
-        self.pad = FlippablePad(world)
+        self.pad = FlippablePad(self.logic)
         scene.addItem(self.pad)
 
-        # player markers
-        self.player = ObjectPicture(scene, self.pad)
-        self.pad.cellAt(0, 0).visit()
+        # objects markers, in reverse order for equal zValues case
+        self.objects_pictures = []
+        if self.logic.watermelon:
+            self.objects_pictures.append(ObjectPicture(self.logic.watermelon, scene, self.pad))
+        if self.logic.hippo:
+            self.objects_pictures.append(ObjectPicture(self.logic.hippo, scene, self.pad))
+        self.objects_pictures.append(ObjectPicture(self.logic.scrat, scene, self.pad))
 
         # general
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -36,31 +38,44 @@ class GameScreen(QGraphicsView):
         self.setRenderHints(QPainter.Antialiasing |
                             QPainter.SmoothPixmapTransform | QPainter.TextAntialiasing)
 
+        # # rotate if mode was switched
+        # if self.rotated:
+        #     self._make_rotated()
+
+    def __init__(self, logic):
+        super().__init__()
+
+        # # the fact the pad was rotated to pseudo-3d
+        # self.rotated = False
+
+        self._init_with_logic(logic)
+
     @property
     def cells(self):
         return self.pad.cells
 
-    def update_screen(self, x, y, value):
-        self.player.change_pos(x - self.player.x, y - self.player.y)
-        self.pad.cellAt(x, y).set_value(value)
+    def set_cell_value(self, column, row, value):
+        self.pad.set_cell_value(column, row, value)
+
+    def change_logic(self, logic):
+        self._init_with_logic(logic)
+
+    def update_screen(self):
+        for obj in self.objects_pictures:
+            obj.change_position()
+
+        self.setFocus()
+
+    def _make_rotated(self):
+        self.pad.rotate()
+        for obj in self.objects_pictures:
+            obj.pad_rotated()
 
     def keyPressEvent(self, event):
-        self.splash.disappear()
         if event.key() == Qt.Key_T:
-            self.pad.rotate()
-            self.player.pad_rotated()
-
-        if event.key() == Qt.Key_Right and self.player.x < settings.COLS - 1:
-            self.player.change_pos(1, 0)
-        if event.key() == Qt.Key_Left and self.player.x > 0:
-            self.player.change_pos(-1, 0)
-        if event.key() == Qt.Key_Down and self.player.y < settings.ROWS - 1:
-            self.player.change_pos(0, 1)
-        if event.key() == Qt.Key_Up and self.player.y > 0:
-            self.player.change_pos(0, -1)
+            self._make_rotated()
+            # self.rotated = not self.rotated
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)
-
-

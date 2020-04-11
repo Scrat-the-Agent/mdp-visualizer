@@ -50,6 +50,6 @@ class RoundRectItem(QGraphicsObject):
     def pixmap(self):
         return QPixmap(self.pix)
 
-    def setPixmap(self, pixmap):
-        self.pix = QPixmap(pixmap)
+    def setPixmap(self, pixmap_path):
+        self.pix = QPixmap(pixmap_path)
         self.update()
