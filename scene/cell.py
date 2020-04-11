@@ -33,11 +33,22 @@ class Cell(RoundRectItem):
 
         self.setAcceptHoverEvents(True)
 
-        # lava image
+        self.reset_lava()
+
+    def reset_lava(self):
         if self.logic.game_mode == Modes.IAMRLAGENT:
+            # self.anim = animate(self, "opacity", 100, 0)
+
             if self.logic.game_board.lava_is_here((self.x, self.y)):
                 self.color = None
                 self.setPixmap(settings.LAVA_IMAGE)
+            else:
+                self.pix = QPixmap()
+                self.color = self._compute_color()
+
+            self.update()
+            # self.anim = animate(self, "opacity", 100, settings.BASE_CELL_OPACITY)
+
 
     def _compute_color(self):
         if self.value:

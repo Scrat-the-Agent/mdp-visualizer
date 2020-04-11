@@ -176,7 +176,6 @@ class GameLogic:
             exclude = self._start_params.lava_cells + self._start_params.terminal_cells
             self._start_params.watermelon_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
 
-
     def _generate_new_game(self):
         # fill params
         self._fill_start_params()
