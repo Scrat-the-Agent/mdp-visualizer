@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGridLayout, QPushButton
-from PyQt5.QtGui import QPixmap, QFont
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout, QPushButton, QSizePolicy
+from PyQt5.QtGui import QPixmap, QFont, QIcon, QPalette, QColor
 
 from logic.q_learning import QLearning
 
@@ -45,6 +45,42 @@ class QLabelsVisualization(QWidget):
             self._q_labels[i].setText("")
 
 
+class Button(QPushButton):
+    def __init__(self, name):
+        super().__init__()
+
+        self.setMinimumHeight(50)
+        self.setMinimumWidth(50)
+
+        # transparent background
+        self.setStyleSheet("QPushButton {border-style: outset; border-width: 0px; margin: 0px; padding: 0px;}")
+        self.setAttribute(Qt.WA_TranslucentBackground)
+
+        #picture change
+        self.name = name
+        self._pressed = False
+        self.updatePic()
+
+        self.pressed.connect(self._whenpressed)
+        self.released.connect(self._whenreleased)
+
+    def resizeEvent(self, e):
+        self.setIconSize(self.size())
+
+    def _whenpressed(self):
+        self._pressed = True
+        self.updatePic()
+
+    def _whenreleased(self):
+        self._pressed = False
+        self.updatePic()
+
+    def updatePic(self, name=None):
+        self.name = name or self.name
+        pixmap = QPixmap(self.name + ("pr" if self._pressed else ""))
+        self.setIcon(QIcon(pixmap))
+
+
 class AutomaticRL(QWidget):
     clicked_mode = pyqtSignal()
     made_step_signal = pyqtSignal()
@@ -58,11 +94,11 @@ class AutomaticRL(QWidget):
 
         # rl buttons
         self._buttons = QWidget()
-        self._play_button = QPushButton("Play")
-        self._next_step_button = QPushButton("Step")
-        self._reset_button = QPushButton("Reset")
+        self._play_button = Button("./images/play")
+        self._next_step_button = Button("./images/step")
+        self._reset_button = Button("./images/repeat")
 
-        self._buttons_layout = QVBoxLayout()
+        self._buttons_layout = QHBoxLayout()
         self._buttons_layout.addWidget(self._play_button)
         self._buttons_layout.addWidget(self._next_step_button)
         self._buttons_layout.addWidget(self._reset_button)
@@ -129,9 +165,9 @@ class AutomaticRL(QWidget):
         if self._playing:
             self._playing = False
             self._timer.stop()
-            self._play_button.setText("Play")
+            self._play_button.updatePic("./images/play")
             return
 
         self._playing = True
         self._timer.start(500)  # TODO: move to settings
-        self._play_button.setText("Stop")
+        self._play_button.updatePic("./images/stop")
