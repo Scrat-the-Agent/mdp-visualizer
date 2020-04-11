@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, random
 
 from .actions_objects_list import Actions
 
@@ -11,11 +11,11 @@ class GameObject:
         self._game_width = params.game_width
 
         # additional fields
-        self._prev_x = 0
-        self._prev_y = 0
+        self._prev_x = -1
+        self._prev_y = -1
 
         self._step_num = 0
-        self._move_cooldown = -1
+        self._move_prob = 0
 
     @property
     def x(self):
@@ -37,6 +37,9 @@ class GameObject:
     def dx_dy(self):
         return self._x - self._prev_x, self._y - self._prev_y
 
+    def reset_position(self, params):
+        pass
+
     def change_position(self, dx, dy):
         self._prev_x = self._x
         self._prev_y = self._y
@@ -47,22 +50,24 @@ class GameObject:
         self._step_num += 1
         random_action = None
 
-        if self._move_cooldown > 0 and not (self._step_num % self._move_cooldown):
-            action_taken = False
-            while not action_taken:
-                random_action = randint(0, 3)
-                if random_action == 0 and self.x > 0:
-                    random_action = Actions.LEFT.value
-                    action_taken = True
-                elif random_action == 1 and self.y > 0:
-                    random_action = Actions.UP.value
-                    action_taken = True
-                elif random_action == 2 and self.x < self._game_width - 1:
-                    random_action = Actions.RIGHT.value
-                    action_taken = True
-                elif random_action == 3 and self.y < self._game_height - 1:
-                    random_action = Actions.DOWN.value
-                    action_taken = True
+        if self._move_prob > 0:
+            take_action = random() < self._move_prob
+            if take_action:
+                action_taken = False
+                while not action_taken:
+                    random_action = randint(0, 3)
+                    if random_action == 0 and self.x > 0:
+                        random_action = Actions.LEFT.value
+                        action_taken = True
+                    elif random_action == 1 and self.y > 0:
+                        random_action = Actions.UP.value
+                        action_taken = True
+                    elif random_action == 2 and self.x < self._game_width - 1:
+                        random_action = Actions.RIGHT.value
+                        action_taken = True
+                    elif random_action == 3 and self.y < self._game_height - 1:
+                        random_action = Actions.DOWN.value
+                        action_taken = True
 
         return random_action
 
@@ -77,6 +82,12 @@ class Scrat(GameObject):
 
         # specific properties
         self._carrying_watermelon = False
+
+    def reset_position(self, params):
+        self._x = params.scrat_start_position[0]
+        self._y = params.scrat_start_position[1]
+        self._prev_x = -1
+        self._prev_y = -1
 
     def take_watermelon(self):
         self._carrying_watermelon = True
@@ -96,10 +107,16 @@ class Hippo(GameObject):
         # base
         self._x = params.hippo_start_position[0]
         self._y = params.hippo_start_position[1]
-        self._move_cooldown = params.hippo_move_cooldown
+        self._move_prob = params.hippo_move_prob
 
         # specific properties
         self._is_fed = False
+
+    def reset_position(self, params):
+        self._x = params.hippo_start_position[0]
+        self._y = params.hippo_start_position[1]
+        self._prev_x = -1
+        self._prev_y = -1
 
     def become_fed(self):
         self._is_fed = True
@@ -119,11 +136,17 @@ class Watermelon(GameObject):
         # base
         self._x = params.watermelon_start_position[0]
         self._y = params.watermelon_start_position[1]
-        self._move_cooldown = params.watermelon_move_cooldown
+        self._move_prob = params.watermelon_move_prob
 
         # specific properties
         self._is_taken = False
         self._is_eaten = False
+
+    def reset_position(self, params):
+        self._x = params.watermelon_start_position[0]
+        self._y = params.watermelon_start_position[1]
+        self._prev_x = -1
+        self._prev_y = -1
 
     def become_taken(self):
         self._is_taken = True

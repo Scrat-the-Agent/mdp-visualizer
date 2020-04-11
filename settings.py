@@ -3,8 +3,9 @@ from PyQt5.QtGui import QColor, QFont
 
 BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
 SCRAT_IMAGE = "./images/scrat_drawing2.png"
-HIPPO_IMAGE = "./images/scrat_drawing.png"
-WATERMELON_IMAGE = "./images/nut.png"
+HIPPO_IMAGE = "./images/hippo_drawing_mirrored.png"
+WATERMELON_IMAGE = "./images/watermelon_drawing_small_center.png"
+LAVA_IMAGE = "./images/lava_drawing.png"
 
 
 MOVE_TIME = 300
@@ -30,5 +31,5 @@ REWARD_FONT.setPixelSize(36)
 
 COLS = 6
 ROWS = 5
-REDS = {(3,4), (1,2), (4,0)}
-GREENS = {(2,4)}
+REDS = {(3, 4), (1, 2), (4, 0)}
+GREENS = {(2, 4)}

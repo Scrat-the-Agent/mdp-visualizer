@@ -13,20 +13,17 @@ from logic.gameObject import Scrat, Hippo, Watermelon
 class ObjectPicture:
     def __init__(self, obj, scene, pad):
         self._obj = obj
-        # self._x, self._y = self._obj.cur_position
         self.pad = pad
         pos = self.pad.cellAt(self.x, self.y).pos()
 
         # selection underneath the cells!
-        self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), settings.SELECTION_COLOR, pad)
+        self.selection = RoundRectItem(QRectF(-60, -60, 120, 120), settings.SELECTION_COLOR, self.pad)
         self.selection.setZValue(0.5)
         self.selection.setPos(pos)
 
         # picture!
-        self.picture_path = None
-
         self.pic = RoundRectItem(QRectF(-50, -50, 100, 100))
-        self.pic.setZValue(1.5)
+        self.pic.setZValue(self.y)
         self.pic.setPos(pos)
         if isinstance(obj, Scrat):
             self.pic.setPixmap(QPixmap(settings.SCRAT_IMAGE))
@@ -35,6 +32,12 @@ class ObjectPicture:
         elif isinstance(obj, Watermelon):
             self.pic.setPixmap(QPixmap(settings.WATERMELON_IMAGE))
         scene.addItem(self.pic)
+
+        # for animation
+        self.sel_pos = None
+        self.pic_pos_x = None
+        self.pic_pos_y = None
+        self.pic_sc = None
 
     @property
     def x(self):
@@ -52,24 +55,8 @@ class ObjectPicture:
     def cur_position(self):
         return self.x, self.y
 
-    # def set_position(self, x, y):
-    #     self.pad.cellAt(self.x, self.y).leave()
-    #
-    #     self._x = x
-    #     self._y = y
-    #
-    #     # icon = self.pad.cellAt(self._x, self._y).visit()
-    #     pos = self.pad.cellAt(self._x, self._y).pos()
-    #     self.pic.setPos(pos)
-    #     self.selection.setPos(pos)
-
     def change_position(self):
-        # self.pad.cellAt(self._x, self._y).leave()  # WHAT?
-
-        # self._x += dx
-        # self._y += dy
-
-        # icon = self.pad.cellAt(self._x, self._y).visit()
+        self.pic.setZValue(self.y)
         self.move(settings.MOVE_TIME)
 
     def move(self, time):

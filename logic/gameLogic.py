@@ -1,6 +1,6 @@
 from random import shuffle
 
-from .actions_objects_list import Actions, Objects
+from .actions_objects_list import Actions, Objects, Modes
 from .gameObject import Scrat, Hippo, Watermelon
 
 
@@ -73,13 +73,14 @@ class GameBoard:
 
 
 class GameParams:
-    def __init__(self, game_height=5, game_width=5,
-                 scrat_start_position=None,
-                 hippo_random=False, hippo_start_position=None, hippo_move_cooldown=-1, hippo_fed_reward=100500,
-                 watermelon_random=False, watermelon_start_position=None, watermelon_move_cooldown=-1,
+    def __init__(self, game_mode, game_height=5, game_width=5,
+                 scrat_random=True, scrat_start_position=None,
+                 hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
+                 watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
                  lava_random=False, lava_cells=(), lava_reward=-100,
                  terminal_random=False, terminal_cells=()):
         # main
+        self.game_mode = game_mode
         self.game_height = game_height
         self.game_width = game_width
 
@@ -88,17 +89,18 @@ class GameParams:
         self.lava_reward = lava_reward
 
         # scrat
+        self.scrat_random = scrat_random
         self.scrat_start_position = scrat_start_position
 
         # hippo
         self.hippo_random = hippo_random
         self.hippo_start_position = hippo_start_position
-        self.hippo_move_cooldown = hippo_move_cooldown
+        self.hippo_move_prob = hippo_move_prob
 
         # watermelon
         self.watermelon_random = watermelon_random
         self.watermelon_start_position = watermelon_start_position
-        self.watermelon_move_cooldown = watermelon_move_cooldown
+        self.watermelon_move_prob = watermelon_move_prob
 
         # lava
         self.lava_random = lava_random
@@ -142,21 +144,27 @@ class GameLogic:
         shuffle(positions)
         return positions[:num_of_pos]
 
-    def _generate_new_game(self):
-        if not self._start_params.scrat_start_position:
+    def _fill_start_params(self, resample=False):
+        if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
             self._start_params.scrat_start_position = self._generate_random_positions()[0]
 
-        if not self._start_params.hippo_start_position and self._start_params.hippo_random:
+        if (not self._start_params.hippo_start_position or resample) and self._start_params.hippo_random:
             self._start_params.hippo_start_position = self._generate_random_positions()[0]
 
-        if not self._start_params.watermelon_start_position and self._start_params.watermelon_random:
+        if (not self._start_params.watermelon_start_position or resample) and self._start_params.watermelon_random:
             self._start_params.watermelon_start_position = self._generate_random_positions()[0]
 
-        if len(self._start_params.lava_cells) == 0 and self._start_params.lava_random:
+        if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
             self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
 
-        if len(self._start_params.terminal_cells) == 0 and self._start_params.terminal_random:
+        if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
             self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
+
+    def _generate_new_game(self):
+        # fill params
+        self._fill_start_params()
+
+        # create objects
 
         # game board
         self._game_board = GameBoard(self._start_params)
@@ -262,11 +270,19 @@ class GameLogic:
 
     # main properties
     @property
+    def game_mode(self):
+        return self._start_params.game_mode
+
+    @property
     def game_size(self):
         """
         Returns a tuple of width, height
         """
         return self._start_params.game_width, self._start_params.game_height
+
+    @property
+    def game_board(self):
+        return self._game_board
 
     @property
     def start_params(self):
@@ -337,9 +353,25 @@ class GameLogic:
         return self._start_params.terminal_cells
 
     # reset
-    def reset(self):  # with old start params
-        self._generate_new_game()
+    def _reset_objects(self):
+        # game board
+        self._game_board = GameBoard(self._start_params)
 
-    def full_reset(self, params=GameParams()):  # with new start params
-        self._start_params = params
-        self._generate_new_game()
+        # scrat
+        self._scrat.reset_position(self._start_params)
+
+        # hippo
+        if self._start_params.hippo_start_position:
+            self._hippo.reset_position(self._start_params)
+
+        # watermelon
+        if self._start_params.watermelon_start_position:
+            self._watermelon.reset_position(self._start_params)
+
+    def reset(self):  # with old start params
+        self._fill_start_params()
+        self._reset_objects()
+
+    def full_reset(self, params=None):  # with new start params
+        self._fill_start_params(resample=True)
+        self._reset_objects()

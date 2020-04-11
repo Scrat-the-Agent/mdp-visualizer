@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Actions(Enum):
     LEFT = -1, 0
     UP = 0, -1
@@ -15,3 +16,8 @@ class Objects(Enum):
     SCRAT = 0
     HIPPO = 1
     WATERMELON = 2
+
+
+class Modes(Enum):
+    IAMRLAGENT = 1
+    AUTOMATICRL = 2
