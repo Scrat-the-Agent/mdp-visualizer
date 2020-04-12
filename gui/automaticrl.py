@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayo
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QPalette, QColor
 
 from logic.q_learning import QLearning
+from .button import Button
 
 
 class QLabelsVisualization(QWidget):
@@ -43,42 +44,6 @@ class QLabelsVisualization(QWidget):
     def cell_left(self):
         for i in range(4):
             self._q_labels[i].setText("")
-
-
-class Button(QPushButton):
-    def __init__(self, name):
-        super().__init__()
-
-        self.setMinimumHeight(50)
-        self.setMinimumWidth(50)
-
-        # transparent background
-        self.setStyleSheet("QPushButton {border-style: outset; border-width: 0px; margin: 0px; padding: 0px;}")
-        self.setAttribute(Qt.WA_TranslucentBackground)
-
-        #picture change
-        self.name = name
-        self._pressed = False
-        self.updatePic()
-
-        self.pressed.connect(self._whenpressed)
-        self.released.connect(self._whenreleased)
-
-    def resizeEvent(self, e):
-        self.setIconSize(self.size())
-
-    def _whenpressed(self):
-        self._pressed = True
-        self.updatePic()
-
-    def _whenreleased(self):
-        self._pressed = False
-        self.updatePic()
-
-    def updatePic(self, name=None):
-        self.name = name or self.name
-        pixmap = QPixmap(self.name + ("pr" if self._pressed else ""))
-        self.setIcon(QIcon(pixmap))
 
 
 class AutomaticRL(QWidget):

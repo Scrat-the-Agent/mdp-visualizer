@@ -1,7 +1,9 @@
+from random import shuffle
+
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton, QVBoxLayout, QHBoxLayout
 
-from random import shuffle
+from .button import Button
 
 
 class IAmRLAgent(QWidget):
@@ -15,15 +17,9 @@ class IAmRLAgent(QWidget):
 
         # Actions layout
         self._actions_layout = QGridLayout()
-        self._actions_layout.setColumnStretch(0, 10)
-        self._actions_layout.setColumnStretch(1, 10)
-        self._actions_layout.setColumnStretch(2, 10)
-        self._actions_layout.setRowStretch(0, 10)
-        self._actions_layout.setRowStretch(1, 10)
-
         self._action_buttons = []
         for i in range(self._logic.n_actions):
-            self._action_buttons.append(QPushButton())
+            self._action_buttons.append(Button("./images/symbol" + str(i)))
             self._actions_layout.addWidget(self._action_buttons[i], i // 3, i % 3)
 
         # Reset layout
@@ -35,7 +31,7 @@ class IAmRLAgent(QWidget):
 
         # Reward label
         self._reward_label = QLabel()
-        self._reward_label.setText("Your last reward: 5")
+        self._reward_label.setText("Your last reward: 5")  # TODO: 5?
 
         self._command_layout = QVBoxLayout()
         self._command_layout.addWidget(self._actions_label)
