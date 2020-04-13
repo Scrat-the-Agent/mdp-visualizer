@@ -1,9 +1,55 @@
 from random import shuffle
 
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QTimer, Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtGui import QPixmap
 
+import settings
 from .button import Button
+
+class RewardLabel(QLabel):
+    def __init__(self):
+        super().__init__()
+        self.setFixedSize(225, 150)
+        self.setPixmap(QPixmap("./images/frame"))
+        self.setScaledContents(True)
+        
+        self.nut = QLabel(parent=self)
+        self.nut.setPixmap(QPixmap("./images/nut"))
+        self.nut.setScaledContents(True)
+
+        self.reward = QLabel(parent=self)
+        self.reward.setText("0.0")
+        self.reward.setAlignment(Qt.AlignCenter)
+        self.reward.setFont(settings.REWARD_FONT)
+
+        self.value = 0
+        self._timer = QTimer()
+        self._timer.timeout.connect(self._update_value)
+
+    def resizeEvent(self, e):
+        self.nut.setGeometry(self.height() / 4, self.height() / 4, self.height() / 2, self.height() / 2)
+        self.reward.setGeometry(self.height() / 2, 0, self.width() - self.height() / 2, self.height())
+
+    def set_value(self, new_value):
+        self._target_value = new_value
+        self._timer.start(10)  # TODO: settings!
+
+    # TODO: this is a copypaste from scene/cell.py :(
+    def _update_value(self):
+        diff = abs(self._target_value - self.value)
+        step = max(0.1, diff / 20)
+
+        if diff < step:
+            self.value = self._target_value
+            self._timer.stop()
+        elif self._target_value > self.value:
+            self.value += step
+        else:
+            self.value -= step
+
+        # this is new part...
+        self.reward.setText(f"{self.value:.1f}")
 
 
 class IAmRLAgent(QWidget):
@@ -30,15 +76,15 @@ class IAmRLAgent(QWidget):
         self._reset_layout.addWidget(self._full_reset_button)
 
         # Reward label
-        self._reward_label = QLabel()
-        self._reward_label.setText("Your last reward: 5")  # TODO: 5?
-
+        self._reward_label = RewardLabel()
+        
+        # Unite everything in vertical layout!
         self._command_layout = QVBoxLayout()
         self._command_layout.addWidget(self._actions_label)
         self._command_layout.addLayout(self._actions_layout)
         self._command_layout.addLayout(self._reset_layout)
         self._command_layout.addWidget(self._reward_label)
-
+        self._command_layout.setAlignment(self._reward_label, Qt.AlignHCenter)
         self.setLayout(self._command_layout)
 
     def __init__(self, logic, gamescreen):
