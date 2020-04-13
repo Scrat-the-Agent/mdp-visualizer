@@ -95,6 +95,13 @@ class AutomaticRL(QWidget):
 
         self.made_step_signal.connect(gamescreen.update_screen)
 
+    def exit_mode(self):
+        if self._playing:
+            self._playing = False
+            self._timer.stop()
+            self._play_button.setText("Play")
+            return
+
     def init_cells(self):
         # connecting mouse hover from cells to our q-values visualization
         for cell in self._gamescreen.cells:

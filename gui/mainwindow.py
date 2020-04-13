@@ -120,6 +120,8 @@ class MainWindow(QMainWindow):
         self._game_screen.change_logic(self._automaticrl_logic if id else self._iamrlagent_logic)
         if id:
             self._automaticRL.init_cells()
+        else:
+            self._automaticRL.exit_mode()
         self._mode_widget.turn(id)
 
         # focus
