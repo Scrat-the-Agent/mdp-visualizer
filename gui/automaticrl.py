@@ -36,6 +36,7 @@ class QLabelsVisualization(QWidget):
         cell = self.sender()
         x, y = cell.x, cell.y
         qvalues = self._q_learning.get_q_values((x, y))
+        qvalues = [qvalues[2], qvalues[0], qvalues[3], qvalues[1]]
 
         for i in range(4):
             self._q_labels[i].setText(f"{qvalues[i]:.2f}")

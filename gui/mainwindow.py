@@ -106,12 +106,10 @@ class MainWindow(QMainWindow):
 
         # Automatic RL
         lava_cells = [(2, 3), (1, 4)]
-        watermelon_pos = (0, 1)
-        terminal_cells = lava_cells + [watermelon_pos]
+        terminal_cells = lava_cells
         self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=5, game_width=5, lava_cells=lava_cells,
-                                              terminal_cells=terminal_cells, watermelon_start_position=watermelon_pos,
-                                              lava_reward=-10.)
-        self._automaticrl_logic = GameLogic(self._automaticrl_params)  # TODO
+                                              terminal_cells=terminal_cells, lava_reward=-10.)
+        self._automaticrl_logic = GameLogic(self._automaticrl_params)
 
         self._init_ui()
         self._combo_box.currentIndexChanged.connect(self._change_mode)
