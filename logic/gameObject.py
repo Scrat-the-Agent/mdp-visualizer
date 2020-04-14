@@ -163,3 +163,7 @@ class Watermelon(GameObject):
     @property
     def is_taken(self):
         return self._is_taken
+
+    @property
+    def is_eaten(self):
+        return self._is_eaten

@@ -64,7 +64,7 @@ class GameScreen(QGraphicsView):
 
         # objects
         for obj in self.objects_pictures:
-            obj.change_position()
+            obj.change_position(self.logic)
 
         self.setFocus()
 

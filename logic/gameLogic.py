@@ -125,6 +125,7 @@ class GameLogic:
 
         # actions
         self._n_actions = None
+        self._last_action = None
 
         # rewards
         self._last_reward = 0
@@ -209,6 +210,9 @@ class GameLogic:
         """
         assert 0 <= action <= self._n_actions, "Invalid action got into step function"
 
+        # save last action
+        self._last_action = action
+
         # move objects if they are present
         if self._hippo:
             direction = self._hippo.take_random_action()
@@ -216,9 +220,10 @@ class GameLogic:
                 self._move_object(Objects.HIPPO, direction)
 
         if self._watermelon:
-            direction = self._watermelon.take_random_action()
-            if direction:
-                self._move_object(Objects.WATERMELON, direction)
+            if not (self._watermelon.is_taken or self._watermelon.is_eaten):
+                direction = self._watermelon.take_random_action()
+                if direction:
+                    self._move_object(Objects.WATERMELON, direction)
 
         # make action
         action_reward = 0
@@ -231,9 +236,9 @@ class GameLogic:
             self._move_object(Objects.SCRAT, Actions.RIGHT.value)
         elif action == 3 and self.scrat_position[1] < self.game_size[1] - 1:
             self._move_object(Objects.SCRAT, Actions.DOWN.value)
-        elif action == Actions.TAKE and self.scrat_position == self.watermelon_position:
+        elif action == Actions.TAKE.value and self.scrat_position == self.watermelon_position:
             self._interact_with_watermelon(Actions.TAKE)
-        elif action == Actions.PUT_FEED and self.scrat_carrying_watermelon:
+        elif action == Actions.PUT_FEED.value and self.scrat_carrying_watermelon:
             if self.scrat_position == self.hippo_position:
                 self._interact_with_watermelon(Actions.FEED)
                 action_reward = self._interact_with_hippo(Actions.FEED)
@@ -253,10 +258,15 @@ class GameLogic:
 
         return state, reward, done, info
 
-    def _move_object(self, obj, direction):
+    def _move_object(self, obj, direction): # with watermelon if it is taken
         if obj == Objects.SCRAT:
             self._scrat.change_position(*direction)
             self._game_board.move_object(obj, self._scrat.prev_position, self.scrat_position)
+
+            # with watermelon
+            if self.scrat_carrying_watermelon:
+                self._watermelon.change_position(*direction)
+                self._game_board.move_object(self._watermelon, self._watermelon.prev_position, self.watermelon_position)
         elif obj == Objects.HIPPO:
             self._hippo.change_position(*direction)
             self._game_board.move_object(obj, self._hippo.prev_position, self.hippo_position)
@@ -308,10 +318,16 @@ class GameLogic:
     def done(self):
         return self._done
 
+    # actions
     @property
     def n_actions(self):
         return self._n_actions
 
+    @property
+    def last_action(self):
+        return self._last_action
+
+    # rewards
     @property
     def last_reward(self):
         return self._last_reward
