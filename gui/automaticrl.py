@@ -53,10 +53,6 @@ class AutomaticRL(QWidget):
     def _init_ui(self):
         self._command_layout = QVBoxLayout()
 
-        # q-values visualization
-        self._qlabels = QLabelsVisualization(self._q_learning)
-        self._command_layout.addWidget(self._qlabels)
-
         # rl buttons
         self._buttons = QWidget()
         self._play_button = Button("./images/play")
@@ -70,10 +66,14 @@ class AutomaticRL(QWidget):
         self._buttons.setLayout(self._buttons_layout)
         self._command_layout.addWidget(self._buttons)
 
+        # q-values visualization
+        self._qlabels = QLabelsVisualization(self._q_learning)
+        self._command_layout.addWidget(self._qlabels)
+
         # info labels
-        self._reward_label = QLabel()
-        self._reward_label.setText("Last reward: 10")
-        self._command_layout.addWidget(self._reward_label)
+        #self._reward_label = QLabel()
+        #self._reward_label.setText("Last reward: 10")
+        #self._command_layout.addWidget(self._reward_label)
 
         self.setLayout(self._command_layout)
 
@@ -116,11 +116,11 @@ class AutomaticRL(QWidget):
 
         self.made_step_signal.emit()
 
-        action = info['actions'][-1]
-        if done:
-            self._reward_label.setText("Done!")
-        else:
-            self._reward_label.setText(f"Last reward: {reward}; Last action: {action}")
+        #action = info['actions'][-1]
+        #if done:
+        #    self._reward_label.setText("Done!")
+        #else:
+        #    self._reward_label.setText(f"Last reward: {reward}; Last action: {action}")
 
     def _reset(self):
         self._q_learning.reset()

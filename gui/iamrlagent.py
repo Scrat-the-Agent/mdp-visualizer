@@ -57,9 +57,18 @@ class IAmRLAgent(QWidget):
     made_step_signal = pyqtSignal()
 
     def _init_ui(self):
+        # Reset layout
+        self._reset_layout = QHBoxLayout()
+        self._reset_button = Button("./images/reset")
+        self._full_reset_button = Button("./images/newgame")
+        self._reset_layout.addWidget(self._reset_button)
+        self._reset_layout.addWidget(self._full_reset_button)
+
         # Text label
         self._actions_label = QLabel()
-        self._actions_label.setText("Choose your next action")
+        self._actions_label.setFont(settings.DESCRIPTION_FONT)
+        self._actions_label.setAlignment(Qt.AlignCenter)
+        self._actions_label.setText("Select your next action.\n\nPress T to rotate field view.")
 
         # Actions layout
         self._actions_layout = QGridLayout()
@@ -68,21 +77,15 @@ class IAmRLAgent(QWidget):
             self._action_buttons.append(Button("./images/symbol" + str(i)))
             self._actions_layout.addWidget(self._action_buttons[i], i // 3, i % 3)
 
-        # Reset layout
-        self._reset_layout = QHBoxLayout()
-        self._reset_button = QPushButton("Restart")  # reset
-        self._full_reset_button = QPushButton("Full Reset")
-        self._reset_layout.addWidget(self._reset_button)
-        self._reset_layout.addWidget(self._full_reset_button)
-
         # Reward label
         self._reward_label = RewardLabel()
         
         # Unite everything in vertical layout!
         self._command_layout = QVBoxLayout()
-        self._command_layout.addWidget(self._actions_label)
-        self._command_layout.addLayout(self._actions_layout)
         self._command_layout.addLayout(self._reset_layout)
+        self._command_layout.addWidget(self._actions_label)
+        self._command_layout.setStretchFactor(self._actions_label, 0)
+        self._command_layout.addLayout(self._actions_layout)
         self._command_layout.addWidget(self._reward_label)
         self._command_layout.setAlignment(self._reward_label, Qt.AlignHCenter)
         self.setLayout(self._command_layout)
