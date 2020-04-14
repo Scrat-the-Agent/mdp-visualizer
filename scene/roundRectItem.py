@@ -2,7 +2,6 @@ from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QColor, QLinearGradient, QPalette, QPen, QPixmap
 from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsObject
 
-
 class RoundRectItem(QGraphicsObject):
     def __init__(self, bounds, color=None, parent=None):
         super(RoundRectItem, self).__init__(parent)

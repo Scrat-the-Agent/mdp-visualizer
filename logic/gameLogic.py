@@ -36,7 +36,7 @@ class GameBoard:
                                    watermelon_is_here=(params.watermelon_start_position == (x, y)),
                                    lava_is_here=((x, y) in params.lava_cells),
                                    is_terminal=((x, y) in params.terminal_cells))
-                reward = -100 if cell_params["lava_is_here"] else 0
+                reward = params.lava_reward if cell_params["lava_is_here"] else 0
                 cell_params["reward"] = reward
 
                 cur_row.append(GameCell(x, y, cell_params))
@@ -73,7 +73,7 @@ class GameBoard:
 
 
 class GameParams:
-    def __init__(self, game_mode, game_height=5, game_width=5,
+    def __init__(self, game_mode, game_height=4, game_width=6,
                  scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
@@ -140,7 +140,7 @@ class GameLogic:
 
     # generator
     def _generate_random_positions(self, num_of_pos=1):
-        positions = [(x, y) for y in range(self.game_size[0]) for x in range(self.game_size[1])]
+        positions = [(x, y) for x in range(self.game_size[0]) for y in range(self.game_size[1])]
         shuffle(positions)
         return positions[:num_of_pos]
 
@@ -230,7 +230,7 @@ class GameLogic:
         self._full_reward += self._last_reward
         self._done = self._game_board.is_terminal(self.scrat_position) or (self._hippo and self.hippo_is_fed)
 
-        state = None
+        state = self.scrat_position[1] * self._start_params.game_width + self.scrat_position[0]
         reward = self._last_reward
         done = self._done
         info = None
@@ -295,6 +295,10 @@ class GameLogic:
     @property
     def n_actions(self):
         return self._n_actions
+
+    @property
+    def n_states(self):
+        return self._start_params.game_width * self._start_params.game_height
 
     @property
     def last_reward(self):

@@ -30,6 +30,9 @@ class FlippablePad(RoundRectItem):
         self.yRotation.setAxis(Qt.XAxis)
         self.setTransformations([self.yRotation])
 
+    def set_cell_value(self, column, row, new_value):
+        self.cellAt(column, row).set_value(new_value)
+
     def cellAt(self, column, row):
         return self._cells[row][column]
 
