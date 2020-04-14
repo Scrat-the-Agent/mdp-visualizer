@@ -79,11 +79,9 @@ class ObjectPicture:
 
         if isinstance(self._obj, Scrat):
             if self._obj.carrying_watermelon and logic.last_action == Actions.TAKE.value:
-                self.anim = animate(self.pic, "opacity", 100, 0)
                 self.anim2 = animate(self.pic2, "opacity", 100, 1)
             elif self.cur_position == logic.watermelon_position and logic.last_action == Actions.PUT_FEED.value:
                 if self.cur_position != logic.hippo_position:
-                    self.anim = animate(self.pic, "opacity", 100, 1)
                     self.anim2 = animate(self.pic2, "opacity", 100, 0)
                 else:
                     pass
