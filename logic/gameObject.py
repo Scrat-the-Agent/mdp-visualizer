@@ -13,6 +13,7 @@ class GameObject:
         # additional fields
         self._prev_x = -1
         self._prev_y = -1
+        self._lava_cells = params.lava_cells
 
         self._step_num = 0
         self._move_prob = 0
@@ -56,16 +57,18 @@ class GameObject:
                 action_taken = False
                 while not action_taken:
                     random_action = randint(0, 3)
-                    if random_action == 0 and self.x > 0:
+                    if random_action == 0 and self.x > 0 and (self.x - 1, self.y) not in self._lava_cells:
                         random_action = Actions.LEFT.value
                         action_taken = True
-                    elif random_action == 1 and self.y > 0:
+                    elif random_action == 1 and self.y > 0 and (self.x, self.y - 1) not in self._lava_cells:
                         random_action = Actions.UP.value
                         action_taken = True
-                    elif random_action == 2 and self.x < self._game_width - 1:
+                    elif random_action == 2 and self.x < self._game_width - 1 and (
+                                                                            self.x + 1, self.y) not in self._lava_cells:
                         random_action = Actions.RIGHT.value
                         action_taken = True
-                    elif random_action == 3 and self.y < self._game_height - 1:
+                    elif random_action == 3 and self.y < self._game_height - 1 and (
+                                                                            self.x, self.y + 1) not in self._lava_cells:
                         random_action = Actions.DOWN.value
                         action_taken = True
 
@@ -160,3 +163,7 @@ class Watermelon(GameObject):
     @property
     def is_taken(self):
         return self._is_taken
+
+    @property
+    def is_eaten(self):
+        return self._is_eaten

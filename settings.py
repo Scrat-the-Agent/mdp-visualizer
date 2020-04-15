@@ -3,8 +3,9 @@ from PyQt5.QtGui import QColor, QFont
 
 BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
 SCRAT_IMAGE = "./images/scrat_drawing2.png"
+SCRAT_WITH_WATERMELON_IMAGE = "./images/scrat_drawing2_with_watermelon.png"
 HIPPO_IMAGE = "./images/hippo_drawing_mirrored.png"
-WATERMELON_IMAGE = "./images/watermelon_drawing_small_center.png"
+WATERMELON_IMAGE = "./images/watermelon_drawing_small_rotated.png"
 LAVA_IMAGE = "./images/lava_drawing.png"
 
 MOVE_TIME = 300

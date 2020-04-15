@@ -61,8 +61,13 @@ class GameScreen(QGraphicsView):
         self._init_with_logic(logic)
 
     def update_screen(self):
+        # cells
+        for cell in self.cells:
+            cell.reset_lava()
+
+        # objects
         for obj in self.objects_pictures:
-            obj.change_position()
+            obj.change_position(self.logic)
 
         self.setFocus()
 
