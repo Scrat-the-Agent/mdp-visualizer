@@ -37,6 +37,7 @@ class QLabelsVisualization(QWidget):
         cell = self.sender()
         x, y = cell.x, cell.y
         qvalues = self._q_learning.get_q_values((x, y))
+        qvalues = [qvalues[2], qvalues[0], qvalues[3], qvalues[1]]
 
         for i in range(4):
             self._q_labels[i].setText(f"{qvalues[i]:.2f}")
@@ -95,6 +96,13 @@ class AutomaticRL(QWidget):
         self._reset_button.clicked.connect(self._reset)
 
         self.made_step_signal.connect(gamescreen.update_screen)
+
+    def exit_mode(self):
+        if self._playing:
+            self._playing = False
+            self._timer.stop()
+            self._play_button.setText("Play")
+            return
 
     def init_cells(self):
         # connecting mouse hover from cells to our q-values visualization
