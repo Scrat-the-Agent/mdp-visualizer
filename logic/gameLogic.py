@@ -323,9 +323,11 @@ class GameLogic:
     def n_actions(self):
         return self._n_actions
 
+    @property
     def last_action(self):
         return self._last_action
 
+    @property
     def n_states(self):
         return self._start_params.game_width * self._start_params.game_height
 
