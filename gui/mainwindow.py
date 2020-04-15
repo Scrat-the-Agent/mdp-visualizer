@@ -82,7 +82,8 @@ class MainWindow(QMainWindow):
         self._left_layout.addWidget(self._combo_box)
         self._left_layout.addWidget(self._mode_widget)
         self._left_widget = QWidget()
-        # self._left_widget.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred))
+        self._left_widget.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred))
+        self._left_widget.setMinimumWidth(300)
         self._left_widget.setLayout(self._left_layout)
 
         # central widget

@@ -73,7 +73,7 @@ class GameBoard:
 
 
 class GameParams:
-    def __init__(self, game_mode, game_height=5, game_width=5,
+    def __init__(self, game_mode, game_height=4, game_width=6,
                  scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
@@ -140,7 +140,7 @@ class GameLogic:
 
     # generator
     def _generate_random_positions(self, num_of_pos=1):
-        positions = [(x, y) for y in range(self.game_size[0]) for x in range(self.game_size[1])]
+        positions = [(x, y) for x in range(self.game_size[0]) for y in range(self.game_size[1])]
         shuffle(positions)
         return positions[:num_of_pos]
 
