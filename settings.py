@@ -8,7 +8,6 @@ HIPPO_IMAGE = "./images/hippo_drawing_mirrored.png"
 WATERMELON_IMAGE = "./images/watermelon_drawing_small_rotated.png"
 LAVA_IMAGE = "./images/lava_drawing.png"
 
-
 MOVE_TIME = 300
 ROTATION_TIME = 600
 
@@ -30,7 +29,5 @@ REWARD_COLOR = QColor(0, 0, 0, 255)
 REWARD_FONT = QFont("Impact", weight=QFont.Bold)
 REWARD_FONT.setPixelSize(36)
 
-COLS = 6
-ROWS = 5
-REDS = {(3, 4), (1, 2), (4, 0)}
-GREENS = {(2, 4)}
+DESCRIPTION_FONT = QFont("Times New Roman", weight=QFont.Bold)
+DESCRIPTION_FONT.setPixelSize(18)

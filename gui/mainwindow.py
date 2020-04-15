@@ -82,7 +82,8 @@ class MainWindow(QMainWindow):
         self._left_layout.addWidget(self._combo_box)
         self._left_layout.addWidget(self._mode_widget)
         self._left_widget = QWidget()
-        #self._left_widget.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Preferred))
+        self._left_widget.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred))
+        self._left_widget.setMinimumWidth(300)
         self._left_widget.setLayout(self._left_layout)
 
         # central widget
@@ -111,14 +112,21 @@ class MainWindow(QMainWindow):
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
-        self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=height, game_width=width)
-        self._automaticrl_logic = GameLogic(self._automaticrl_params)  # TODO
+        lava_cells = [(2, 3), (1, 4)]
+        terminal_cells = lava_cells
+        self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=5, game_width=5, lava_cells=lava_cells,
+                                              terminal_cells=terminal_cells, lava_reward=-10.)
+        self._automaticrl_logic = GameLogic(self._automaticrl_params)
 
         self._init_ui()
         self._combo_box.currentIndexChanged.connect(self._change_mode)
 
     def _change_mode(self, id):
         self._game_screen.change_logic(self._automaticrl_logic if id else self._iamrlagent_logic)
+        if id:
+            self._automaticRL.init_cells()
+        else:
+            self._automaticRL.exit_mode()
         self._mode_widget.turn(id)
 
         # focus
