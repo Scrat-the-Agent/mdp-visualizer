@@ -125,6 +125,7 @@ class GameLogic:
 
         # actions
         self._n_actions = None
+        self._last_action = None
 
         # rewards
         self._last_reward = 0
@@ -139,26 +140,42 @@ class GameLogic:
         self._generate_new_game()
 
     # generator
-    def _generate_random_positions(self, num_of_pos=1):
-        positions = [(x, y) for x in range(self.game_size[0]) for y in range(self.game_size[1])]
+    def _generate_random_positions(self, num_of_pos=1, exclude_cells=()):
+        positions = [(x, y) for y in range(self.game_size[1]) for x in range(self.game_size[0])]
         shuffle(positions)
-        return positions[:num_of_pos]
+
+        out = []
+        i = 0
+        while len(out) < num_of_pos:
+            if positions[i] not in exclude_cells:
+                out.append(positions[i])
+            i += 1
+
+        return tuple(out)
 
     def _fill_start_params(self, resample=False):
-        if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
-            self._start_params.scrat_start_position = self._generate_random_positions()[0]
-
-        if (not self._start_params.hippo_start_position or resample) and self._start_params.hippo_random:
-            self._start_params.hippo_start_position = self._generate_random_positions()[0]
-
-        if (not self._start_params.watermelon_start_position or resample) and self._start_params.watermelon_random:
-            self._start_params.watermelon_start_position = self._generate_random_positions()[0]
-
+        # firstly lava cells not to set scrat, hippo and watermelon in lava
         if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
             self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
 
+        # secondly terminal cells not to set scrat or waermelon in terminal cell
         if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
             self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
+
+        # scrat: without lava and terminal cells
+        if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
+            exclude = self._start_params.lava_cells + self._start_params.terminal_cells
+            self._start_params.scrat_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
+
+        # hippo without lava cells
+        if (not self._start_params.hippo_start_position or resample) and self._start_params.hippo_random:
+            exclude = self._start_params.lava_cells
+            self._start_params.hippo_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
+
+        # watermelon: without lava and terminal cells
+        if (not self._start_params.watermelon_start_position or resample) and self._start_params.watermelon_random:
+            exclude = self._start_params.lava_cells + self._start_params.terminal_cells
+            self._start_params.watermelon_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
 
     def _generate_new_game(self):
         # fill params
@@ -193,6 +210,9 @@ class GameLogic:
         """
         assert 0 <= action <= self._n_actions, "Invalid action got into step function"
 
+        # save last action
+        self._last_action = action
+
         # move objects if they are present
         if self._hippo:
             direction = self._hippo.take_random_action()
@@ -200,9 +220,10 @@ class GameLogic:
                 self._move_object(Objects.HIPPO, direction)
 
         if self._watermelon:
-            direction = self._watermelon.take_random_action()
-            if direction:
-                self._move_object(Objects.WATERMELON, direction)
+            if not (self._watermelon.is_taken or self._watermelon.is_eaten):
+                direction = self._watermelon.take_random_action()
+                if direction:
+                    self._move_object(Objects.WATERMELON, direction)
 
         # make action
         action_reward = 0
@@ -215,9 +236,9 @@ class GameLogic:
             self._move_object(Objects.SCRAT, Actions.RIGHT.value)
         elif action == 3 and self.scrat_position[1] < self.game_size[1] - 1:
             self._move_object(Objects.SCRAT, Actions.DOWN.value)
-        elif action == Actions.TAKE and self.scrat_position == self.watermelon_position:
+        elif action == Actions.TAKE.value and self.scrat_position == self.watermelon_position:
             self._interact_with_watermelon(Actions.TAKE)
-        elif action == Actions.PUT_FEED and self.scrat_carrying_watermelon:
+        elif action == Actions.PUT_FEED.value and self.scrat_carrying_watermelon:
             if self.scrat_position == self.hippo_position:
                 self._interact_with_watermelon(Actions.FEED)
                 action_reward = self._interact_with_hippo(Actions.FEED)
@@ -237,10 +258,15 @@ class GameLogic:
 
         return state, reward, done, info
 
-    def _move_object(self, obj, direction):
+    def _move_object(self, obj, direction): # with watermelon if it is taken
         if obj == Objects.SCRAT:
             self._scrat.change_position(*direction)
             self._game_board.move_object(obj, self._scrat.prev_position, self.scrat_position)
+
+            # with watermelon
+            if self.scrat_carrying_watermelon:
+                self._watermelon.change_position(*direction)
+                self._game_board.move_object(self._watermelon, self._watermelon.prev_position, self.watermelon_position)
         elif obj == Objects.HIPPO:
             self._hippo.change_position(*direction)
             self._game_board.move_object(obj, self._hippo.prev_position, self.hippo_position)
@@ -292,14 +318,20 @@ class GameLogic:
     def done(self):
         return self._done
 
+    # actions
     @property
     def n_actions(self):
         return self._n_actions
 
     @property
+    def last_action(self):
+        return self._last_action
+
+    @property
     def n_states(self):
         return self._start_params.game_width * self._start_params.game_height
 
+    # rewards
     @property
     def last_reward(self):
         return self._last_reward
@@ -372,10 +404,10 @@ class GameLogic:
         if self._start_params.watermelon_start_position:
             self._watermelon.reset_position(self._start_params)
 
-    def reset(self):  # with old start params
+    def reset(self):  # without resampling of random values
         self._fill_start_params()
         self._reset_objects()
 
-    def full_reset(self, params=None):  # with new start params
+    def full_reset(self):  # with resampling of random values
         self._fill_start_params(resample=True)
         self._reset_objects()

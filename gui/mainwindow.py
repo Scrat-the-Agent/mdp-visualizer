@@ -100,19 +100,23 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
+
+        # the only game size for both modes
+        height = 5
+        width = 7
+
         # I Am RL Agent
-        self._iamrlagent_params = GameParams(Modes.IAMRLAGENT, hippo_random=True, hippo_move_prob=0.3,
-                                             watermelon_random=True, watermelon_move_prob=0.1, lava_random=2)
+        self._iamrlagent_params = GameParams(Modes.IAMRLAGENT, game_height=height, game_width=width, hippo_random=True,
+                                             hippo_move_prob=0.3, watermelon_random=True, watermelon_move_prob=0.1,
+                                             lava_random=10)
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
         lava_cells = [(2, 3), (1, 4)]
-        watermelon_pos = (0, 1)
-        terminal_cells = lava_cells + [watermelon_pos]
+        terminal_cells = lava_cells
         self._automaticrl_params = GameParams(Modes.AUTOMATICRL, game_height=5, game_width=5, lava_cells=lava_cells,
-                                              terminal_cells=terminal_cells, watermelon_start_position=watermelon_pos,
-                                              lava_reward=-10.)
-        self._automaticrl_logic = GameLogic(self._automaticrl_params)  # TODO
+                                              terminal_cells=terminal_cells, lava_reward=-10.)
+        self._automaticrl_logic = GameLogic(self._automaticrl_params)
 
         self._init_ui()
         self._combo_box.currentIndexChanged.connect(self._change_mode)
@@ -121,6 +125,8 @@ class MainWindow(QMainWindow):
         self._game_screen.change_logic(self._automaticrl_logic if id else self._iamrlagent_logic)
         if id:
             self._automaticRL.init_cells()
+        else:
+            self._automaticRL.exit_mode()
         self._mode_widget.turn(id)
 
         # focus
