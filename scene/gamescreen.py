@@ -72,7 +72,7 @@ class GameScreen(QGraphicsView):
             obj.pad_rotated()
 
     def keyPressEvent(self, event):
-        if event.key() == Qt.Key_T:
+        if event.nativeVirtualKey() == Qt.Key_T:
             self._make_rotated()
             # self.rotated = not self.rotated
 
