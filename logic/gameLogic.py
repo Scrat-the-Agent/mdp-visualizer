@@ -14,6 +14,7 @@ class GameCell:
         self.hippo_is_here = params["hippo_is_here"]
         self.watermelon_is_here = params["watermelon_is_here"]
         self.lava_is_here = params["lava_is_here"]
+        self.is_green = params["is_green"]
 
     @property
     def x(self):
@@ -35,8 +36,15 @@ class GameBoard:
                                    hippo_is_here=(params.hippo_start_position == (x, y)),
                                    watermelon_is_here=(params.watermelon_start_position == (x, y)),
                                    lava_is_here=((x, y) in params.lava_cells),
-                                   is_terminal=((x, y) in params.terminal_cells))
-                reward = params.lava_reward if cell_params["lava_is_here"] else 0
+                                   is_terminal=((x, y) in params.terminal_cells),
+                                   is_green=((x, y) in params.green_cells))
+                if cell_params["lava_is_here"]:
+                    reward = params.lava_reward
+                elif cell_params["is_green"]:
+                    reward = params.green_reward
+                else:
+                    reward = 0
+
                 cell_params["reward"] = reward
 
                 cur_row.append(GameCell(x, y, cell_params))
@@ -59,6 +67,9 @@ class GameBoard:
     def is_terminal(self, position):
         return self._board[position[1]][position[0]].is_terminal
 
+    def is_green(self, position):
+        return self._board[position[1]][position[0]].is_green
+
     def scrat_is_here(self, position):
         return self._board[position[1]][position[0]].scrat_is_here
 
@@ -77,8 +88,9 @@ class GameParams:
                  scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
-                 lava_random=False, lava_cells=(), lava_reward=-100,
-                 terminal_random=False, terminal_cells=()):
+                 lava_random=False, lava_cells=(), lava_reward=-10,
+                 terminal_random=False, terminal_cells=(),
+                 green_random=False, green_cells=(), green_reward=10):
         # main
         self.game_mode = game_mode
         self.game_height = game_height
@@ -87,6 +99,7 @@ class GameParams:
         # rewards
         self.hippo_fed_reward = hippo_fed_reward
         self.lava_reward = lava_reward
+        self.green_reward = green_reward
 
         # scrat
         self.scrat_random = scrat_random
@@ -109,6 +122,10 @@ class GameParams:
         # terminal
         self.terminal_random = terminal_random
         self.terminal_cells = terminal_cells
+
+        # green
+        self.green_random = green_random
+        self.green_cells = green_cells
 
 
 class GameLogic:
@@ -158,9 +175,15 @@ class GameLogic:
         if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
             self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
 
-        # secondly terminal cells not to set scrat or waermelon in terminal cell
+        # secondly terminal cells not to set scrat or watermelon in terminal cell
         if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
             self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
+
+        # thirdly green cells
+        if (len(self._start_params.green_cells) == 0 or resample) and self._start_params.green_random:
+            exclude = self._start_params.lava_cells
+            self._start_params.green_cells = self._generate_random_positions(int(self._start_params.green_random),
+                                                                             exclude_cells=exclude)
 
         # scrat: without lava and terminal cells
         if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
@@ -387,6 +410,11 @@ class GameLogic:
     @property
     def terminal_cells(self):
         return self._start_params.terminal_cells
+
+    # green
+    @property
+    def green_cells(self):
+        return self._start_params.green_cells
 
     # reset
     def _reset_objects(self):
