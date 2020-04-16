@@ -171,6 +171,10 @@ class GameLogic:
         return tuple(out)
 
     def _fill_start_params(self, resample=False):
+        self._last_action = None
+        self._last_reward = 0
+        self._full_reward = 0
+
         # firstly lava cells not to set scrat, hippo and watermelon in lava
         if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
             self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
@@ -423,14 +427,18 @@ class GameLogic:
 
         # scrat
         self._scrat.reset_position(self._start_params)
+        self._scrat.release_watermelon()
 
         # hippo
         if self._start_params.hippo_start_position:
             self._hippo.reset_position(self._start_params)
+            self._hippo.become_hungry()
 
         # watermelon
         if self._start_params.watermelon_start_position:
             self._watermelon.reset_position(self._start_params)
+            self._watermelon.become_released()
+            self._watermelon.become_not_eaten()
 
     def reset(self):  # without resampling of random values
         self._fill_start_params()

@@ -160,6 +160,9 @@ class Watermelon(GameObject):
     def become_eaten(self):
         self._is_eaten = True
 
+    def become_not_eaten(self):
+        self._is_eaten = False
+
     @property
     def is_taken(self):
         return self._is_taken

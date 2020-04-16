@@ -78,13 +78,11 @@ class ObjectPicture:
         self.move(settings.MOVE_TIME)
 
         if isinstance(self._obj, Scrat):
-            if self._obj.carrying_watermelon and logic.last_action == Actions.TAKE.value:
-                self.anim2 = animate(self.pic2, "opacity", 100, 1)
-            elif self.cur_position == logic.watermelon_position and logic.last_action == Actions.PUT_FEED.value:
-                if self.cur_position != logic.hippo_position:
-                    self.anim2 = animate(self.pic2, "opacity", 100, 0)
-                else:
-                    pass
+            if self._obj.carrying_watermelon:
+                if logic.last_action == Actions.TAKE.value:
+                    self.anim2 = animate(self.pic2, "opacity", 100, 1)
+            else:
+                self.anim2 = animate(self.pic2, "opacity", 100, 0)
         elif isinstance(self._obj, Hippo):
             pass
         elif isinstance(self._obj, Watermelon):
