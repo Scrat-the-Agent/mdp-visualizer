@@ -18,7 +18,7 @@ class Cell(RoundRectItem):
         self.logic = logic
 
         if self.logic.game_mode == Modes.AUTOMATICRL:
-            self.value = 0
+            self.value = logic.game_board.cell_reward((self.x, self.y))
             self._timer = QTimer()
             self._timer.timeout.connect(self._update_value)
         else:
