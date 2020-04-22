@@ -59,11 +59,13 @@ class AutomaticRL(QWidget):
         self._play_button = Button("./images/play")
         self._next_step_button = Button("./images/step")
         self._reset_button = Button("./images/repeat")
+        self._full_reset_button = Button("./images/newgame")
 
         self._buttons_layout = QHBoxLayout()
         self._buttons_layout.addWidget(self._play_button)
         self._buttons_layout.addWidget(self._next_step_button)
         self._buttons_layout.addWidget(self._reset_button)
+        self._buttons_layout.addWidget(self._full_reset_button)
         self._buttons.setLayout(self._buttons_layout)
         self._command_layout.addWidget(self._buttons)
 
@@ -94,6 +96,7 @@ class AutomaticRL(QWidget):
         self._play_button.clicked.connect(self._play)
         self._next_step_button.clicked.connect(self._next_step)
         self._reset_button.clicked.connect(self._reset)
+        self._full_reset_button.clicked.connect(self._full_reset)
 
         self.made_step_signal.connect(gamescreen.update_screen)
 
@@ -135,6 +138,12 @@ class AutomaticRL(QWidget):
 
     def _reset(self):
         self._q_learning.reset()
+        self.made_step_signal.emit()
+
+    def _full_reset(self):
+        self._logic.full_reset()
+        self._q_learning = QLearning(self._logic)
+        self.init_cells()
         self.made_step_signal.emit()
 
     def _play(self):
