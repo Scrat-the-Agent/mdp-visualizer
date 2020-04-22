@@ -112,18 +112,20 @@ class AutomaticRL(QWidget):
 
         for pos in self._logic.terminal_cells:
             reward = self._logic.game_board.cell_reward(pos)
-            print(pos, reward)
+            # print(pos, reward)
             self._gamescreen.set_cell_value(pos[0], pos[1], reward)
 
     def _next_step(self):
+        old_x, old_y = self._logic.scrat_position
         reward, done, info = self._q_learning.step()
-        if not done:
-            x, y = self._logic.scrat_position
-            # new_value = self._q_learning.get_value(self._q_learning.state)
-            new_value = max(self._q_learning.get_q_values((x, y)))
-            self._gamescreen.set_cell_value(x, y, new_value)
+
+        new_value = max(self._q_learning.get_q_values((old_x, old_y)))
+        self._gamescreen.set_cell_value(old_x, old_y, new_value)
 
         self.made_step_signal.emit()
+
+        if done:
+            self._q_learning.reset()
 
         #action = info['actions'][-1]
         #if done:

@@ -112,12 +112,9 @@ class MainWindow(QMainWindow):
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
-        lava_cells = [(2, 3), (1, 4)]
-        terminal_cells = list(tuple(lava_cells))
         self._automaticrl_params = GameParams(Modes.AUTOMATICRL,
                                               game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
-                                              lava_cells=lava_cells, terminal_cells=terminal_cells, lava_reward=-10.,
-                                              green_random=5)
+                                              lava_reward=-10., lava_random=5, green_random=5)
         self._automaticrl_logic = GameLogic(self._automaticrl_params)
 
         self._init_ui()

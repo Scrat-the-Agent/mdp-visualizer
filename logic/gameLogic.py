@@ -88,9 +88,9 @@ class GameParams:
                  scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
-                 lava_random=False, lava_cells=(), lava_reward=-10,
-                 terminal_random=False, terminal_cells=(),
-                 green_random=False, green_cells=(), green_reward=10):
+                 lava_random=False, lava_cells=None, lava_reward=-10,
+                 terminal_random=False, terminal_cells=None,
+                 green_random=False, green_cells=None, green_reward=10):
         # main
         self.game_mode = game_mode
         self.game_height = game_height
@@ -117,15 +117,15 @@ class GameParams:
 
         # lava
         self.lava_random = lava_random
-        self.lava_cells = lava_cells
+        self.lava_cells = lava_cells or []
 
         # terminal
         self.terminal_random = terminal_random
-        self.terminal_cells = terminal_cells
+        self.terminal_cells = terminal_cells or []
 
         # green
         self.green_random = green_random
-        self.green_cells = green_cells
+        self.green_cells = green_cells or []
 
 
 class GameLogic:
@@ -177,11 +177,12 @@ class GameLogic:
 
         # firstly lava cells not to set scrat, hippo and watermelon in lava
         if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
-            self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
+            self._start_params.lava_cells = list(self._generate_random_positions(int(self._start_params.lava_random)))
+            self._start_params.terminal_cells.extend(self._start_params.lava_cells)
 
-        # secondly terminal cells not to set scrat or watermelon in terminal cell
-        if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
-            self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
+        # # secondly terminal cells not to set scrat or watermelon in terminal cell
+        # if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
+        #     self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
 
         # thirdly green cells
         if (len(self._start_params.green_cells) == 0 or resample) and self._start_params.green_random:
