@@ -1,6 +1,6 @@
 from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout, QPushButton, QSizePolicy
-from PyQt5.QtGui import QPixmap, QFont, QIcon, QPalette, QColor
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout
+from PyQt5.QtGui import QPixmap, QFont
 
 import settings
 from logic.q_learning import QLearning
@@ -20,7 +20,10 @@ class QLabelsVisualization(QWidget):
         font = QFont("Impact")
         font.setPixelSize(24)
         
-        pics = ["./images/right", "./images/left", "./images/down", "./images/up"]  # TODO: constant?        
+        pics = [settings.RIGHT_ARROW_BUTTON_IMAGE,
+                settings.LEFT_ARROW_BUTTON_IMAGE,
+                settings.DOWN_ARROW_BUTTON_IMAGE,
+                settings.UP_ARROW_BUTTON_IMAGE]
         for _q_label, pos in zip(self._q_labels, [(2, 4), (2, 0), (4, 2), (0, 2)]):
             self._layout.addWidget(_q_label, *pos)
             _q_label.setAlignment(Qt.AlignCenter)
@@ -57,10 +60,10 @@ class AutomaticRL(QWidget):
 
         # rl buttons
         self._buttons = QWidget()
-        self._play_button = Button("./images/play")
-        self._next_step_button = Button("./images/step")
-        self._reset_button = Button("./images/repeat")
-        self._full_reset_button = Button("./images/newgame")
+        self._play_button = Button(settings.PLAY_BUTTON_IMAGE)
+        self._next_step_button = Button(settings.STEP_BUTTON_IMAGE)
+        self._reset_button = Button(settings.RESET_BUTTON_IMAGE)
+        self._full_reset_button = Button(settings.FULL_RESET_BUTTON_IMAGE)
 
         self._buttons_layout = QHBoxLayout()
         self._buttons_layout.addWidget(self._play_button)
@@ -139,9 +142,9 @@ class AutomaticRL(QWidget):
         if self._playing:
             self._playing = False
             self._timer.stop()
-            self._play_button.updatePic("./images/play")
+            self._play_button.updatePic(settings.PLAY_BUTTON_IMAGE)
             return
 
         self._playing = True
         self._timer.start(settings.Q_LEARNING_PLAY_SPEED)
-        self._play_button.updatePic("./images/stop")
+        self._play_button.updatePic(settings.STOP_BUTTON_IMAGE)
