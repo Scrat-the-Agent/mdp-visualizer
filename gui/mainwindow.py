@@ -113,7 +113,7 @@ class MainWindow(QMainWindow):
 
         # Automatic RL
         lava_cells = [(2, 3), (1, 4)]
-        terminal_cells = lava_cells
+        terminal_cells = list(tuple(lava_cells))
         self._automaticrl_params = GameParams(Modes.AUTOMATICRL,
                                               game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
                                               lava_cells=lava_cells, terminal_cells=terminal_cells, lava_reward=-10.,

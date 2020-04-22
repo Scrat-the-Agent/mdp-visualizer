@@ -188,6 +188,7 @@ class GameLogic:
             exclude = self._start_params.lava_cells
             self._start_params.green_cells = self._generate_random_positions(int(self._start_params.green_random),
                                                                              exclude_cells=exclude)
+            self._start_params.terminal_cells.extend(self._start_params.green_cells)
 
         # scrat: without lava and terminal cells
         if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:

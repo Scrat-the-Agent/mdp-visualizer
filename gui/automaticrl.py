@@ -119,7 +119,8 @@ class AutomaticRL(QWidget):
         reward, done, info = self._q_learning.step()
         if not done:
             x, y = self._logic.scrat_position
-            new_value = self._q_learning.get_value(self._q_learning.state)
+            # new_value = self._q_learning.get_value(self._q_learning.state)
+            new_value = max(self._q_learning.get_q_values((x, y)))
             self._gamescreen.set_cell_value(x, y, new_value)
 
         self.made_step_signal.emit()
