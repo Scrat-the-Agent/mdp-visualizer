@@ -2,6 +2,7 @@ from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout, QPushButton, QSizePolicy
 from PyQt5.QtGui import QPixmap, QFont, QIcon, QPalette, QColor
 
+import settings
 from logic.q_learning import QLearning
 from .button import Button
 
@@ -73,11 +74,6 @@ class AutomaticRL(QWidget):
         self._qlabels = QLabelsVisualization(self._q_learning)
         self._command_layout.addWidget(self._qlabels)
 
-        # info labels
-        #self._reward_label = QLabel()
-        #self._reward_label.setText("Last reward: 10")
-        #self._command_layout.addWidget(self._reward_label)
-
         self.setLayout(self._command_layout)
 
     def __init__(self, logic, gamescreen, parent=None):
@@ -115,7 +111,6 @@ class AutomaticRL(QWidget):
 
         for pos in self._logic.terminal_cells:
             reward = self._logic.game_board.cell_reward(pos)
-            # print(pos, reward)
             self._gamescreen.set_cell_value(pos[0], pos[1], reward)
 
     def _next_step(self):
@@ -129,12 +124,6 @@ class AutomaticRL(QWidget):
 
         if done:
             self._q_learning.reset()
-
-        #action = info['actions'][-1]
-        #if done:
-        #    self._reward_label.setText("Done!")
-        #else:
-        #    self._reward_label.setText(f"Last reward: {reward}; Last action: {action}")
 
     def _reset(self):
         self._q_learning.reset()
@@ -154,5 +143,5 @@ class AutomaticRL(QWidget):
             return
 
         self._playing = True
-        self._timer.start(500)  # TODO: move to settings
+        self._timer.start(settings.Q_LEARNING_PLAY_SPEED)
         self._play_button.updatePic("./images/stop")

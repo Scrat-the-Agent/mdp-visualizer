@@ -445,6 +445,8 @@ class GameLogic:
     def reset(self):  # without resampling of random values
         self._fill_start_params()
         self._reset_objects()
+        x, y = self.scrat_position
+        return self._start_params.game_width * y + x
 
     def full_reset(self):  # with resampling of random values
         self._fill_start_params(resample=True)
