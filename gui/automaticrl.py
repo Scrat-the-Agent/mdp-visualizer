@@ -93,7 +93,7 @@ class AutomaticRL(QWidget):
 
         # connecting player buttons
         self._play_button.clicked.connect(self._play)
-        self._next_step_button.clicked.connect(self._next_step)
+        self._next_step_button.clicked.connect(self._next_step_click)
         self._reset_button.clicked.connect(self._reset)
         self._full_reset_button.clicked.connect(self._full_reset)
 
@@ -116,6 +116,14 @@ class AutomaticRL(QWidget):
             reward = self._logic.game_board.cell_reward(pos)
             self._gamescreen.set_cell_value(pos[0], pos[1], reward)
 
+    def _next_step_click(self):
+        if self._playing:
+            self._playing = False
+            self._timer.stop()
+            self._play_button.updatePic(settings.PLAY_BUTTON_IMAGE)
+
+        self._next_step()
+
     def _next_step(self):
         old_x, old_y = self._logic.scrat_position
         reward, done, info = self._q_learning.step()
@@ -134,7 +142,7 @@ class AutomaticRL(QWidget):
 
     def _full_reset(self):
         self._logic.full_reset()
-        self._q_learning = QLearning(self._logic)
+        self._q_learning.reset_q()
         self.init_cells()
         self.made_step_signal.emit()
 

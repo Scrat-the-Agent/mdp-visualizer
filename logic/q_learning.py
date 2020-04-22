@@ -4,6 +4,11 @@ import numpy as np
 class QLearning:
     def __init__(self, env):
         self.env = env
+        self.Q = np.zeros([self.env.n_states, self.env.n_actions])
+        self.state = self.env.reset()
+
+    def reset_q(self, env=None):
+        env = env or self.env
         self.Q = np.zeros([env.n_states, env.n_actions])
         self.state = self.env.reset()
 
@@ -42,11 +47,8 @@ def q_learning(env, s, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
     for i in range(n_steps):
         if np.random.rand() < eps:
             a = np.random.choice(env.n_actions)
-            print(f"RANDOM: {a}")
         else:
             a = np.argmax(Q[s, :])
-            print(s, Q.shape)
-            print(f"STRAT: {a}")
         s1, r, done, _ = env.step(a)
         Q[s, a] = Q[s, a] + lr * (r + gamma * np.max(Q[s1, :]) - Q[s, a])
 
