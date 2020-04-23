@@ -24,10 +24,10 @@ class GameScreen(QGraphicsView):
         # objects markers, in reverse order for equal zValues case
         self.objects_pictures = []
         if self.logic.watermelon:
-            self.objects_pictures.append(ObjectPicture(self.logic.watermelon, scene, self.pad))
+            self.objects_pictures.append(ObjectPicture(self.logic.watermelon, scene, self.pad, self.logic))
         if self.logic.hippo:
-            self.objects_pictures.append(ObjectPicture(self.logic.hippo, scene, self.pad))
-        self.objects_pictures.append(ObjectPicture(self.logic.scrat, scene, self.pad))
+            self.objects_pictures.append(ObjectPicture(self.logic.hippo, scene, self.pad, self.logic))
+        self.objects_pictures.append(ObjectPicture(self.logic.scrat, scene, self.pad, self.logic))
 
         # general
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -67,7 +67,7 @@ class GameScreen(QGraphicsView):
 
         # objects
         for obj in self.objects_pictures:
-            obj.change_position(self.logic)
+            obj.change_position()
 
         self.setFocus()
 
