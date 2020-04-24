@@ -39,3 +39,15 @@ REWARD_FONT.setPixelSize(36)
 
 DESCRIPTION_FONT = QFont("Times New Roman", weight=QFont.Bold)
 DESCRIPTION_FONT.setPixelSize(18)
+
+Q_LEARNING_PLAY_SPEED = 500
+PLAY_BUTTON_IMAGE = "./images/play"
+STEP_BUTTON_IMAGE = "./images/step"
+RESET_BUTTON_IMAGE = "./images/repeat"
+FULL_RESET_BUTTON_IMAGE = "./images/newgame"
+STOP_BUTTON_IMAGE = "./images/stop"
+
+RIGHT_ARROW_BUTTON_IMAGE = "./images/right"
+LEFT_ARROW_BUTTON_IMAGE = "./images/left"
+DOWN_ARROW_BUTTON_IMAGE = "./images/down"
+UP_ARROW_BUTTON_IMAGE = "./images/up"

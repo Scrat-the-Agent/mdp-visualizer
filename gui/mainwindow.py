@@ -118,6 +118,7 @@ class MainWindow(QMainWindow):
                                               game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
                                               lava_random=2, lava_reward=-10., lava_is_terminal=True,
                                               green_random=5, green_is_terminal=True)
+
         self._automaticrl_logic = GameLogic(self._automaticrl_params)
 
         self._init_ui()

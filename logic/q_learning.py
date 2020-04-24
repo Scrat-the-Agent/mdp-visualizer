@@ -4,6 +4,11 @@ import numpy as np
 class QLearning:
     def __init__(self, env):
         self.env = env
+        self.Q = np.zeros([self.env.n_states, self.env.n_actions])
+        self.state = self.env.reset()
+
+    def reset_q(self, env=None):
+        env = env or self.env
         self.Q = np.zeros([env.n_states, env.n_actions])
         self.state = self.env.reset()
 

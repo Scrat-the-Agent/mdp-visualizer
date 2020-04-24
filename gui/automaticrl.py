@@ -1,7 +1,8 @@
 from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout, QPushButton, QSizePolicy
-from PyQt5.QtGui import QPixmap, QFont, QIcon, QPalette, QColor
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout
+from PyQt5.QtGui import QPixmap, QFont
 
+import settings
 from logic.q_learning import QLearning
 from .button import Button
 
@@ -19,7 +20,10 @@ class QLabelsVisualization(QWidget):
         font = QFont("Impact")
         font.setPixelSize(24)
         
-        pics = ["./images/right", "./images/left", "./images/down", "./images/up"]  # TODO: constant?        
+        pics = [settings.RIGHT_ARROW_BUTTON_IMAGE,
+                settings.LEFT_ARROW_BUTTON_IMAGE,
+                settings.DOWN_ARROW_BUTTON_IMAGE,
+                settings.UP_ARROW_BUTTON_IMAGE]
         for _q_label, pos in zip(self._q_labels, [(2, 4), (2, 0), (4, 2), (0, 2)]):
             self._layout.addWidget(_q_label, *pos)
             _q_label.setAlignment(Qt.AlignCenter)
@@ -56,25 +60,22 @@ class AutomaticRL(QWidget):
 
         # rl buttons
         self._buttons = QWidget()
-        self._play_button = Button("./images/play")
-        self._next_step_button = Button("./images/step")
-        self._reset_button = Button("./images/repeat")
+        self._play_button = Button(settings.PLAY_BUTTON_IMAGE)
+        self._next_step_button = Button(settings.STEP_BUTTON_IMAGE)
+        self._reset_button = Button(settings.RESET_BUTTON_IMAGE)
+        self._full_reset_button = Button(settings.FULL_RESET_BUTTON_IMAGE)
 
         self._buttons_layout = QHBoxLayout()
         self._buttons_layout.addWidget(self._play_button)
         self._buttons_layout.addWidget(self._next_step_button)
         self._buttons_layout.addWidget(self._reset_button)
+        self._buttons_layout.addWidget(self._full_reset_button)
         self._buttons.setLayout(self._buttons_layout)
         self._command_layout.addWidget(self._buttons)
 
         # q-values visualization
         self._qlabels = QLabelsVisualization(self._q_learning)
         self._command_layout.addWidget(self._qlabels)
-
-        # info labels
-        #self._reward_label = QLabel()
-        #self._reward_label.setText("Last reward: 10")
-        #self._command_layout.addWidget(self._reward_label)
 
         self.setLayout(self._command_layout)
 
@@ -92,8 +93,9 @@ class AutomaticRL(QWidget):
 
         # connecting player buttons
         self._play_button.clicked.connect(self._play)
-        self._next_step_button.clicked.connect(self._next_step)
+        self._next_step_button.clicked.connect(self._next_step_click)
         self._reset_button.clicked.connect(self._reset)
+        self._full_reset_button.clicked.connect(self._full_reset)
 
         self.made_step_signal.connect(gamescreen.update_screen)
 
@@ -112,35 +114,45 @@ class AutomaticRL(QWidget):
 
         for pos in self._logic.terminal_cells:
             reward = self._logic.game_board.cell_reward(pos)
-            print(pos, reward)
             self._gamescreen.set_cell_value(pos[0], pos[1], reward)
 
+    def _next_step_click(self):
+        if self._playing:
+            self._playing = False
+            self._timer.stop()
+            self._play_button.updatePic(settings.PLAY_BUTTON_IMAGE)
+
+        self._next_step()
+
     def _next_step(self):
+        old_x, old_y = self._logic.scrat_position
         reward, done, info = self._q_learning.step()
-        if not done:
-            x, y = self._logic.scrat_position
-            new_value = self._q_learning.get_value(self._q_learning.state)
-            self._gamescreen.set_cell_value(x, y, new_value)
+
+        new_value = max(self._q_learning.get_q_values((old_x, old_y)))
+        self._gamescreen.set_cell_value(old_x, old_y, new_value)
 
         self.made_step_signal.emit()
 
-        #action = info['actions'][-1]
-        #if done:
-        #    self._reward_label.setText("Done!")
-        #else:
-        #    self._reward_label.setText(f"Last reward: {reward}; Last action: {action}")
+        if done:
+            self._q_learning.reset()
 
     def _reset(self):
         self._q_learning.reset()
+        self.made_step_signal.emit()
+
+    def _full_reset(self):
+        self._logic.full_reset()
+        self._q_learning.reset_q()
+        self.init_cells()
         self.made_step_signal.emit()
 
     def _play(self):
         if self._playing:
             self._playing = False
             self._timer.stop()
-            self._play_button.updatePic("./images/play")
+            self._play_button.updatePic(settings.PLAY_BUTTON_IMAGE)
             return
 
         self._playing = True
-        self._timer.start(500)  # TODO: move to settings
-        self._play_button.updatePic("./images/stop")
+        self._timer.start(settings.Q_LEARNING_PLAY_SPEED)
+        self._play_button.updatePic(settings.STOP_BUTTON_IMAGE)
