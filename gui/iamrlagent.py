@@ -115,7 +115,13 @@ class IAmRLAgent(QWidget):
                 action = self._actions_correspondence[i]
                 break
 
-        self._logic.step(action)
+        _, reward, done, _ = self._logic.step(action)
+        self._reward_label.set_value(reward)
+
+        # TODO: Restart needed
+        if done:
+            print(f"Game finished! Full reward: {self._logic.full_reward}. Restart needed!")
+
         self.made_step_signal.emit()
 
     def _reset(self):
