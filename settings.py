@@ -3,8 +3,13 @@ from PyQt5.QtGui import QColor, QFont
 
 BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
 SCRAT_IMAGE = "./images/scrat_drawing2.png"
+SCRAT_AND_WATERMELON_IMAGE = "./images/scrat_drawing2_and_watermelon.png"
 SCRAT_WITH_WATERMELON_IMAGE = "./images/scrat_drawing2_with_watermelon.png"
+SCRAT_HIPPO_IMAGE = "./images/scrat_hippo.png"
+SCRAT_HIPPO_AND_WATERMELON_IMAGE = "./images/scrat_hippo_and_watermelon.png"
+SCRAT_WITH_WATERMELON_HIPPO_IMAGE = "./images/scrat_with_watermelon_hippo.png"
 HIPPO_IMAGE = "./images/hippo_drawing_mirrored.png"
+HIPPO_AND_WATERMELON_IMAGE = "./images/hippo_drawing_mirrored_and_watermelon.png"
 WATERMELON_IMAGE = "./images/watermelon_drawing_small_rotated.png"
 LAVA_IMAGE = "./images/lava_drawing.png"
 

@@ -86,11 +86,11 @@ class GameBoard:
 class GameParams:
     def __init__(self, game_mode, game_height=4, game_width=6,
                  scrat_random=True, scrat_start_position=None,
-                 hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100500,
+                 hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100,
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
-                 lava_random=False, lava_cells=None, lava_reward=-10,
+                 lava_random=False, lava_cells=None, lava_is_terminal=True, lava_reward=-10,
                  terminal_random=False, terminal_cells=None,
-                 green_random=False, green_cells=None, green_reward=10):
+                 green_random=False, green_cells=None, green_is_terminal=True, green_reward=10):
         # main
         self.game_mode = game_mode
         self.game_height = game_height
@@ -117,7 +117,8 @@ class GameParams:
 
         # lava
         self.lava_random = lava_random
-        self.lava_cells = lava_cells or []
+        self.lava_cells = lava_cells or ()
+        self.lava_is_terminal = lava_is_terminal
 
         # terminal
         self.terminal_random = terminal_random
@@ -125,7 +126,8 @@ class GameParams:
 
         # green
         self.green_random = green_random
-        self.green_cells = green_cells or []
+        self.green_cells = green_cells or ()
+        self.green_is_terminal = green_is_terminal
 
 
 class GameLogic:
@@ -180,16 +182,35 @@ class GameLogic:
             self._start_params.lava_cells = list(self._generate_random_positions(int(self._start_params.lava_random)))
             self._start_params.terminal_cells.extend(self._start_params.lava_cells)
 
-        # # secondly terminal cells not to set scrat or watermelon in terminal cell
-        # if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
-        #     self._start_params.terminal_cells = self._generate_random_positions(int(self._start_params.terminal_random))
-
-        # thirdly green cells
+        # secondly green cells
         if (len(self._start_params.green_cells) == 0 or resample) and self._start_params.green_random:
             exclude = self._start_params.lava_cells
             self._start_params.green_cells = self._generate_random_positions(int(self._start_params.green_random),
                                                                              exclude_cells=exclude)
-            self._start_params.terminal_cells.extend(self._start_params.green_cells)
+
+        # thirdly terminal cells not to set scrat or watermelon in terminal cell
+        if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
+            exclude = ()
+
+            # lava is terminal
+            if self._start_params.lava_is_terminal:
+                num_to_generate = self._start_params.terminal_random - len(self._start_params.lava_cells)
+                exclude += self._start_params.lava_cells
+            else:
+                num_to_generate = self._start_params.terminal_random
+
+            # green is terminal
+            if self._start_params.green_is_terminal:
+                num_to_generate -= len(self._start_params.green_cells)
+                exclude += self._start_params.green_cells
+
+            if num_to_generate > 0:
+                self._start_params.terminal_cells = self._generate_random_positions(num_to_generate,
+                                                                                    exclude_cells=exclude)
+        if self._start_params.lava_is_terminal:
+            self._start_params.terminal_cells += self.lava_cells
+        if self._start_params.green_is_terminal:
+            self._start_params.terminal_cells += self.green_cells
 
         # scrat: without lava and terminal cells
         if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
@@ -287,7 +308,7 @@ class GameLogic:
 
         return state, reward, done, info
 
-    def _move_object(self, obj, direction): # with watermelon if it is taken
+    def _move_object(self, obj, direction):  # with watermelon if it is taken
         if obj == Objects.SCRAT:
             self._scrat.change_position(*direction)
             self._game_board.move_object(obj, self._scrat.prev_position, self.scrat_position)
