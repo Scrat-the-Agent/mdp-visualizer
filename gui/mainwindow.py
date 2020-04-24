@@ -108,16 +108,16 @@ class MainWindow(QMainWindow):
                                              game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
                                              hippo_random=True, hippo_move_prob=0.3,
                                              watermelon_random=True, watermelon_move_prob=0.1,
-                                             lava_random=5)
+                                             lava_random=5, lava_is_terminal=True)
         self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
 
         # Automatic RL
-        lava_cells = [(2, 3), (1, 4)]
-        terminal_cells = lava_cells
+        # lava_cells = ((2, 3), (1, 4))
+        # terminal_cells = lava_cells
         self._automaticrl_params = GameParams(Modes.AUTOMATICRL,
                                               game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
-                                              lava_cells=lava_cells, terminal_cells=terminal_cells, lava_reward=-10.,
-                                              green_random=5)
+                                              lava_random=2, lava_reward=-10., lava_is_terminal=True,
+                                              green_random=5, green_is_terminal=True)
         self._automaticrl_logic = GameLogic(self._automaticrl_params)
 
         self._init_ui()
