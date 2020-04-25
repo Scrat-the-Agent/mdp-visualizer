@@ -37,18 +37,14 @@ class Cell(RoundRectItem):
 
     def reset_lava(self):
         if self.logic.game_mode == Modes.IAMRLAGENT:
-            # self.anim = animate(self, "opacity", 100, 0)
-
             if self.logic.game_board.lava_is_here((self.x, self.y)):
                 self.color = None
-                self.setPixmap(settings.LAVA_IMAGE)
+                self.setPixmap(settings.LAVA_IMAGE, True)
             else:
                 self.pix = QPixmap()
                 self.color = self._compute_color()
 
             self.update()
-            # self.anim = animate(self, "opacity", 100, settings.BASE_CELL_OPACITY)
-
 
     def _compute_color(self):
         if self.value:
@@ -97,7 +93,6 @@ class Cell(RoundRectItem):
     def _update_value(self):
         diff = abs(self._target_value - self.value)
         step = max(0.1, diff / 20)
-        # print(diff, self.value, self._target_value)
 
         if diff < step:
             self.value = self._target_value
@@ -109,7 +104,6 @@ class Cell(RoundRectItem):
 
         self.update()
 
-    # @staticmethod
     def posForLocation(self, column, row):
         width, height = self.logic.game_size
         return QPointF(column * 150, row * 150) - QPointF((width - 1) * 75, (height - 1) * 75)
