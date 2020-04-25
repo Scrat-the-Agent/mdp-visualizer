@@ -90,7 +90,8 @@ class GameParams:
                  watermelon_random=False, watermelon_start_position=None, watermelon_move_prob=-1,
                  lava_random=False, lava_cells=None, lava_is_terminal=True, lava_reward=-10,
                  terminal_random=False, terminal_cells=None,
-                 green_random=False, green_cells=None, green_is_terminal=True, green_reward=10):
+                 green_random=False, green_cells=None, green_is_terminal=True, green_reward=10,
+                 tick_penalty=0):
         # main
         self.game_mode = game_mode
         self.game_height = game_height
@@ -120,14 +121,17 @@ class GameParams:
         self.lava_cells = lava_cells or ()
         self.lava_is_terminal = lava_is_terminal
 
-        # terminal
-        self.terminal_random = terminal_random
-        self.terminal_cells = terminal_cells or []
-
         # green
         self.green_random = green_random
         self.green_cells = green_cells or ()
         self.green_is_terminal = green_is_terminal
+
+        # terminal
+        self.terminal_random = terminal_random
+        self.terminal_cells = terminal_cells or []
+
+        # penalty
+        self.tick_penalty = tick_penalty
 
 
 class GameLogic:
@@ -227,6 +231,8 @@ class GameLogic:
             exclude = self._start_params.lava_cells + self._start_params.terminal_cells
             self._start_params.watermelon_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
 
+        print(self._start_params.terminal_cells)
+
     def _generate_new_game(self):
         # fill params
         self._fill_start_params()
@@ -295,10 +301,14 @@ class GameLogic:
             else:
                 self._interact_with_watermelon(Actions.PUT)
 
+        # penalty
+        tick_penalty = self._start_params.tick_penalty
+
         # change cur game params
         cell_reward = self._game_board.cell_reward(self.scrat_position)
-        self._last_reward = cell_reward + action_reward
+        self._last_reward = cell_reward + action_reward + tick_penalty
         self._full_reward += self._last_reward
+        print(self._game_board.is_terminal(self.scrat_position), self._hippo, self.hippo_is_fed)
         self._done = self._game_board.is_terminal(self.scrat_position) or (self._hippo and self.hippo_is_fed)
 
         state = self.scrat_position[1] * self._start_params.game_width + self.scrat_position[0]

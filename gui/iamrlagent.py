@@ -89,7 +89,8 @@ class IAmRLAgent(QWidget):
                                   game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
                                   hippo_random=True, hippo_move_prob=0.3,
                                   watermelon_random=True, watermelon_move_prob=0.1,
-                                  lava_random=5, lava_is_terminal=True)
+                                  lava_random=5, lava_is_terminal=True,
+                                  tick_penalty=-0.1)
         self._logic = GameLogic(self._params)
 
         # Shuffle actions meaning   
