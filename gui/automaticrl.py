@@ -112,6 +112,10 @@ class AutomaticRL(QWidget):
             cell.enter_signal.connect(self._qlabels.cell_entered)
             cell.leave_signal.connect(self._qlabels.cell_left)
 
+        for i in range(self._logic.game_size[0]):
+            for j in range(self._logic.game_size[1]):
+                self._gamescreen.set_cell_value(i, j, 0.)
+
         for pos in self._logic.terminal_cells:
             reward = self._logic.game_board.cell_reward(pos)
             self._gamescreen.set_cell_value(pos[0], pos[1], reward)
