@@ -129,16 +129,21 @@ class AutomaticRL(QWidget):
         self._next_step()
 
     def _next_step(self):
-        old_x, old_y = self._logic.scrat_position
-        reward, done, info = self._q_learning.step()
+        print(self._logic.done)
+        if self._logic.done:
+            self._q_learning.reset()
+            print(self._logic.scrat_position, self._logic.done)
+        else:
+            old_x, old_y = self._logic.scrat_position
+            reward, done, info = self._q_learning.step()
 
-        new_value = max(self._q_learning.get_q_values((old_x, old_y)))
-        self._gamescreen.set_cell_value(old_x, old_y, new_value)
+            x, y = self._logic.scrat_position
+            print(old_x, old_y, x, y, self._q_learning.get_q_values((old_x, old_y)), reward, done)
+
+            new_value = max(self._q_learning.get_q_values((old_x, old_y)))
+            self._gamescreen.set_cell_value(old_x, old_y, new_value)
 
         self.made_step_signal.emit()
-
-        if done:
-            self._q_learning.reset()
 
     def _reset(self):
         self._q_learning.reset()
