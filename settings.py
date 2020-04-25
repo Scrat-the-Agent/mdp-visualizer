@@ -2,6 +2,9 @@ from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QColor, QFont
 
 BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
+REWARD_FRAME_IMAGE = "./images/frame.png"
+REWARD_ICON_IMAGE = "./images/nut"
+
 SCRAT_IMAGE = "./images/scrat_drawing2.png"
 SCRAT_AND_WATERMELON_IMAGE = "./images/scrat_drawing2_and_watermelon.png"
 SCRAT_WITH_WATERMELON_IMAGE = "./images/scrat_drawing2_with_watermelon.png"
@@ -15,6 +18,8 @@ LAVA_IMAGE = "./images/lava_drawing.png"
 
 MOVE_TIME = 300
 ROTATION_TIME = 600
+
+VALUE_UPDATE_TIME = 10
 
 ROTATION_ANGLE = 55
 BASE_CELL_OPACITY = 0.65
@@ -36,9 +41,6 @@ MAX_REWARD = +10
 REWARD_COLOR = QColor(0, 0, 0, 255)
 REWARD_FONT = QFont("Impact", weight=QFont.Bold)
 REWARD_FONT.setPixelSize(36)
-
-DESCRIPTION_FONT = QFont("Times New Roman", weight=QFont.Bold)
-DESCRIPTION_FONT.setPixelSize(18)
 
 Q_LEARNING_PLAY_SPEED = 500
 PLAY_BUTTON_IMAGE = "./images/play"

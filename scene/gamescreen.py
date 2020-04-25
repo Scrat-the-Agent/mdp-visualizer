@@ -42,13 +42,11 @@ class GameScreen(QGraphicsView):
         # if self.rotated:
         #     self._make_rotated()
 
-    def __init__(self, logic):
+    def __init__(self):
         super().__init__()
 
         # # the fact the pad was rotated to pseudo-3d
         # self.rotated = False
-
-        self._init_with_logic(logic)
 
     @property
     def cells(self):

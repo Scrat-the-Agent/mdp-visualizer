@@ -2,7 +2,7 @@ from PyQt5.QtCore import pyqtSignal, Qt, QPointF, QTimer
 from PyQt5.QtGui import QColor, QPixmap
 
 import settings
-from utils import animate
+from utils import animate, value_update
 
 from .roundRectItem import RoundRectItem
 from logic.actions_objects_list import Modes
@@ -91,16 +91,9 @@ class Cell(RoundRectItem):
         self._timer.start(10)  # TODO: settings!
 
     def _update_value(self):
-        diff = abs(self._target_value - self.value)
-        step = max(0.1, diff / 20)
-
-        if diff < step:
-            self.value = self._target_value
+        self.value, stop_timer = value_update(self.value, self._target_value)
+        if stop_timer:
             self._timer.stop()
-        elif self._target_value > self.value:
-            self.value += step
-        else:
-            self.value -= step
 
         self.update()
 

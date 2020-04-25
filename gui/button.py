@@ -19,15 +19,16 @@ class Button(QToolButton):
         self.pressed.connect(self._whenpressed)
         self.released.connect(self._whenreleased)
 
+    # size kludges :/
     def resizeEvent(self, e):
         super().resizeEvent(e)
         self.setIconSize(self.size())
-
-    # size kludges :/
+    
     def sizeHint(self):
         size = super().sizeHint()
         return QSize(size.width(), size.width())
 
+    # changes picture of button
     def _whenpressed(self):
         self._pressed = True
         self.updatePic()
@@ -35,8 +36,7 @@ class Button(QToolButton):
     def _whenreleased(self):
         self._pressed = False
         self.updatePic()
-
-    # changes picture of button
+    
     def updatePic(self, name=None):
         self.name = name or self.name
         pixmap = QPixmap(self.name + ("pr" if self._pressed else ""))

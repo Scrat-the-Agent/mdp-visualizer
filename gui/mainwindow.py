@@ -7,11 +7,10 @@ import settings
 from utils import animate
 from .automaticrl import AutomaticRL
 from .iamrlagent import IAmRLAgent
-from logic.gameLogic import GameLogic, GameParams
 from logic.actions_objects_list import Modes
 
 from scene.gamescreen import GameScreen
-
+from .button import Button
 
 class ModeSwitcher(QWidget):
     def __init__(self, contents):
@@ -54,8 +53,15 @@ class ModeSwitcher(QWidget):
             if id != self._id:
                 content.setVisible(False)
 
+    @property
+    def current_widget(self):
+        return self._contents[self._id]
+
+
 class MainWindow(QMainWindow):
-    def _init_ui(self):
+    def __init__(self):
+        super().__init__()
+
         # background image
         sh = f"background-image: url({settings.BACKGROUND_IMAGE})"
         self.setStyleSheet("MainWindow {" + sh + "}")
@@ -67,12 +73,21 @@ class MainWindow(QMainWindow):
         for i in range(2):
             self._combo_box.setItemData(i, Qt.AlignCenter)
 
-        # game screen
-        self._game_screen = GameScreen(self._iamrlagent_logic)
+        # Reset layout
+        self._buttons = QWidget()
+        self._reset_layout = QHBoxLayout()
+        self._reset_button = Button(settings.RESET_BUTTON_IMAGE)
+        self._full_reset_button = Button(settings.FULL_RESET_BUTTON_IMAGE)
+        self._reset_layout.addWidget(self._reset_button)
+        self._reset_layout.addWidget(self._full_reset_button)
+        self._buttons.setLayout(self._reset_layout)
+        self._buttons.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
 
         # widget for each mode
-        self._iAmRLAgent = IAmRLAgent(self._iamrlagent_logic, self._game_screen)
-        self._automaticRL = AutomaticRL(self._automaticrl_logic, self._game_screen)
+        self._game_screen = GameScreen()
+        self._iAmRLAgent = IAmRLAgent(self._game_screen)
+        self._automaticRL = AutomaticRL(self._game_screen)
+        self._iAmRLAgent.enter_mode()
 
         # mode widget
         self._mode_widget = ModeSwitcher([self._iAmRLAgent, self._automaticRL])
@@ -80,10 +95,10 @@ class MainWindow(QMainWindow):
         # left widget
         self._left_layout = QVBoxLayout()
         self._left_layout.addWidget(self._combo_box)
+        self._left_layout.addWidget(self._buttons)
         self._left_layout.addWidget(self._mode_widget)
         self._left_widget = QWidget()
-        self._left_widget.setSizePolicy(QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred))
-        self._left_widget.setMinimumWidth(300)
+        self._left_widget.setFixedWidth(300)
         self._left_widget.setLayout(self._left_layout)
 
         # central widget
@@ -97,40 +112,20 @@ class MainWindow(QMainWindow):
 
         # focus
         self._game_screen.setFocus()
-
-    def __init__(self):
-        super().__init__()
-
-        # the only game size for both modes
-
-        # I Am RL Agent
-        self._iamrlagent_params = GameParams(Modes.IAMRLAGENT,
-                                             game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
-                                             hippo_random=True, hippo_move_prob=0.3,
-                                             watermelon_random=True, watermelon_move_prob=0.1,
-                                             lava_random=5, lava_is_terminal=True)
-        self._iamrlagent_logic = GameLogic(self._iamrlagent_params)
-
-        # Automatic RL
-        # lava_cells = ((2, 3), (1, 4))
-        # terminal_cells = lava_cells
-        self._automaticrl_params = GameParams(Modes.AUTOMATICRL,
-                                              game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
-                                              lava_random=2, lava_reward=-10., lava_is_terminal=True,
-                                              green_random=5, green_is_terminal=True)
-
-        self._automaticrl_logic = GameLogic(self._automaticrl_params)
-
-        self._init_ui()
+        self._reset_button.clicked.connect(self._reset)
+        self._full_reset_button.clicked.connect(self._full_reset)
         self._combo_box.currentIndexChanged.connect(self._change_mode)
 
-    def _change_mode(self, id):
-        self._game_screen.change_logic(self._automaticrl_logic if id else self._iamrlagent_logic)
-        if id:
-            self._automaticRL.init_cells()
-        else:
-            self._automaticRL.exit_mode()
+    def _change_mode(self, id):        
+        self._mode_widget.current_widget.exit_mode()
         self._mode_widget.turn(id)
+        self._mode_widget.current_widget.enter_mode()
 
-        # focus
+        # focus!
         self._game_screen.setFocus()
+
+    def _reset(self):
+        self._mode_widget.current_widget.reset()
+
+    def _full_reset(self):
+        self._mode_widget.current_widget.full_reset()       

@@ -1,9 +1,11 @@
 from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QFont
 
 import settings
 from logic.q_learning import QLearning
+from logic.gameLogic import GameLogic, GameParams
+from logic.actions_objects_list import Modes
 from .button import Button
 
 
@@ -16,14 +18,14 @@ class QLabelsVisualization(QWidget):
 
         self._q_labels = [QLabel() for i in range(4)]
         self._arrows = [QLabel() for i in range(4)]
-
-        font = QFont("Impact")
-        font.setPixelSize(24)
         
         pics = [settings.RIGHT_ARROW_BUTTON_IMAGE,
                 settings.LEFT_ARROW_BUTTON_IMAGE,
                 settings.DOWN_ARROW_BUTTON_IMAGE,
                 settings.UP_ARROW_BUTTON_IMAGE]
+        font = QFont("Impact", weight=QFont.Bold)
+        font.setPixelSize(24)
+
         for _q_label, pos in zip(self._q_labels, [(2, 4), (2, 0), (4, 2), (0, 2)]):
             self._layout.addWidget(_q_label, *pos)
             _q_label.setAlignment(Qt.AlignCenter)
@@ -36,6 +38,7 @@ class QLabelsVisualization(QWidget):
             _arrow.setScaledContents(False)
 
         self.setLayout(self._layout)
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed))
 
     def cell_entered(self):
         cell = self.sender()
@@ -58,32 +61,41 @@ class AutomaticRL(QWidget):
     def _init_ui(self):
         self._command_layout = QVBoxLayout()
 
-        # rl buttons
-        self._buttons = QWidget()
-        self._play_button = Button(settings.PLAY_BUTTON_IMAGE)
-        self._next_step_button = Button(settings.STEP_BUTTON_IMAGE)
-        self._reset_button = Button(settings.RESET_BUTTON_IMAGE)
-        self._full_reset_button = Button(settings.FULL_RESET_BUTTON_IMAGE)
-
-        self._buttons_layout = QHBoxLayout()
-        self._buttons_layout.addWidget(self._play_button)
-        self._buttons_layout.addWidget(self._next_step_button)
-        self._buttons_layout.addWidget(self._reset_button)
-        self._buttons_layout.addWidget(self._full_reset_button)
-        self._buttons.setLayout(self._buttons_layout)
-        self._command_layout.addWidget(self._buttons)
-
+        # Text label
+        self._description_label = QLabel()
+        self._description_label.setFont(QFont("Pacifico", 14, QFont.Normal))
+        self._description_label.setAlignment(Qt.AlignCenter)
+        self._description_label.setText("Press play to launch\nQ-learning algorithm!\n\nHover over cells to watch\nQ-values for them.\n")
+        self._description_label.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
+        self._command_layout.addWidget(self._description_label)
+        
         # q-values visualization
         self._qlabels = QLabelsVisualization(self._q_learning)
         self._command_layout.addWidget(self._qlabels)
 
+        # rl buttons
+        self._buttons = QWidget()
+        self._buttons_layout = QHBoxLayout()
+        self._play_button = Button(settings.PLAY_BUTTON_IMAGE)
+        self._next_step_button = Button(settings.STEP_BUTTON_IMAGE)
+        self._buttons_layout.addWidget(self._play_button)
+        self._buttons_layout.addWidget(self._next_step_button)
+        self._buttons.setLayout(self._buttons_layout)
+        self._command_layout.addWidget(self._buttons)
+
         self.setLayout(self._command_layout)
 
-    def __init__(self, logic, gamescreen, parent=None):
-        super().__init__(parent)
-        self._logic = logic
+    def __init__(self, game_screen):
+        super().__init__()
+        
+        self._game_screen = game_screen
+        self._params = GameParams(Modes.AUTOMATICRL,
+                                  game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
+                                  lava_random=2, lava_reward=-10., lava_is_terminal=True,
+                                  green_random=5, green_is_terminal=True)
+
+        self._logic = GameLogic(self._params)
         self._q_learning = QLearning(self._logic)
-        self._gamescreen = gamescreen
 
         self._playing = False
         self._timer = QTimer()
@@ -94,31 +106,34 @@ class AutomaticRL(QWidget):
         # connecting player buttons
         self._play_button.clicked.connect(self._play)
         self._next_step_button.clicked.connect(self._next_step_click)
-        self._reset_button.clicked.connect(self._reset)
-        self._full_reset_button.clicked.connect(self._full_reset)
 
-        self.made_step_signal.connect(gamescreen.update_screen)
+        self.made_step_signal.connect(game_screen.update_screen)
+
+    def enter_mode(self):
+        self._game_screen.change_logic(self._logic)
+        self.init_cells()
 
     def exit_mode(self):
         if self._playing:
             self._playing = False
             self._timer.stop()
-            self._play_button.setText("Play")
             return
 
     def init_cells(self):
         # connecting mouse hover from cells to our q-values visualization
-        for cell in self._gamescreen.cells:
+        for cell in self._game_screen.cells:
             cell.enter_signal.connect(self._qlabels.cell_entered)
             cell.leave_signal.connect(self._qlabels.cell_left)
 
+        # initialize values
+        # TODO: should not it happen in redrawing?
         for i in range(self._logic.game_size[0]):
             for j in range(self._logic.game_size[1]):
-                self._gamescreen.set_cell_value(i, j, 0.)
+                self._game_screen.set_cell_value(i, j, 0.)
 
         for pos in self._logic.terminal_cells:
             reward = self._logic.game_board.cell_reward(pos)
-            self._gamescreen.set_cell_value(pos[0], pos[1], reward)
+            self._game_screen.set_cell_value(pos[0], pos[1], reward)
 
     def _next_step_click(self):
         if self._playing:
@@ -130,21 +145,22 @@ class AutomaticRL(QWidget):
 
     def _next_step(self):
         old_x, old_y = self._logic.scrat_position
-        reward, done, info = self._q_learning.step()
-
-        new_value = max(self._q_learning.get_q_values((old_x, old_y)))
-        self._gamescreen.set_cell_value(old_x, old_y, new_value)
+        _, done, _ = self._q_learning.step()
 
         self.made_step_signal.emit()
+
+        # we know that left cell is the one with changed value
+        new_value = max(self._q_learning.get_q_values((old_x, old_y)))
+        self._game_screen.set_cell_value(old_x, old_y, new_value)
 
         if done:
             self._q_learning.reset()
 
-    def _reset(self):
+    def reset(self):
         self._q_learning.reset()
         self.made_step_signal.emit()
 
-    def _full_reset(self):
+    def full_reset(self):
         self._logic.full_reset()
         self._q_learning.reset_q()
         self.init_cells()
