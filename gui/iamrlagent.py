@@ -108,9 +108,10 @@ class IAmRLAgent(QWidget):
 
     def enter_mode(self):
         self._game_screen.change_logic(self._logic)
+        self._reward_label.set_value(0)
 
     def exit_mode(self):
-        pass
+        self._game_screen.splash.disappear()
 
     def _action_chosen(self):
         if not self.require_reset:
@@ -126,6 +127,7 @@ class IAmRLAgent(QWidget):
 
             if done:
                 self.require_reset = True
+                self._game_screen.splash.appear()
                 
                 #TODO: splash screen required
                 print(f"Game finished! Full reward: {self._logic.full_reward}. Restart needed!")
@@ -135,9 +137,13 @@ class IAmRLAgent(QWidget):
     def reset(self):
         self._logic.reset()
         self.require_reset = False
+        self._reward_label.set_value(0)
         self.made_step_signal.emit()
+        self._game_screen.splash.disappear()
 
     def full_reset(self):
         self._logic.full_reset()
         self.require_reset = False
+        self._reward_label.set_value(0)
         self.made_step_signal.emit()
+        self._game_screen.splash.disappear()

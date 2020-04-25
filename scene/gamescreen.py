@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
 from .pad import FlippablePad
 from .objectPicture import ObjectPicture
+from .splash import SplashItem
 
 
 class GameScreen(QGraphicsView):
@@ -16,6 +17,9 @@ class GameScreen(QGraphicsView):
         self.setWindowFlags(Qt.FramelessWindowHint)
 
         self.setStyleSheet("background: transparent")
+
+        self.splash = SplashItem()
+        scene.addItem(self.splash)
 
         # field with cells
         self.pad = FlippablePad(self.logic)

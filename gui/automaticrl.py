@@ -38,7 +38,7 @@ class QLabelsVisualization(QWidget):
             _arrow.setScaledContents(False)
 
         self.setLayout(self._layout)
-        self.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed))
+        self.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
 
     def cell_entered(self):
         cell = self.sender()

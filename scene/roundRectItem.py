@@ -20,8 +20,8 @@ class RoundRectItem(QGraphicsObject):
     @property
     def gradient(self):
         gradient = QLinearGradient()
-        gradient.setStart(self.bounds.topLeft())
-        gradient.setFinalStop(self.bounds.bottomRight())
+        gradient.setStart((self.bounds.topLeft() + self.bounds.topRight()) / 2)
+        gradient.setFinalStop((self.bounds.bottomLeft() + self.bounds.bottomRight()) / 2)
         gradient.setColorAt(0, self.color)
         gradient.setColorAt(1, self.color.darker(200))
         return gradient
