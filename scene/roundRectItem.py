@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QRectF, Qt
-from PyQt5.QtGui import QColor, QLinearGradient, QPalette, QPen, QPixmap
+from PyQt5.QtGui import QColor, QLinearGradient, QPalette, QPen, QPixmap, QPainter, QBrush
 from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsObject
 
 class RoundRectItem(QGraphicsObject):
@@ -41,8 +41,14 @@ class RoundRectItem(QGraphicsObject):
             painter.drawRoundedRect(self.bounds, 25.0, 25.0)
 
         if not self.pix.isNull():
-            painter.scale(self.bounds.width() / self.pix.width(), self.bounds.height() / self.pix.height())
-            painter.drawPixmap(-self.pix.width() / 2, -self.pix.height() / 2, self.pix)
+            if self._rounded_pixmap:
+                painter.setRenderHint(QPainter.Antialiasing, True)
+                brush = QBrush(self.pix.scaled(self.bounds.width(), self.bounds.height()))
+                painter.setBrush(brush)
+                painter.drawRoundedRect(self.bounds, 25.0, 25.0)
+            else:
+                painter.scale(self.bounds.width() / self.pix.width(), self.bounds.height() / self.pix.height())
+                painter.drawPixmap(-self.pix.width() / 2, -self.pix.height() / 2, self.pix)
 
     def boundingRect(self):
         return self.bounds.adjusted(0, 0, 2, 2)
@@ -50,6 +56,7 @@ class RoundRectItem(QGraphicsObject):
     def pixmap(self):
         return QPixmap(self.pix)
 
-    def setPixmap(self, pixmap_path):
+    def setPixmap(self, pixmap_path, rounded_pixmap=False):
+        self._rounded_pixmap = rounded_pixmap
         self.pix = QPixmap(pixmap_path)
         self.update()
