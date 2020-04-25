@@ -177,10 +177,13 @@ class GameLogic:
         self._last_reward = 0
         self._full_reward = 0
 
+        self._start_params.terminal_cells = []
+        self._start_params.green_cells = []
+        self._start_params.lava_cells = []
+
         # firstly lava cells not to set scrat, hippo and watermelon in lava
         if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
             self._start_params.lava_cells = list(self._generate_random_positions(int(self._start_params.lava_random)))
-            self._start_params.terminal_cells.extend(self._start_params.lava_cells)
 
         # secondly green cells
         if (len(self._start_params.green_cells) == 0 or resample) and self._start_params.green_random:
