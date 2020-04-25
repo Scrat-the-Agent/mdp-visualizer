@@ -215,11 +215,12 @@ class ObjectPicture:
 
         # selection marker is inside the pad, so nothing complex here
         pos = icon.pos()
-        self.sel_pos = animate(self.selection, "pos", 300, pos)
+        self.sel_pos = animate(self.selection, "pos", time, pos)
 
         # turning the Scrat picture turned out to be a quest :(
-        trans = QTransform()
+        trans = QTransform()        
         trans.translate(pos.x() - self.pad.x(), pos.y() - self.pad.y())
+        trans.scale(self.pad.goal_scale, self.pad.goal_scale)
         trans.rotate(-self.pad.goal_rotation, Qt.XAxis)
         trans.translate(self.pad.x() - pos.x(), self.pad.y() - pos.y())
 
@@ -234,7 +235,7 @@ class ObjectPicture:
 
         # empirical (!) equation for size of marker
         coeff = cos(self.pad.goal_rotation * pi / 180)
-        sc = (res.height() / original.height()) ** 0.5 / coeff
+        sc = (res.height() / original.height()) ** 0.5 / coeff * self.pad.goal_scale
 
         # moving up to give illusion of "staying" on the platform
         new_pos_y += (res.height() - sc * original.height()) / 2

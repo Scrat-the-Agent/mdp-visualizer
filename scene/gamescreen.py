@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
@@ -38,7 +38,7 @@ class GameScreen(QGraphicsView):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setMinimumSize(50, 50)
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
-        self.setCacheMode(QGraphicsView.CacheBackground)
+        #self.setCacheMode(QGraphicsView.CacheBackground)
         self.setRenderHints(QPainter.Antialiasing |
                             QPainter.SmoothPixmapTransform | QPainter.TextAntialiasing)
 
@@ -86,3 +86,4 @@ class GameScreen(QGraphicsView):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)
+        

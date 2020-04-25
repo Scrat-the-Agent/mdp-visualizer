@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QRectF
-from PyQt5.QtWidgets import QGraphicsRotation
+from PyQt5.QtWidgets import QGraphicsRotation, QGraphicsScale
 
 import settings
 from utils import animate
@@ -26,9 +26,11 @@ class FlippablePad(RoundRectItem):
 
         # rotation
         self.goal_rotation = 0
+        self.goal_scale = 1
+        self.scaleTransform = QGraphicsScale(self)
         self.yRotation = QGraphicsRotation(self)
         self.yRotation.setAxis(Qt.XAxis)
-        self.setTransformations([self.yRotation])
+        self.setTransformations([self.scaleTransform, self.yRotation])
 
     def set_cell_value(self, column, row, new_value):
         self.cellAt(column, row).set_value(new_value)
@@ -51,3 +53,8 @@ class FlippablePad(RoundRectItem):
     def rotate(self):
         self.goal_rotation = settings.ROTATION_ANGLE if self.goal_rotation == 0 else 0
         self.rot = animate(self.yRotation, 'angle', settings.ROTATION_TIME, self.goal_rotation)
+        
+        self.goal_scale = 1 if self.goal_rotation == 0 else settings.SCALE_WHEN_ROTATED
+        self.scx = animate(self.scaleTransform, 'xScale', settings.ROTATION_TIME, self.goal_scale)
+        self.scy = animate(self.scaleTransform, 'yScale', settings.ROTATION_TIME, self.goal_scale)
+        self.scz = animate(self.scaleTransform, 'zScale', settings.ROTATION_TIME, self.goal_scale)

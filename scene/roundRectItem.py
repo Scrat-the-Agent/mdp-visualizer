@@ -11,7 +11,7 @@ class RoundRectItem(QGraphicsObject):
         self.pix = QPixmap()
         self.color = color            
 
-        self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
+        #self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
 
     def setFill(self, fill):
         self.fillRect = fill
