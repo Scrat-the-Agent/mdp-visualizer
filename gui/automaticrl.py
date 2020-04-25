@@ -156,7 +156,7 @@ class AutomaticRL(QWidget):
             print(old_x, old_y, x, y, self._q_learning.get_q_values((old_x, old_y)), reward, done)
 
             new_value = max(self._q_learning.get_q_values((old_x, old_y)))
-            self._gamescreen.set_cell_value(old_x, old_y, new_value)
+            self._game_screen.set_cell_value(old_x, old_y, new_value)
 
         self.made_step_signal.emit()
 
