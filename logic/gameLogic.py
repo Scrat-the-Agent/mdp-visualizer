@@ -129,9 +129,14 @@ class GameParams:
         # terminal
         self.terminal_random = terminal_random
         self.terminal_cells = terminal_cells or []
+        self._initial_terminal_cells = self.terminal_cells.copy()
 
         # penalty
         self.tick_penalty = tick_penalty
+
+    @property
+    def initial_terminal_cells(self):
+        return self._initial_terminal_cells
 
 
 class GameLogic:
@@ -193,6 +198,12 @@ class GameLogic:
                                                                              exclude_cells=exclude)
 
         # thirdly terminal cells not to set scrat or watermelon in terminal cell
+        if resample and (self._start_params.terminal_random or\
+                         self._start_params.lava_random and self._start_params.lava_is_terminal or\
+                         self._start_params.green_random and self._start_params.green_is_terminal):
+            # restore
+            self._start_params.terminal_cells = self._start_params.initial_terminal_cells.copy()
+
         if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
             exclude = ()
 
@@ -211,10 +222,15 @@ class GameLogic:
             if num_to_generate > 0:
                 self._start_params.terminal_cells = self._generate_random_positions(num_to_generate,
                                                                                     exclude_cells=exclude)
-        if self._start_params.lava_is_terminal:
-            self._start_params.terminal_cells += self.lava_cells
-        if self._start_params.green_is_terminal:
-            self._start_params.terminal_cells += self.green_cells
+            else:
+                self._start_params.terminal_cells = []
+
+        if resample or not self._start_params.terminal_random and (len(self._start_params.terminal_cells) ==
+                 len(self._start_params.initial_terminal_cells)):
+            if self._start_params.lava_is_terminal:
+                self._start_params.terminal_cells += self.lava_cells
+            if self._start_params.green_is_terminal:
+                self._start_params.terminal_cells += self.green_cells
 
         # scrat: without lava and terminal cells
         if (not self._start_params.scrat_start_position or resample) and self._start_params.scrat_random:
@@ -230,8 +246,6 @@ class GameLogic:
         if (not self._start_params.watermelon_start_position or resample) and self._start_params.watermelon_random:
             exclude = self._start_params.lava_cells + self._start_params.terminal_cells
             self._start_params.watermelon_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
-
-        print(self._start_params.terminal_cells)
 
     def _generate_new_game(self):
         # fill params

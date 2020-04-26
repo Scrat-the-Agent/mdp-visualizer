@@ -160,7 +160,7 @@ class AutomaticRL(QWidget):
 
         self.made_step_signal.emit()
 
-    def _reset(self):
+    def reset(self):
         self._q_learning.reset()
         self.made_step_signal.emit()
 
