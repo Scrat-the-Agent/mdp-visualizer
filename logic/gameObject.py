@@ -15,7 +15,6 @@ class GameObject:
         self._prev_y = -1
         self._lava_cells = params.lava_cells
 
-        self._step_num = 0
         self._move_prob = 0
 
     @property
@@ -48,14 +47,14 @@ class GameObject:
         self._y += dy
 
     def take_random_action(self):
-        self._step_num += 1
         random_action = None
 
         if self._move_prob > 0:
             take_action = random() < self._move_prob
             if take_action:
                 action_taken = False
-                while not action_taken:
+                num_samples = 0
+                while not action_taken and num_samples < 4:
                     random_action = randint(0, 3)
                     if random_action == 0 and self.x > 0 and (self.x - 1, self.y) not in self._lava_cells:
                         random_action = Actions.LEFT.value
@@ -72,7 +71,19 @@ class GameObject:
                         random_action = Actions.DOWN.value
                         action_taken = True
 
+                    num_samples += 1
+
+                if num_samples == 4 and not action_taken:
+                    random_action = None
+
         return random_action
+
+    def update_params(self, params):
+        self._game_height = params.game_height
+        self._game_width = params.game_width
+
+        # additional fields
+        self._lava_cells = params.lava_cells
 
 
 class Scrat(GameObject):

@@ -322,7 +322,6 @@ class GameLogic:
         cell_reward = self._game_board.cell_reward(self.scrat_position)
         self._last_reward = cell_reward + action_reward + tick_penalty
         self._full_reward += self._last_reward
-        print(self._game_board.is_terminal(self.scrat_position), self._hippo, self.hippo_is_fed)
         self._done = self._game_board.is_terminal(self.scrat_position) or (self._hippo and self.hippo_is_fed)
 
         state = self.scrat_position[1] * self._start_params.game_width + self.scrat_position[0]
@@ -474,16 +473,19 @@ class GameLogic:
 
         # scrat
         self._scrat.reset_position(self._start_params)
+        self._scrat.update_params(self._start_params)
         self._scrat.release_watermelon()
 
         # hippo
         if self._start_params.hippo_start_position:
             self._hippo.reset_position(self._start_params)
+            self._hippo.update_params(self._start_params)
             self._hippo.become_hungry()
 
         # watermelon
         if self._start_params.watermelon_start_position:
             self._watermelon.reset_position(self._start_params)
+            self._watermelon.update_params(self._start_params)
             self._watermelon.become_released()
             self._watermelon.become_not_eaten()
 
