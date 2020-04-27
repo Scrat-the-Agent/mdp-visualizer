@@ -56,7 +56,7 @@ class IAmRLAgent(QWidget):
         self._description_label = QLabel()
         self._description_label.setFont(QFont("Pacifico", 14, QFont.Normal))
         self._description_label.setAlignment(Qt.AlignCenter)
-        self._description_label.setText("Select one of 6 possible actions.\n\n Learn how to get as much \nreward per episode as possible!\n")
+        self._description_label.setText(f"Select one of {self._logic.n_actions} possible actions.\n\n Learn how to get as much \nreward per episode as possible!\n")
         self._description_label.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
 
         # Actions layout
@@ -109,7 +109,7 @@ class IAmRLAgent(QWidget):
 
     def enter_mode(self):
         self._game_screen.change_logic(self._logic)
-        self._reward_label.set_value(0)
+        self._reward_label.set_value(self._logic.full_reward)
 
     def exit_mode(self):
         self._game_screen.splash.disappear()
@@ -129,9 +129,6 @@ class IAmRLAgent(QWidget):
             if done:
                 self.require_reset = True
                 self._game_screen.splash.appear()
-                
-                #TODO: splash screen required
-                print(f"Game finished! Full reward: {self._logic.full_reward}. Restart needed!")
 
             self.made_step_signal.emit()
 
