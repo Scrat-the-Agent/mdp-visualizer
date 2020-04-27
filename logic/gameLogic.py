@@ -283,6 +283,10 @@ class GameLogic:
         # save last action
         self._last_action = action
 
+        # save last hippo position
+        if self._hippo:
+            last_hippo_position = self.hippo_position
+
         # move objects if they are present
         if self._hippo:
             direction = self._hippo.take_random_action()
@@ -309,7 +313,7 @@ class GameLogic:
         elif action == Actions.TAKE.value and self.scrat_position == self.watermelon_position:
             self._interact_with_watermelon(Actions.TAKE)
         elif action == Actions.PUT_FEED.value and self.scrat_carrying_watermelon:
-            if self.scrat_position == self.hippo_position:
+            if self.scrat_position == self.hippo_position and self.scrat_position == last_hippo_position:
                 self._interact_with_watermelon(Actions.FEED)
                 action_reward = self._interact_with_hippo(Actions.FEED)
             else:
