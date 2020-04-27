@@ -144,6 +144,7 @@ class IAmRLAgent(QWidget):
 
     def full_reset(self):
         self._logic.full_reset()
+        shuffle(self._actions_correspondence)
         self.require_reset = False
         self._reward_label.set_value(0)
         self.made_step_signal.emit()
