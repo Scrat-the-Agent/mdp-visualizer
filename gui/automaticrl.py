@@ -91,8 +91,8 @@ class AutomaticRL(QWidget):
         self._game_screen = game_screen
         self._params = GameParams(Modes.AUTOMATICRL,
                                   game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
-                                  lava_random=2, lava_reward=-10., lava_is_terminal=True,
-                                  green_random=5, green_is_terminal=True)
+                                  lava_random=5, lava_reward=-10., lava_is_terminal=True,
+                                  green_random=2, green_is_terminal=True)
 
         self._logic = GameLogic(self._params)
         self._q_learning = QLearning(self._logic)
