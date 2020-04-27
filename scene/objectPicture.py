@@ -68,11 +68,18 @@ class ObjectPicture:
             pic6.setPos(pos)
             pic6.setPixmap(QPixmap(settings.SCRAT_WITH_WATERMELON_HIPPO_IMAGE))
 
+            pic7 = RoundRectItem(QRectF(-100, -50, 200, 100))
+            pic7.setOpacity(0)
+            pic7.setZValue(self.y)
+            pic7.setPos(pos)
+            pic7.setPixmap(QPixmap(settings.SCRAT_HIPPO_FED_IMAGE))
+
             self.pics.append(pic2)
             self.pics.append(pic3)
             self.pics.append(pic4)
             self.pics.append(pic5)
             self.pics.append(pic6)
+            self.pics.append(pic7)
         elif isinstance(obj, Hippo):
             self.active_pic.setPixmap(QPixmap(settings.HIPPO_IMAGE))
 
@@ -143,6 +150,9 @@ class ObjectPicture:
         # is_near params --- for previous step!!! Update is only made after changing position (see below)
 
         if isinstance(self._obj, Scrat):
+            if self.cur_position == self._logic.hippo_position and self._logic.hippo_is_fed:  # hippo became fed
+                self._set_active_pic(6)  # 6 -- near hippo, hippo is fed
+
             if not self.is_near_hippo and self.cur_position == self._logic.hippo_position:  # became near hippo
                 if not self._obj.carrying_watermelon and self.cur_position != self._logic.watermelon_position:
                     self._set_active_pic(3)  # 3 -- near hippo without watermelon
