@@ -1,4 +1,5 @@
 import numpy as np
+import settings
 
 
 class QLearning:
@@ -12,7 +13,7 @@ class QLearning:
         self.Q = np.zeros([env.n_states, env.n_actions])
         self.state = self.env.reset()
 
-    def step(self, lr=0.1, gamma=0.95, eps=0.9):
+    def step(self, lr=0.1, gamma=0.95, eps=0.1):
         params = dict(lr=lr, gamma=gamma, eps=eps, n_steps=1)
         r_all, self.Q, self.state, done, info = q_learning(self.env, self.state, Q=self.Q, **params)
         return r_all, done, info
@@ -48,7 +49,9 @@ def q_learning(env, s, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
         if np.random.rand() < eps:
             a = np.random.choice(env.n_actions)
         else:
-            a = np.argmax(Q[s, :])
+            qvalues = Q[s, :]
+            V = max(qvalues)
+            a = np.random.choice(np.where(np.abs(qvalues - V) < settings.MAX_FLOAT_DIFF)[0])
         s1, r, done, _ = env.step(a)
         Q[s, a] = Q[s, a] + lr * (r + gamma * np.max(Q[s1, :]) - Q[s, a])
 

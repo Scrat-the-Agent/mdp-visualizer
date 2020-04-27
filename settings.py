@@ -40,6 +40,8 @@ GREEN_CELL = QColor(10, 200, 10, 255)
 MIN_REWARD = -10
 MAX_REWARD = +10
 
+MAX_FLOAT_DIFF = 1e-6
+
 REWARD_COLOR = QColor(0, 0, 0, 255)
 REWARD_FONT = QFont("Impact", weight=QFont.Bold)
 REWARD_FONT.setPixelSize(36)

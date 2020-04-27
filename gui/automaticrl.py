@@ -140,7 +140,6 @@ class AutomaticRL(QWidget):
         self._next_step()
 
     def _next_step(self):
-        print(self._logic.done)
         if self._logic.done:
             self._q_learning.reset()
         else:
