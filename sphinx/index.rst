@@ -10,11 +10,7 @@ Welcome to MDP Visualizer's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   module
-
-.. automodule:: gui
-
-
+   modules
 
 Indices and tables
 ==================
