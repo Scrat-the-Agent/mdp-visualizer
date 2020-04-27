@@ -12,7 +12,7 @@ class QLearning:
         self.Q = np.zeros([env.n_states, env.n_actions])
         self.state = self.env.reset()
 
-    def step(self, lr=0.1, gamma=0.95, eps=0.9):
+    def step(self, lr=0.1, gamma=0.95, eps=0.1):
         params = dict(lr=lr, gamma=gamma, eps=eps, n_steps=1)
         r_all, self.Q, self.state, done, info = q_learning(self.env, self.state, Q=self.Q, **params)
         return r_all, done, info
