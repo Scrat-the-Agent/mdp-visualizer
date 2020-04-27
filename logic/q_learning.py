@@ -1,3 +1,10 @@
+'''
+q_learning.py -- Q-learning module
+=================
+
+This is module for Q-learning
+'''
+
 import numpy as np
 import settings
 

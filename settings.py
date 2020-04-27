@@ -1,7 +1,6 @@
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QColor, QFont
 import gettext
-import sys
 
 ru = gettext.translation('game', 'locale', languages=['ru'])
 ru.install()

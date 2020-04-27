@@ -1,3 +1,9 @@
+'''
+gameLogic.py -- game logic
+==================================
+
+This is game logic module.
+'''
 from random import shuffle
 
 from .actions_objects_list import Actions, Objects, Modes
@@ -5,6 +11,13 @@ from .gameObject import Scrat, Hippo, Watermelon
 
 
 class GameCell:
+    """GameCell class represents one cell of a game board.
+
+    Attributes:
+        * `x` (int): horizontal position of a cell.
+        * `y` (int): vertical position of a cell.
+        * `reward` (float): reward which agent gets entering this cell.
+    """
     def __init__(self, x, y, params):
         self._x = x
         self._y = y
@@ -17,11 +30,13 @@ class GameCell:
         self.is_green = params["is_green"]
 
     @property
-    def x(self):
+    def x(self) -> int:
+        """Returns column"""
         return self._x
 
     @property
     def y(self):
+        """Returns row"""
         return self._y
 
 
