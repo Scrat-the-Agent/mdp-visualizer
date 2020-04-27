@@ -65,7 +65,7 @@ class AutomaticRL(QWidget):
         self._description_label = QLabel()
         self._description_label.setFont(QFont("Pacifico", 14, QFont.Normal))
         self._description_label.setAlignment(Qt.AlignCenter)
-        self._description_label.setText("Press play to launch\nQ-learning algorithm!\n\nHover over cells to watch\nQ-values for them.\n")
+        self._description_label.setText(settings.Q_LEARNING_DESCRIPTION)
         self._description_label.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
         self._command_layout.addWidget(self._description_label)
         

@@ -1,5 +1,12 @@
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QColor, QFont
+import gettext
+import sys
+
+ru = gettext.translation('game', 'locale', languages=['ru'])
+ru.install()
+
+Q_LEARNING_DESCRIPTION = _("Press play to launch\nQ-learning algorithm!\n\nHover over cells to watch\nQ-values for them.\n")
 
 BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
 REWARD_FRAME_IMAGE = "./images/frame.png"
