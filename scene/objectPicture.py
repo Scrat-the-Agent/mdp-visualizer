@@ -38,36 +38,42 @@ class ObjectPicture:
         if isinstance(obj, Scrat):
             self.active_pic.setPixmap(QPixmap(settings.SCRAT_IMAGE))
 
+            # 1 -- near watermelon
             pic2 = RoundRectItem(QRectF(-50, -50, 100, 100))
             pic2.setOpacity(0)
             pic2.setZValue(self.y)
             pic2.setPos(pos)
             pic2.setPixmap(QPixmap(settings.SCRAT_AND_WATERMELON_IMAGE))
 
+            # 2 -- with watermelon
             pic3 = RoundRectItem(QRectF(-50, -50, 100, 100))
             pic3.setOpacity(0)
             pic3.setZValue(self.y)
             pic3.setPos(pos)
             pic3.setPixmap(QPixmap(settings.SCRAT_WITH_WATERMELON_IMAGE))
 
+            # 3 -- near hippo without watermelon
             pic4 = RoundRectItem(QRectF(-100, -50, 200, 100))
             pic4.setOpacity(0)
             pic4.setZValue(self.y)
             pic4.setPos(pos)
             pic4.setPixmap(QPixmap(settings.SCRAT_HIPPO_IMAGE))
 
+            # 4 -- near hippo and watermelon
             pic5 = RoundRectItem(QRectF(-100, -50, 200, 100))
             pic5.setOpacity(0)
             pic5.setZValue(self.y)
             pic5.setPos(pos)
             pic5.setPixmap(QPixmap(settings.SCRAT_HIPPO_AND_WATERMELON_IMAGE))
 
+            # 5 -- near hippo carrying watermelon
             pic6 = RoundRectItem(QRectF(-100, -50, 200, 100))
             pic6.setOpacity(0)
             pic6.setZValue(self.y)
             pic6.setPos(pos)
             pic6.setPixmap(QPixmap(settings.SCRAT_WITH_WATERMELON_HIPPO_IMAGE))
 
+            # 6 -- near hippo, hippo is fed
             pic7 = RoundRectItem(QRectF(-100, -50, 200, 100))
             pic7.setOpacity(0)
             pic7.setZValue(self.y)
@@ -80,16 +86,23 @@ class ObjectPicture:
             self.pics.append(pic5)
             self.pics.append(pic6)
             self.pics.append(pic7)
+
+            if self.cur_position == self._logic.watermelon_position:  # near watermelon at start
+                self._set_active_pic(1)  # 1 -- near watermelon
         elif isinstance(obj, Hippo):
             self.active_pic.setPixmap(QPixmap(settings.HIPPO_IMAGE))
 
+            # 1 -- near watermelon
             pic2 = RoundRectItem(QRectF(-50, -50, 100, 100))
             pic2.setOpacity(0)
             pic2.setZValue(self.y)
             pic2.setPos(pos)
             pic2.setPixmap(QPixmap(settings.HIPPO_AND_WATERMELON_IMAGE))
 
-            self.pics.append(pic2)
+            self.pics.append(pic2)  # 0 -- far from watermelon, 1 -- near watermelon
+
+            if self.cur_position == self._logic.watermelon_position:
+                self._set_active_pic(1)
         elif isinstance(obj, Watermelon):
             self.active_pic.setPixmap(QPixmap(settings.WATERMELON_IMAGE))
 
@@ -153,7 +166,7 @@ class ObjectPicture:
             if self.cur_position == self._logic.hippo_position and self._logic.hippo_is_fed:  # hippo became fed
                 self._set_active_pic(6)  # 6 -- near hippo, hippo is fed
 
-            if not self.is_near_hippo and self.cur_position == self._logic.hippo_position:  # became near hippo
+            elif not self.is_near_hippo and self.cur_position == self._logic.hippo_position:  # became near hippo
                 if not self._obj.carrying_watermelon and self.cur_position != self._logic.watermelon_position:
                     self._set_active_pic(3)  # 3 -- near hippo without watermelon
                 elif self._obj.carrying_watermelon:
