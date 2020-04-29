@@ -8,7 +8,16 @@ from .splash import SplashItem
 
 
 class GameScreen(QGraphicsView):
+    """ """
     def _init_with_logic(self, logic):
+        """
+
+        Args:
+          logic: 
+
+        Returns:
+
+        """
         self.logic = logic
 
         scene = QGraphicsScene(self)
@@ -38,7 +47,7 @@ class GameScreen(QGraphicsView):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setMinimumSize(50, 50)
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
-        #self.setCacheMode(QGraphicsView.CacheBackground)
+        # self.setCacheMode(QGraphicsView.CacheBackground)
         self.setRenderHints(QPainter.Antialiasing |
                             QPainter.SmoothPixmapTransform | QPainter.TextAntialiasing)
 
@@ -54,15 +63,35 @@ class GameScreen(QGraphicsView):
 
     @property
     def cells(self):
+        """:return:"""
         return self.pad.cells
 
     def set_cell_value(self, column, row, value):
+        """
+
+        Args:
+          column: param row:
+          value: 
+          row: 
+
+        Returns:
+
+        """
         self.pad.set_cell_value(column, row, value)
 
     def change_logic(self, logic):
+        """
+
+        Args:
+          logic: 
+
+        Returns:
+
+        """
         self._init_with_logic(logic)
 
     def update_screen(self):
+        """ """
         # cells
         for cell in self.cells:
             cell.reset_lava()
@@ -74,15 +103,32 @@ class GameScreen(QGraphicsView):
         self.setFocus()
 
     def _make_rotated(self):
+        """ """
         self.pad.rotate()
         for obj in self.objects_pictures:
             obj.pad_rotated()
 
     def keyPressEvent(self, event):
+        """
+
+        Args:
+          event: 
+
+        Returns:
+
+        """
         if event.nativeVirtualKey() == Qt.Key_T:
             self._make_rotated()
             # self.rotated = not self.rotated
 
     def resizeEvent(self, event):
+        """
+
+        Args:
+          event: 
+
+        Returns:
+
+        """
         super().resizeEvent(event)
         self.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)

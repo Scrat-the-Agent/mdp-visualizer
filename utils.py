@@ -1,6 +1,18 @@
 from PyQt5.QtCore import QEasingCurve, QPropertyAnimation
 
+
 def animate(obj, prop, time, val):
+    """
+
+    Args:
+      obj: param prop:
+      time: param val:
+      prop: 
+      val: 
+
+    Returns:
+
+    """
     anim = QPropertyAnimation(obj, prop.encode())
     anim.setEasingCurve(QEasingCurve.InQuad)
     anim.setDuration(time)
@@ -9,10 +21,17 @@ def animate(obj, prop, time, val):
 
     return anim
 
+
 def value_update(value, target_value):
-    '''
-    By current value and target value returns value after one animation step (float)
-    '''
+    """By current value and target value returns value after one animation step (float)
+
+    Args:
+      value: 
+      target_value: 
+
+    Returns:
+
+    """
     diff = abs(target_value - value)
     step = max(0.1, diff / 20)
 

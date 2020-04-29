@@ -1,34 +1,72 @@
-'''
-q_learning.py -- Q-learning module
+"""
+Q-learning module
 =================
 
-This is module for Q-learning
-'''
+This module contains Q-learning in two forms:
+    1. ``q_learning`` functional interface which is more flexible
+    2. ``QLearning`` class interface which encapsulates environment and Q-values
+"""
 
 import numpy as np
 import settings
 
+__all__ = ('QLearning', 'q_learning')
+
 
 class QLearning:
+    """
+    Implements Q-learning. Encapsulates environment and provides
+    more convenient interface.
+    """
+
     def __init__(self, env):
+        """Constructs QLearning object.
+
+        Args:
+            env: Environment to train on.
+        """
         self.env = env
         self.Q = np.zeros([self.env.n_states, self.env.n_actions])
         self.state = self.env.reset()
 
     def reset_q(self, env=None):
+        """Resets Q-values and environment if needed.
+
+        Args:
+            env: new environment
+        """
         env = env or self.env
         self.Q = np.zeros([env.n_states, env.n_actions])
         self.state = self.env.reset()
 
     def step(self, lr=0.1, gamma=0.95, eps=0.1):
+        """Iterates one step of Q-learning.
+
+        Args:
+            lr (float): Learning rate.
+            gamma (float): Discount coefficient.
+            eps (float): Epsilon from eps-greedy.
+
+        Returns:
+            tuple: (cumulative reward, done, info about states, actions and rewards)
+        """
         params = dict(lr=lr, gamma=gamma, eps=eps, n_steps=1)
         r_all, self.Q, self.state, done, info = q_learning(self.env, self.state, Q=self.Q, **params)
         return r_all, done, info
 
     def reset(self):
+        """Resets environment to start new episode."""
         self.state = self.env.reset()
 
     def get_q_values(self, state=None):
+        """Returns all Q-values or for specific state
+
+        Args:
+            state: optional state to take Q-values from.
+
+        Returns:
+            np.array: Q-values for all states or for the given state.
+        """
         if state is None:
             return self.Q
         elif isinstance(state, tuple):
@@ -38,10 +76,32 @@ class QLearning:
             return self.Q[state]
 
     def get_value(self, state):
+        """Computes V function of state `state`.
+
+        Args:
+            state: the state, value of which we want to know.
+
+        Returns:
+            float: V(`state`)
+        """
         return np.max(self.Q[state])
 
 
 def q_learning(env, s, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
+    """Implements Q-learning.
+
+    Args:
+        env: Environment to train on.
+        s: Initial state.
+        n_steps (int): Maximum number of steps.
+        Q (np.array): Initial Q-values.
+        lr (float): Learning rate.
+        gamma (float): Discount coefficient.
+        eps (float): Epsilon from eps-greedy.
+
+    Returns:
+        tuple: (Cumulative reward, new Q-values, last state, done, info about rewards, actions, states)
+    """
     if Q is None:
         Q = np.zeros([env.n_states, env.n_actions])
 

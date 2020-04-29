@@ -1,3 +1,10 @@
+"""
+Automatic RL module
+======================
+
+This module contains widget for the automatic RL mode.
+"""
+
 from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QFont
@@ -8,17 +15,32 @@ from logic.gameLogic import GameLogic, GameParams
 from logic.actions_objects_list import Modes
 from .button import Button
 
+__all__ = ('AutomaticRL',)
+
 
 class QLabelsVisualization(QWidget):
-    def __init__(self, q_learning):
+    """
+    This widget is designed to show Q-values of the state
+    corresponding to cell over which cursor hovers.
+    """
+
+    def __init__(self, q_learning: QLearning):
+        """
+        Constructs widget with four arrows.
+        Takes Q-learning object as input to take
+        Q-values from it.
+
+        Args:
+            q_learning(QLearning): object that implements Q-learning algorithm
+        """
         super().__init__()
 
         self._q_learning = q_learning
         self._layout = QGridLayout()
 
-        self._q_labels = [QLabel() for i in range(4)]
-        self._arrows = [QLabel() for i in range(4)]
-        
+        self._q_labels = [QLabel() for _ in range(4)]
+        self._arrows = [QLabel() for _ in range(4)]
+
         pics = [settings.RIGHT_ARROW_BUTTON_IMAGE,
                 settings.LEFT_ARROW_BUTTON_IMAGE,
                 settings.DOWN_ARROW_BUTTON_IMAGE,
@@ -41,6 +63,7 @@ class QLabelsVisualization(QWidget):
         self.setFixedSize(300, 250)
 
     def cell_entered(self):
+        """Updates Q-values on the arrows"""
         cell = self.sender()
         x, y = cell.x, cell.y
         qvalues = self._q_learning.get_q_values((x, y))
@@ -50,11 +73,20 @@ class QLabelsVisualization(QWidget):
             self._q_labels[i].setText(f"{qvalues[i]:.2f}")
 
     def cell_left(self):
+        """Removes text from arrows if cursor hovers over nothing"""
         for i in range(4):
             self._q_labels[i].setText("")
 
 
+# noinspection PyArgumentEqualDefault,PyCompatibility
 class AutomaticRL(QWidget):
+    """
+    This class represents a widget for the Q-learning mode.
+    It consists of play/step buttons, labels for visualization of
+    Q-values for hovered cell. It uses instance of `logic.gameLogic.GameLogic`
+    as an environment for RL agent.
+    """
+
     clicked_mode = pyqtSignal()
     made_step_signal = pyqtSignal()
 
@@ -69,7 +101,7 @@ class AutomaticRL(QWidget):
         self._description_label.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
         self._description_label.setFixedSize(settings.AUTO_RL_DESCRIPTION_NAILS)
         self._command_layout.addWidget(self._description_label, 0, Qt.AlignHCenter)
-        
+
         # q-values visualization
         self._qlabels = QLabelsVisualization(self._q_learning)
         self._command_layout.addWidget(self._qlabels, 0, Qt.AlignHCenter)
@@ -88,13 +120,22 @@ class AutomaticRL(QWidget):
         self.setLayout(self._command_layout)
 
     def __init__(self, game_screen):
+        """Constructs an AutomaticRL widget.
+
+        AutomaticRL widget needs `game_screen` to update
+        information in cells about Q-values.
+        Args:
+            game_screen: screen which draws the game.
+        """
         super().__init__()
-        
+
         self._game_screen = game_screen
         self._params = GameParams(Modes.AUTOMATICRL,
                                   game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
-                                  lava_random=settings.AUTOMATIC_LAVA_RANDOM, lava_reward=settings.LAVA_REWARD, lava_is_terminal=True,
-                                  green_random=settings.GREEN_RANDOM, green_reward=settings.GREEN_REWARD, green_is_terminal=True)
+                                  lava_random=settings.AUTOMATIC_LAVA_RANDOM, lava_reward=settings.LAVA_REWARD,
+                                  lava_is_terminal=True,
+                                  green_random=settings.GREEN_RANDOM, green_reward=settings.GREEN_REWARD,
+                                  green_is_terminal=True)
 
         self._logic = GameLogic(self._params)
         self._q_learning = QLearning(self._logic)
@@ -112,16 +153,25 @@ class AutomaticRL(QWidget):
         self.made_step_signal.connect(game_screen.update_screen)
 
     def enter_mode(self):
+        """Replaces game screen logic with RL environment and resets cells."""
         self._game_screen.change_logic(self._logic)
         self.init_cells()
 
     def exit_mode(self):
+        """Stops playing. Used when the mode is being changed."""
         if self._playing:
             self._playing = False
             self._timer.stop()
             return
 
     def init_cells(self):
+        """Reinitializes self if cells have changed.
+
+        Internally does two things:
+            1. Connects signals to new cells;
+            2. Resets values for each cell.
+        """
+
         # connecting mouse hover from cells to our q-values visualization
         for cell in self._game_screen.cells:
             cell.enter_signal.connect(self._qlabels.cell_entered)
@@ -159,11 +209,13 @@ class AutomaticRL(QWidget):
             self._play_button.updatePic(settings.PLAY_BUTTON_IMAGE)
 
     def reset(self):
+        """Reset game state and send signal that state changed"""
         self._stop_playing()
         self._q_learning.reset()
         self.made_step_signal.emit()
 
     def full_reset(self):
+        """Reinitialize logic randomly"""
         self._stop_playing()
         self._logic.full_reset()
         self._q_learning.reset_q()

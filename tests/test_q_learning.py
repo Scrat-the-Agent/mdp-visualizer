@@ -6,21 +6,41 @@ from q_learning import q_learning
 
 
 class TestEnv:
+    """
+
+    """
     def __init__(self):
         self.env = gym.make('FrozenLake-v0')
 
     def step(self, a):
+        """
+
+        :param a:
+        :return:
+        """
         return self.env.step(a)
 
     def reset(self):
+        """
+
+        :return:
+        """
         return self.env.reset()
 
     @property
     def n_states(self):
+        """
+
+        :return:
+        """
         return self.env.observation_space.n
 
     @property
     def n_actions(self):
+        """
+
+        :return:
+        """
         return self.env.action_space.n
 
 

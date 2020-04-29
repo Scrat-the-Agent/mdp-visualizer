@@ -5,7 +5,9 @@ from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
 from utils import animate
 from .roundRectItem import RoundRectItem
 
+
 class SplashItem(RoundRectItem):
+    """ """
     def __init__(self):
         super().__init__(QRectF(0, 0, 500, 180), QColor(179, 179, 255, 235))
 
@@ -15,6 +17,16 @@ class SplashItem(RoundRectItem):
         self.setOpacity(0)
 
     def paint(self, painter, option, widget):
+        """
+
+        Args:
+          painter: param option:
+          widget: 
+          option: 
+
+        Returns:
+
+        """
         super().paint(painter, option, widget)
 
         # Text
@@ -26,11 +38,13 @@ class SplashItem(RoundRectItem):
         painter.drawText(textRect, Qt.AlignCenter, self.text)
 
     def disappear(self):
+        """ """
         self.disap = animate(self, 'opacity', 500, 0.0)
 
         self.move = animate(self, 'y', 500, -190)
 
     def appear(self):
+        """ """
         self.disap = animate(self, 'opacity', 500, 1.0)
 
         self.setY(-190)

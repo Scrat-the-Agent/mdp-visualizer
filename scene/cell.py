@@ -9,6 +9,7 @@ from logic.actions_objects_list import Modes
 
 
 class Cell(RoundRectItem):
+    """ """
     enter_signal = pyqtSignal()
     leave_signal = pyqtSignal()
 
@@ -36,6 +37,7 @@ class Cell(RoundRectItem):
         self.reset_lava()
 
     def reset_lava(self):
+        """ """
         if self.logic.game_mode == Modes.IAMRLAGENT:
             if self.logic.game_board.lava_is_here((self.x, self.y)):
                 self.color = None
@@ -47,6 +49,7 @@ class Cell(RoundRectItem):
             self.update()
 
     def _compute_color(self):
+        """ """
         if self.value:
             mid = (settings.MIN_REWARD + settings.MAX_REWARD) / 2  # TODO: logic gameboard ref
             if self.value < mid:
@@ -67,6 +70,16 @@ class Cell(RoundRectItem):
         )
 
     def paint(self, painter, option, widget):
+        """
+
+        Args:
+          painter: param option:
+          widget: 
+          option: 
+
+        Returns:
+
+        """
         self.color = self._compute_color()
         super().paint(painter, option, widget)
 
@@ -79,18 +92,43 @@ class Cell(RoundRectItem):
             painter.drawText(text_rect, flags, f"{self.value:.1f}")
 
     def hoverEnterEvent(self, event):
+        """
+
+        Args:
+          event: 
+
+        Returns:
+
+        """
         self.anim = animate(self, "opacity", 100, 1)
         self.enter_signal.emit()
 
     def hoverLeaveEvent(self, event):
+        """
+
+        Args:
+          event: 
+
+        Returns:
+
+        """
         self.anim = animate(self, "opacity", 100, settings.BASE_CELL_OPACITY)
         self.leave_signal.emit()
 
     def set_value(self, new_value):
+        """
+
+        Args:
+          new_value: 
+
+        Returns:
+
+        """
         self._target_value = new_value
         self._timer.start(10)  # TODO: settings!
 
     def _update_value(self):
+        """ """
         self.value, stop_timer = value_update(self.value, self._target_value)
         if stop_timer:
             self._timer.stop()
@@ -98,5 +136,14 @@ class Cell(RoundRectItem):
         self.update()
 
     def posForLocation(self, column, row):
+        """
+
+        Args:
+          column: param row:
+          row: 
+
+        Returns:
+
+        """
         width, height = self.logic.game_size
         return QPointF(column * 150, row * 150) - QPointF((width - 1) * 75, (height - 1) * 75)

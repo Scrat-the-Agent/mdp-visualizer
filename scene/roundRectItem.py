@@ -2,23 +2,35 @@ from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QColor, QLinearGradient, QPalette, QPen, QPixmap, QPainter, QBrush
 from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsObject
 
+
+# noinspection PyArgumentEqualDefault
 class RoundRectItem(QGraphicsObject):
+    """ """
     def __init__(self, bounds, color=None, parent=None):
         super(RoundRectItem, self).__init__(parent)
 
         self.fillRect = False
         self.bounds = QRectF(bounds)
         self.pix = QPixmap()
-        self.color = color            
+        self.color = color
 
-        #self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
+        # self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
 
     def setFill(self, fill):
+        """
+
+        Args:
+          fill: 
+
+        Returns:
+
+        """
         self.fillRect = fill
         self.update()
 
     @property
     def gradient(self):
+        """:return:"""
         gradient = QLinearGradient()
         gradient.setStart((self.bounds.topLeft() + self.bounds.topRight()) / 2)
         gradient.setFinalStop((self.bounds.bottomLeft() + self.bounds.bottomRight()) / 2)
@@ -27,6 +39,16 @@ class RoundRectItem(QGraphicsObject):
         return gradient
 
     def paint(self, painter, option, widget):
+        """
+
+        Args:
+          painter: param option:
+          widget: 
+          option: 
+
+        Returns:
+
+        """
         if self.color:
             painter.setPen(Qt.NoPen)
             painter.setBrush(QColor(0, 0, 0, 64))
@@ -51,12 +73,23 @@ class RoundRectItem(QGraphicsObject):
                 painter.drawPixmap(-self.pix.width() / 2, -self.pix.height() / 2, self.pix)
 
     def boundingRect(self):
+        """:return:"""
         return self.bounds.adjusted(0, 0, 2, 2)
 
     def pixmap(self):
+        """:return:"""
         return QPixmap(self.pix)
 
     def setPixmap(self, pixmap_path, rounded_pixmap=False):
+        """
+
+        Args:
+          pixmap_path: param rounded_pixmap:
+          rounded_pixmap:  (Default value = False)
+
+        Returns:
+
+        """
         self._rounded_pixmap = rounded_pixmap
         self.pix = QPixmap(pixmap_path)
         self.update()

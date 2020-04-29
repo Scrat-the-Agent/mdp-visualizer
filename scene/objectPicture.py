@@ -12,6 +12,7 @@ from logic.actions_objects_list import Actions
 
 
 class ObjectPicture:
+    """ """
     def __init__(self, obj, scene, pad, logic):
         self._obj = obj
         self.pad = pad
@@ -146,21 +147,26 @@ class ObjectPicture:
 
     @property
     def x(self):
+        """:return:"""
         return self._obj.x
 
     @property
     def y(self):
+        """:return:"""
         return self._obj.y
 
     @property
     def dx_dy(self):
+        """:return:"""
         return self._obj.dx_dy
 
     @property
     def cur_position(self):
+        """:return:"""
         return self.x, self.y
 
     def _update_neighborhood_params(self):
+        """ """
         if isinstance(self._obj, Scrat):
             self.is_near_watermelon = self.cur_position == self._logic.watermelon_position
             self.is_near_hippo = self.cur_position == self._logic.hippo_position
@@ -172,12 +178,21 @@ class ObjectPicture:
             self.is_near_hippo = self.cur_position == self._logic.hippo_position
 
     def _set_active_pic(self, num):
+        """
+
+        Args:
+          num: 
+
+        Returns:
+
+        """
         self.disappearing_pic = self.active_pic
         self.active_pic = self.pics[num]
         self.anim = animate(self.active_pic, "opacity", 100, 1)
         self.anim2 = animate(self.disappearing_pic, "opacity", 100, 0)
 
     def change_position(self):
+        """ """
         for pic in self.pics:
             pic.setZValue(self.y)
 
@@ -259,6 +274,14 @@ class ObjectPicture:
         self._update_neighborhood_params()
 
     def move(self, time):
+        """
+
+        Args:
+          time: 
+
+        Returns:
+
+        """
         icon = self.pad.cellAt(self.x, self.y)
 
         # selection marker is inside the pad, so nothing complex here
@@ -304,4 +327,5 @@ class ObjectPicture:
                 self.anim_list.append(animate(pic, "scale", time, sc))
 
     def pad_rotated(self):
+        """ """
         self.move(settings.ROTATION_TIME)

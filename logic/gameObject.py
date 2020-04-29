@@ -4,6 +4,7 @@ from .actions_objects_list import Actions
 
 
 class GameObject:
+    """ """
     def __init__(self, params):
         self._x = 0
         self._y = 0
@@ -19,34 +20,57 @@ class GameObject:
 
     @property
     def x(self):
+        """:return:"""
         return self._x
 
     @property
     def y(self):
+        """:return:"""
         return self._y
 
     @property
     def cur_position(self):
+        """:return:"""
         return self._x, self._y
 
     @property
     def prev_position(self):
+        """:return:"""
         return self._prev_x, self._prev_y
 
     @property
     def dx_dy(self):
+        """:return:"""
         return self._x - self._prev_x, self._y - self._prev_y
 
     def reset_position(self, params):
+        """
+
+        Args:
+          params: 
+
+        Returns:
+
+        """
         pass
 
     def change_position(self, dx, dy):
+        """
+
+        Args:
+          dx: param dy:
+          dy: 
+
+        Returns:
+
+        """
         self._prev_x = self._x
         self._prev_y = self._y
         self._x += dx
         self._y += dy
 
     def take_random_action(self):
+        """:return:"""
         random_action = None
 
         if self._move_prob > 0:
@@ -79,6 +103,14 @@ class GameObject:
         return random_action
 
     def update_params(self, params):
+        """
+
+        Args:
+          params: 
+
+        Returns:
+
+        """
         self._game_height = params.game_height
         self._game_width = params.game_width
 
@@ -87,6 +119,7 @@ class GameObject:
 
 
 class Scrat(GameObject):
+    """ """
     def __init__(self, params):
         super().__init__(params)
 
@@ -98,23 +131,35 @@ class Scrat(GameObject):
         self._carrying_watermelon = False
 
     def reset_position(self, params):
+        """
+
+        Args:
+          params: 
+
+        Returns:
+
+        """
         self._x = params.scrat_start_position[0]
         self._y = params.scrat_start_position[1]
         self._prev_x = -1
         self._prev_y = -1
 
     def take_watermelon(self):
+        """ """
         self._carrying_watermelon = True
 
     def release_watermelon(self):
+        """ """
         self._carrying_watermelon = False
 
     @property
     def carrying_watermelon(self):
+        """:return:"""
         return self._carrying_watermelon
 
 
 class Hippo(GameObject):
+    """ """
     def __init__(self, params):
         super().__init__(params)
 
@@ -127,23 +172,35 @@ class Hippo(GameObject):
         self._is_fed = False
 
     def reset_position(self, params):
+        """
+
+        Args:
+          params: 
+
+        Returns:
+
+        """
         self._x = params.hippo_start_position[0]
         self._y = params.hippo_start_position[1]
         self._prev_x = -1
         self._prev_y = -1
 
     def become_fed(self):
+        """ """
         self._is_fed = True
 
     def become_hungry(self):
+        """ """
         self._is_fed = False
 
     @property
     def is_fed(self):
+        """:return:"""
         return self._is_fed
 
 
 class Watermelon(GameObject):
+    """ """
     def __init__(self, params):
         super().__init__(params)
 
@@ -157,27 +214,41 @@ class Watermelon(GameObject):
         self._is_eaten = False
 
     def reset_position(self, params):
+        """
+
+        Args:
+          params: 
+
+        Returns:
+
+        """
         self._x = params.watermelon_start_position[0]
         self._y = params.watermelon_start_position[1]
         self._prev_x = -1
         self._prev_y = -1
 
     def become_taken(self):
+        """ """
         self._is_taken = True
 
     def become_released(self):
+        """ """
         self._is_taken = False
 
     def become_eaten(self):
+        """ """
         self._is_eaten = True
 
     def become_not_eaten(self):
+        """ """
         self._is_eaten = False
 
     @property
     def is_taken(self):
+        """:return:"""
         return self._is_taken
 
     @property
     def is_eaten(self):
+        """:return:"""
         return self._is_eaten

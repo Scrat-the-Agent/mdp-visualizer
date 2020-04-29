@@ -12,7 +12,9 @@ from logic.actions_objects_list import Modes
 from scene.gamescreen import GameScreen
 from .button import Button
 
+
 class ModeSwitcher(QWidget):
+    """ """
     def __init__(self, contents):
         super().__init__()
         self._contents = contents
@@ -22,45 +24,67 @@ class ModeSwitcher(QWidget):
             content.setParent(self)
 
     def resizeEvent(self, evt=None):
+        """
+
+        Args:
+          evt: Default value = None)
+
+        Returns:
+
+        """
         for id, content in enumerate(self._contents):
             content.setGeometry(0 if id == self._id else -1.2 * self.width(), 0, self.width(), self.height())
 
     def sizeHint(self):
+        """:return:"""
         return QSize(
             max(c.sizeHint().width() for c in self._contents),
             max(c.sizeHint().height() for c in self._contents)
         )
 
     def minimumSizeHint(self):
+        """:return:"""
         return QSize(
             max(c.minimumSizeHint().width() for c in self._contents),
             max(c.minimumSizeHint().height() for c in self._contents)
         )
 
     def turn(self, id):
+        """
+
+        Args:
+          id: 
+
+        Returns:
+
+        """
         if id != self._id:
-            self.disappear_anim = animate(self._contents[self._id], "geometry", settings.MODE_SWITCH_TIME, 
-                                    QRectF(1.2 * -self.width(), 0, self.width(), self.height()))
+            self.disappear_anim = animate(self._contents[self._id], "geometry", settings.MODE_SWITCH_TIME,
+                                          QRectF(1.2 * -self.width(), 0, self.width(), self.height()))
             self.disappear_anim.finished.connect(self._animation_finish)
-            
+
             self._id = id
 
             self._contents[self._id].setVisible(True)
             self._contents[self._id].setGeometry(1.2 * self.width(), 0, self.width(), self.height())
-            self.appear_anim = animate(self._contents[self._id], "geometry", settings.MODE_SWITCH_TIME, 
-                                    QRectF(0, 0, self.width(), self.height()))
-    
+            self.appear_anim = animate(self._contents[self._id], "geometry", settings.MODE_SWITCH_TIME,
+                                       QRectF(0, 0, self.width(), self.height()))
+
     def _animation_finish(self):
+        """ """
         for id, content in enumerate(self._contents):
             if id != self._id:
                 content.setVisible(False)
 
     @property
     def current_widget(self):
+        """:return:"""
         return self._contents[self._id]
 
 
+# noinspection PyArgumentEqualDefault
 class MainWindow(QMainWindow):
+    """ """
     def __init__(self):
         super().__init__()
 
@@ -109,7 +133,7 @@ class MainWindow(QMainWindow):
         self._central_layout.addWidget(self._left_widget)
         self._central_layout.addWidget(self._game_screen)
 
-        self._central_widget = QWidget() 
+        self._central_widget = QWidget()
         self._central_widget.setLayout(self._central_layout)
         self.setCentralWidget(self._central_widget)
 
@@ -119,7 +143,15 @@ class MainWindow(QMainWindow):
         self._full_reset_button.clicked.connect(self._full_reset)
         self._combo_box.currentIndexChanged.connect(self._change_mode)
 
-    def _change_mode(self, id):        
+    def _change_mode(self, id):
+        """
+
+        Args:
+          id: 
+
+        Returns:
+
+        """
         self._mode_widget.current_widget.exit_mode()
         self._mode_widget.turn(id)
         self._mode_widget.current_widget.enter_mode()
@@ -128,7 +160,9 @@ class MainWindow(QMainWindow):
         self._game_screen.setFocus()
 
     def _reset(self):
+        """ """
         self._mode_widget.current_widget.reset()
 
     def _full_reset(self):
-        self._mode_widget.current_widget.full_reset()       
+        """ """
+        self._mode_widget.current_widget.full_reset()

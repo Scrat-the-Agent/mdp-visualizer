@@ -12,6 +12,7 @@ from .button import Button
 
 
 class RewardLabel(QLabel):
+    """ """
     def __init__(self):
         super().__init__()
         self.setFixedSize(225, 150)
@@ -32,14 +33,31 @@ class RewardLabel(QLabel):
         self._timer.timeout.connect(self._update_value)
 
     def resizeEvent(self, e):
+        """
+
+        Args:
+          e: 
+
+        Returns:
+
+        """
         self.nut.setGeometry(self.height() / 4, self.height() / 4, self.height() / 2, self.height() / 2)
         self.reward.setGeometry(self.height() / 2, 0, self.width() - self.height() / 2, self.height())
 
     def set_value(self, new_value):
+        """
+
+        Args:
+          new_value: 
+
+        Returns:
+
+        """
         self._target_value = new_value
         self._timer.start(settings.VALUE_UPDATE_TIME)
 
     def _update_value(self):
+        """ """
         self.value, stop_timer = value_update(self.value, self._target_value)
         if stop_timer:
             self._timer.stop()
@@ -47,11 +65,14 @@ class RewardLabel(QLabel):
         self.reward.setText(f"{self.value:.1f}")
 
 
+# noinspection PyArgumentEqualDefault
 class IAmRLAgent(QWidget):
+    """ """
     clicked_mode = pyqtSignal()
     made_step_signal = pyqtSignal()
 
     def _init_ui(self):
+        """ """
         # Text label
         self._description_label = QLabel()
         self._description_label.setFont(QFont("Pacifico", 14, QFont.Normal))
@@ -107,13 +128,16 @@ class IAmRLAgent(QWidget):
         self.made_step_signal.connect(game_screen.update_screen)
 
     def enter_mode(self):
+        """ """
         self._game_screen.change_logic(self._logic)
         self._reward_label.set_value(self._logic.full_reward)
 
     def exit_mode(self):
+        """ """
         self._game_screen.splash.disappear()
 
     def _action_chosen(self):
+        """ """
         if not self.require_reset:
             clicked_button = self.sender()
             action = -1
@@ -132,6 +156,7 @@ class IAmRLAgent(QWidget):
             self.made_step_signal.emit()
 
     def reset(self):
+        """ """
         self._logic.reset()
         self.require_reset = False
         self._reward_label.set_value(self._logic.full_reward)
@@ -139,6 +164,7 @@ class IAmRLAgent(QWidget):
         self._game_screen.splash.disappear()
 
     def full_reset(self):
+        """ """
         self._logic.full_reset()
         shuffle(self._actions_correspondence)
         self.require_reset = False
