@@ -86,10 +86,10 @@ class IAmRLAgent(QWidget):
         self._game_screen = game_screen
         self._params = GameParams(Modes.IAMRLAGENT,
                                   game_height=settings.GAME_HEIGHT, game_width=settings.GAME_WIDTH,
-                                  hippo_random=True, hippo_move_prob=0.3,
-                                  watermelon_random=True, watermelon_move_prob=0.1,
-                                  lava_random=5, lava_is_terminal=True,
-                                  tick_penalty=-0.1)
+                                  hippo_random=True, hippo_move_prob=settings.HIPPO_MOVE_PROB,
+                                  watermelon_random=True, watermelon_move_prob=settings.WATERMELON_MOVE_PROB,
+                                  lava_random=settings.IAMRLAGENT_LAVA_RANDOM, lava_is_terminal=True,
+                                  tick_penalty=settings.TICK_PENALTY)
         self._logic = GameLogic(self._params)
 
         # Shuffle actions meaning   
@@ -108,7 +108,7 @@ class IAmRLAgent(QWidget):
 
     def enter_mode(self):
         self._game_screen.change_logic(self._logic)
-        self._reward_label.set_value(0)
+        self._reward_label.set_value(self._logic.full_reward)
 
     def exit_mode(self):
         self._game_screen.splash.disappear()
@@ -128,16 +128,13 @@ class IAmRLAgent(QWidget):
             if done:
                 self.require_reset = True
                 self._game_screen.splash.appear()
-                
-                #TODO: splash screen required
-                print(f"Game finished! Full reward: {self._logic.full_reward}. Restart needed!")
 
             self.made_step_signal.emit()
 
     def reset(self):
         self._logic.reset()
         self.require_reset = False
-        self._reward_label.set_value(0)
+        self._reward_label.set_value(self._logic.full_reward)
         self.made_step_signal.emit()
         self._game_screen.splash.disappear()
 
@@ -145,6 +142,6 @@ class IAmRLAgent(QWidget):
         self._logic.full_reset()
         shuffle(self._actions_correspondence)
         self.require_reset = False
-        self._reward_label.set_value(0)
+        self._reward_label.set_value(self._logic.full_reward)
         self.made_step_signal.emit()
         self._game_screen.splash.disappear()

@@ -1,3 +1,9 @@
+'''
+gameLogic.py -- game logic
+==================================
+
+This is game logic module.
+'''
 from random import shuffle
 
 from .actions_objects_list import Actions, Objects, Modes
@@ -5,6 +11,13 @@ from .gameObject import Scrat, Hippo, Watermelon
 
 
 class GameCell:
+    """GameCell class represents one cell of a game board.
+
+    Attributes:
+        * `x` (int): horizontal position of a cell.
+        * `y` (int): vertical position of a cell.
+        * `reward` (float): reward which agent gets entering this cell.
+    """
     def __init__(self, x, y, params):
         self._x = x
         self._y = y
@@ -17,11 +30,13 @@ class GameCell:
         self.is_green = params["is_green"]
 
     @property
-    def x(self):
+    def x(self) -> int:
+        """Returns column"""
         return self._x
 
     @property
     def y(self):
+        """Returns row"""
         return self._y
 
 
@@ -198,8 +213,8 @@ class GameLogic:
                                                                              exclude_cells=exclude)
 
         # thirdly terminal cells not to set scrat or watermelon in terminal cell
-        if resample and (self._start_params.terminal_random or\
-                         self._start_params.lava_random and self._start_params.lava_is_terminal or\
+        if resample and (self._start_params.terminal_random or
+                         self._start_params.lava_random and self._start_params.lava_is_terminal or
                          self._start_params.green_random and self._start_params.green_is_terminal):
             # restore
             self._start_params.terminal_cells = self._start_params.initial_terminal_cells.copy()
@@ -226,7 +241,7 @@ class GameLogic:
                 self._start_params.terminal_cells = []
 
         if resample or not self._start_params.terminal_random and (len(self._start_params.terminal_cells) ==
-                 len(self._start_params.initial_terminal_cells)):
+                                                                   len(self._start_params.initial_terminal_cells)):
             if self._start_params.lava_is_terminal:
                 self._start_params.terminal_cells += self.lava_cells
             if self._start_params.green_is_terminal:
@@ -284,8 +299,7 @@ class GameLogic:
         self._last_action = action
 
         # save last hippo position
-        if self._hippo:
-            last_hippo_position = self.hippo_position
+        last_hippo_position = self.hippo_position if self._hippo else None
 
         # move objects if they are present
         if self._hippo:

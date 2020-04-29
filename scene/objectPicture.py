@@ -88,7 +88,27 @@ class ObjectPicture:
             self.pics.append(pic7)
 
             if self.cur_position == self._logic.watermelon_position:  # near watermelon at start
-                self._set_active_pic(1)  # 1 -- near watermelon
+                if self.cur_position == self._logic.hippo_position:
+                    if self._logic.hippo_is_fed:
+                        self.pics[6].setOpacity(1)  # 6 -- near hippo, hippo is fed
+                        self.active_pic.setOpacity(0)
+                        self.active_pic = self.pics[6]
+                    elif self._logic.scrat_carrying_watermelon:
+                        self.pics[5].setOpacity(1)  # 5 -- near hippo carrying watermelon
+                        self.active_pic.setOpacity(0)
+                        self.active_pic = self.pics[5]
+                    else:
+                        self.pics[4].setOpacity(1)  # 4 -- near hippo and watermelon
+                        self.active_pic.setOpacity(0)
+                        self.active_pic = self.pics[4]
+                else:
+                    self.pics[1].setOpacity(1)  # 1 -- near watermelon
+                    self.active_pic.setOpacity(0)
+                    self.active_pic = self.pics[1]
+            elif self.cur_position == self._logic.hippo_position:  # near hippo at start
+                self.pics[3].setOpacity(1)  # 3 -- near hippo without watermelon
+                self.active_pic.setOpacity(0)
+                self.active_pic = self.pics[3]
         elif isinstance(obj, Hippo):
             self.active_pic.setPixmap(QPixmap(settings.HIPPO_IMAGE))
 
@@ -101,9 +121,16 @@ class ObjectPicture:
 
             self.pics.append(pic2)  # 0 -- far from watermelon, 1 -- near watermelon
 
-            if self.cur_position == self._logic.watermelon_position:
-                self._set_active_pic(1)
+            if self.cur_position == self._logic.scrat_position:
+                self.active_pic.setOpacity(0)
+            elif self.cur_position == self._logic.watermelon_position:
+                self.pics[1].setOpacity(1)  # 1 -- near watermelon
+                self.active_pic.setOpacity(0)
+                self.active_pic = self.pics[1]
         elif isinstance(obj, Watermelon):
+            if self.cur_position == self._logic.scrat_position or self.cur_position == self._logic.hippo_position:
+                self.active_pic.setOpacity(0)
+
             self.active_pic.setPixmap(QPixmap(settings.WATERMELON_IMAGE))
 
         self._update_neighborhood_params()
@@ -116,8 +143,6 @@ class ObjectPicture:
         self.anim_list = []
         self.anim = None
         self.anim2 = None
-
-        self.change_position()
 
     @property
     def x(self):

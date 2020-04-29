@@ -1,7 +1,6 @@
 from PyQt5.QtCore import Qt, QRectF, QSize
 from PyQt5.QtGui import QColor, QFont
 import gettext
-import sys
 
 # LOCALISATION AND TEXTS -------------------------------------------------------
 
@@ -61,7 +60,14 @@ BASE_CELL_OPACITY = 0.65
 GAME_HEIGHT = 3
 GAME_WIDTH = 4
 
-LAVA_RANDOM = 5
+# IAmRLAgent mode
+IAMRLAGENT_LAVA_RANDOM = 5
+HIPPO_MOVE_PROB = 0.3
+WATERMELON_MOVE_PROB = 0.1
+TICK_PENALTY = -0.1
+
+# AutomaticRL mode
+AUTOMATIC_LAVA_RANDOM = 5
 GREEN_RANDOM = 2
 
 LAVA_REWARD = -10.0
