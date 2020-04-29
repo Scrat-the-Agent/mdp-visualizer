@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2020-04-27 19:01+0300\n"
+"POT-Creation-Date: 2020-04-29 17:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,12 +15,28 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: settings.py:9
+#: settings.py:10
+msgid "I Am RL Agent"
+msgstr ""
+
+#: settings.py:11
+msgid "Automatic RL, Please"
+msgstr ""
+
+#: settings.py:12
 msgid ""
 "Press play to launch\n"
 "Q-learning algorithm!\n"
 "\n"
 "Hover over cells to watch\n"
 "Q-values for them.\n"
+msgstr ""
+
+#: settings.py:13
+msgid ""
+"Select one of 6 possible actions.\n"
+"\n"
+" Learn how to get as much \n"
+"reward per episode as possible!\n"
 msgstr ""
 
