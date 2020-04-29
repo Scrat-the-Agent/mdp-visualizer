@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QComboBox, QWidget, QLabel
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy
-from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtCore import Qt, QRectF, QSize
 from PyQt5.QtGui import QPixmap, QBrush, QPalette, QFont, QFontDatabase
 
 import settings
@@ -25,19 +25,21 @@ class ModeSwitcher(QWidget):
         for id, content in enumerate(self._contents):
             content.setGeometry(0 if id == self._id else -1.2 * self.width(), 0, self.width(), self.height())
 
-    # TODO: WHYYYY IT DOES NOT WORK
-    @property
     def sizeHint(self):
-        return self._contents[self._id].sizeHint
+        return QSize(
+            max(c.sizeHint().width() for c in self._contents),
+            max(c.sizeHint().height() for c in self._contents)
+        )
 
-    # TODO: WHYYYY IT DOES NOT WORK
-    @property
     def minimumSizeHint(self):
-        return self._contents[self._id].minimumSizeHint
+        return QSize(
+            max(c.minimumSizeHint().width() for c in self._contents),
+            max(c.minimumSizeHint().height() for c in self._contents)
+        )
 
     def turn(self, id):
         if id != self._id:
-            self.disappear_anim = animate(self._contents[self._id], "geometry", 400, 
+            self.disappear_anim = animate(self._contents[self._id], "geometry", settings.MODE_SWITCH_TIME, 
                                     QRectF(1.2 * -self.width(), 0, self.width(), self.height()))
             self.disappear_anim.finished.connect(self._animation_finish)
             
@@ -45,7 +47,7 @@ class ModeSwitcher(QWidget):
 
             self._contents[self._id].setVisible(True)
             self._contents[self._id].setGeometry(1.2 * self.width(), 0, self.width(), self.height())
-            self.appear_anim = animate(self._contents[self._id], "geometry", 400, 
+            self.appear_anim = animate(self._contents[self._id], "geometry", settings.MODE_SWITCH_TIME, 
                                     QRectF(0, 0, self.width(), self.height()))
     
     def _animation_finish(self):
@@ -69,7 +71,7 @@ class MainWindow(QMainWindow):
         # mode switcher
         self._combo_box = QComboBox()
         self._combo_box.setFont(QFont("Pacifico", 14, QFont.Normal))
-        self._combo_box.addItems(["I Am RL Agent", "Automatic RL, Please"])
+        self._combo_box.addItems([settings.I_AM_RL_AGENT, settings.AUTOMATIC_RL])
         for i in range(2):
             self._combo_box.setItemData(i, Qt.AlignCenter)
 
@@ -82,6 +84,7 @@ class MainWindow(QMainWindow):
         self._reset_layout.addWidget(self._full_reset_button)
         self._buttons.setLayout(self._reset_layout)
         self._buttons.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
+        self._buttons.setFixedWidth(settings.BUTTONS_NAILS_WIDTH)
 
         # widget for each mode
         self._game_screen = GameScreen()
@@ -95,10 +98,10 @@ class MainWindow(QMainWindow):
         # left widget
         self._left_layout = QVBoxLayout()
         self._left_layout.addWidget(self._combo_box)
-        self._left_layout.addWidget(self._buttons)
+        self._left_layout.addWidget(self._buttons, 0, Qt.AlignHCenter)
         self._left_layout.addWidget(self._mode_widget)
         self._left_widget = QWidget()
-        self._left_widget.setFixedWidth(300)
+        self._left_widget.setFixedWidth(settings.LEFT_SCREEN_NAILS_WIDTH)
         self._left_widget.setLayout(self._left_layout)
 
         # central widget

@@ -56,9 +56,9 @@ class IAmRLAgent(QWidget):
         self._description_label = QLabel()
         self._description_label.setFont(QFont("Pacifico", 14, QFont.Normal))
         self._description_label.setAlignment(Qt.AlignCenter)
-        self._description_label.setText("Select one of 6 possible actions.\n\n Learn how to get as much \nreward per episode as possible!\n")
-        self._description_label.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
-
+        self._description_label.setText(settings.IAMRLAGENT_DESCRIPTION)
+        self._description_label.setFixedSize(settings.IAMRLAGENT_DESCRIPTION_NAILS)
+        
         # Actions layout
         self._actions_widget = QWidget()
         self._actions_layout = QGridLayout()
@@ -74,10 +74,9 @@ class IAmRLAgent(QWidget):
         
         # Unite everything in vertical layout!
         self._command_layout = QVBoxLayout()
-        self._command_layout.addWidget(self._description_label)
-        self._command_layout.addWidget(self._actions_widget)#, 20)
-        self._command_layout.addWidget(self._reward_label)
-        self._command_layout.setAlignment(self._reward_label, Qt.AlignHCenter)
+        self._command_layout.addWidget(self._description_label, 0, Qt.AlignHCenter)
+        self._command_layout.addWidget(self._actions_widget)
+        self._command_layout.addWidget(self._reward_label, 0, Qt.AlignHCenter)
         self.setLayout(self._command_layout)
 
     def __init__(self, game_screen):

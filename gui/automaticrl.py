@@ -38,7 +38,7 @@ class QLabelsVisualization(QWidget):
             _arrow.setScaledContents(False)
 
         self.setLayout(self._layout)
-        self.setSizePolicy(QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed))
+        self.setFixedSize(300, 250)
 
     def cell_entered(self):
         cell = self.sender()
@@ -67,11 +67,12 @@ class AutomaticRL(QWidget):
         self._description_label.setAlignment(Qt.AlignCenter)
         self._description_label.setText(settings.Q_LEARNING_DESCRIPTION)
         self._description_label.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
-        self._command_layout.addWidget(self._description_label)
+        self._description_label.setFixedSize(settings.AUTO_RL_DESCRIPTION_NAILS)
+        self._command_layout.addWidget(self._description_label, 0, Qt.AlignHCenter)
         
         # q-values visualization
         self._qlabels = QLabelsVisualization(self._q_learning)
-        self._command_layout.addWidget(self._qlabels)
+        self._command_layout.addWidget(self._qlabels, 0, Qt.AlignHCenter)
 
         # rl buttons
         self._buttons = QWidget()
@@ -81,7 +82,8 @@ class AutomaticRL(QWidget):
         self._buttons_layout.addWidget(self._play_button)
         self._buttons_layout.addWidget(self._next_step_button)
         self._buttons.setLayout(self._buttons_layout)
-        self._command_layout.addWidget(self._buttons)
+        self._buttons.setFixedWidth(settings.BUTTONS_NAILS_WIDTH)
+        self._command_layout.addWidget(self._buttons, 0, Qt.AlignHCenter)
 
         self.setLayout(self._command_layout)
 
