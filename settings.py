@@ -12,6 +12,9 @@ AUTOMATIC_RL = _("Automatic RL, Please")
 Q_LEARNING_DESCRIPTION = _("Press play to launch\nQ-learning algorithm!\n\nHover over cells to watch\nQ-values for them.\n")
 IAMRLAGENT_DESCRIPTION = _("Select one of 6 possible actions.\n\n Learn how to get as much \nreward per episode as possible!\n")
 
+EPISODE_END_MESSAGE = _("Episode has finished!\nPress reset to start a new one!")
+INFO_BOX = _("Press T to rotate the game view!")
+
 # IMAGES -----------------------------------------------------------------------
 
 BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
@@ -35,6 +38,8 @@ STEP_BUTTON_IMAGE = "./images/step"
 RESET_BUTTON_IMAGE = "./images/repeat"
 FULL_RESET_BUTTON_IMAGE = "./images/newgame"
 STOP_BUTTON_IMAGE = "./images/stop"
+INFO_IMAGE = "./images/info"
+INFO_CLOSE_IMAGE = "./images/infopressed"
 
 RIGHT_ARROW_BUTTON_IMAGE = "./images/right"
 LEFT_ARROW_BUTTON_IMAGE = "./images/left"
@@ -57,8 +62,8 @@ BASE_CELL_OPACITY = 0.65
 
 # GAME LOGIC PARAMETERS --------------------------------------------------------
 
-GAME_HEIGHT = 3
-GAME_WIDTH = 4
+GAME_HEIGHT = 4
+GAME_WIDTH = 5
 
 # IAmRLAgent mode
 IAMRLAGENT_LAVA_RANDOM = 5
@@ -95,7 +100,9 @@ REWARD_FONT.setPixelSize(36)
 # GEOMETRY. NAILS -------------------------------------------------------------
 
 LEFT_SCREEN_NAILS_WIDTH = 350
-BUTTONS_NAILS_WIDTH = 250
+BUTTONS_NAILS_WIDTH = 200
+Q_VISUALIZATION_NAILS = QSize(300, 250)
 AUTO_RL_DESCRIPTION_NAILS = QSize(300, 250)
 IAMRLAGENT_DESCRIPTION_NAILS = QSize(300, 175)
-
+INFO_SIZE_NAIL = 80
+INFO_MARGIN_NAIL = 100

@@ -4,8 +4,14 @@ from PyQt5.QtGui import QPixmap, QIcon
 
 
 class Button(QToolButton):
-    """ """
+    """
+    General class for buttons in GUI
+    """
     def __init__(self, name):
+        """
+        Args:
+            name - picture name
+        """
         super().__init__()
 
         # transparent background
@@ -22,41 +28,37 @@ class Button(QToolButton):
 
     # size kludges :/
     def resizeEvent(self, e):
-        """
+        """Processes resizing of this widget
 
         Args:
-          e: 
-
-        Returns:
-
+          e: event details
         """
         super().resizeEvent(e)
         self.setIconSize(self.size())
 
     def sizeHint(self):
-        """:return:"""
+        """
+        Internal Qt method to imply this widget must be always a square
+
+        returns: QSize
+        """
         size = super().sizeHint()
         return QSize(size.width(), size.width())
 
-    # changes picture of button
     def _whenpressed(self):
-        """ """
         self._pressed = True
         self.updatePic()
 
     def _whenreleased(self):
-        """ """
         self._pressed = False
         self.updatePic()
 
     def updatePic(self, name=None):
         """
+        Updates picture of this button.
 
         Args:
-          name: Default value = None)
-
-        Returns:
-
+          name: new picture name or None (Default value = None)
         """
         self.name = name or self.name
         pixmap = QPixmap(self.name + ("pr" if self._pressed else ""))

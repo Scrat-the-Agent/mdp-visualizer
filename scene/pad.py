@@ -9,7 +9,9 @@ from .roundRectItem import RoundRectItem
 
 
 class FlippablePad(RoundRectItem):
-    """ """
+    """
+    Game Field visualization.
+    """
     def __init__(self, logic):
         super().__init__(self.boundsFromSize(logic), settings.PAD_COLOR)
         self._logic = logic
@@ -35,44 +37,31 @@ class FlippablePad(RoundRectItem):
 
     def set_cell_value(self, column, row, new_value):
         """
+        Changes value of one cell
 
         Args:
-          column: param row:
-          new_value: 
-          row: 
-
-        Returns:
-
+          column, row - ints, coordinates 
+          new_value - float
         """
         self.cellAt(column, row).set_value(new_value)
 
     def cellAt(self, column, row):
-        """
-
-        Args:
-          column: param row:
-          row: 
-
-        Returns:
-
-        """
         return self._cells[row][column]
 
     @property
     def cells(self):
-        """:return:"""
         width, height = self._logic.game_size
         return (self._cells[y][x] for y in range(height) for x in range(width))
 
     @staticmethod
     def boundsFromSize(logic):
         """
+        Gives bounding box of the field computed from field size
 
         Args:
-          logic: return:
+            logic - GameLogic
 
-        Returns:
-
+        Returns: QRectF
         """
         width, height = logic.game_size
         return QRectF((-width / 2.0) * 150,
@@ -80,7 +69,9 @@ class FlippablePad(RoundRectItem):
                       height * 150)
 
     def rotate(self):
-        """ """
+        """
+        Starts rotation animation.
+        """
         self.goal_rotation = settings.ROTATION_ANGLE if self.goal_rotation == 0 else 0
         self.rot = animate(self.yRotation, 'angle', settings.ROTATION_TIME, self.goal_rotation)
         

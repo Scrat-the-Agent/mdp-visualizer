@@ -7,11 +7,12 @@ from .roundRectItem import RoundRectItem
 
 
 class SplashItem(RoundRectItem):
-    """ """
+    """ 
+    Information box to demonstrate on the screen.
+    """
     def __init__(self):
         super().__init__(QRectF(0, 0, 500, 180), QColor(179, 179, 255, 235))
 
-        self.text = "Episode has finished!\nPress reset to start a new one!"
         self.setPos(-250, -90)
         self.setZValue(10)
         self.setOpacity(0)
@@ -43,8 +44,9 @@ class SplashItem(RoundRectItem):
 
         self.move = animate(self, 'y', 500, -190)
 
-    def appear(self):
+    def appear(self, text):
         """ """
+        self.text = text
         self.disap = animate(self, 'opacity', 500, 1.0)
 
         self.setY(-190)

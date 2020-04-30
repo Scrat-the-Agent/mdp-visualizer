@@ -28,10 +28,7 @@ class RewardLabel(QLabel):
     """
 
     def __init__(self):
-        """A constructor of reward label.
-
-        """
-
+        """A constructor of reward label."""
         super().__init__()
         self.setFixedSize(225, 150)
         self.setPixmap(QPixmap(settings.REWARD_FRAME_IMAGE))
@@ -51,10 +48,10 @@ class RewardLabel(QLabel):
         self._timer.timeout.connect(self._update_value)
 
     def resizeEvent(self, e):
-        """Sets geometry of the nut and reward QLabels.
+        """Sets geometry of nut picture and reward QLabels.
 
         Args:
-            e: bla-bla
+            e: events additional information
         """
 
         self.nut.setGeometry(self.height() / 4, self.height() / 4, self.height() / 2, self.height() / 2)
@@ -71,8 +68,6 @@ class RewardLabel(QLabel):
         self._timer.start(settings.VALUE_UPDATE_TIME)
 
     def _update_value(self):
-        """Updates a value."""
-
         self.value, stop_timer = value_update(self.value, self._target_value)
         if stop_timer:
             self._timer.stop()
@@ -180,7 +175,7 @@ class IAmRLAgent(QWidget):
 
             if done:
                 self.require_reset = True
-                self._game_screen.splash.appear()
+                self._game_screen.splash.appear(settings.EPISODE_END_MESSAGE)
 
             self.made_step_signal.emit()
 

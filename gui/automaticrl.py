@@ -60,7 +60,7 @@ class QLabelsVisualization(QWidget):
             _arrow.setScaledContents(False)
 
         self.setLayout(self._layout)
-        self.setFixedSize(300, 250)
+        self.setFixedSize(settings.Q_VISUALIZATION_NAILS)
 
     def cell_entered(self):
         """Updates Q-values on the arrows"""

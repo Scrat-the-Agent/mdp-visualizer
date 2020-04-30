@@ -14,8 +14,14 @@ from .button import Button
 
 
 class ModeSwitcher(QWidget):
-    """ """
+    """
+    Responsible for switch of mode widgets and animation of switching
+    """
     def __init__(self, contents):
+        """
+        Args:
+            contents - list of QWidget to contain
+        """
         super().__init__()
         self._contents = contents
         self._id = 0
@@ -23,27 +29,33 @@ class ModeSwitcher(QWidget):
         for content in self._contents:
             content.setParent(self)
 
-    def resizeEvent(self, evt=None):
+    def resizeEvent(self, e):
         """
+        Handles resize event
 
         Args:
-          evt: Default value = None)
-
-        Returns:
-
+          e: additional event information
         """
         for id, content in enumerate(self._contents):
             content.setGeometry(0 if id == self._id else -1.2 * self.width(), 0, self.width(), self.height())
 
     def sizeHint(self):
-        """:return:"""
+        """
+        Provides size of this widget.
+
+        :return: QSize
+        """
         return QSize(
             max(c.sizeHint().width() for c in self._contents),
             max(c.sizeHint().height() for c in self._contents)
         )
 
     def minimumSizeHint(self):
-        """:return:"""
+        """
+        Provides minimum size of this widget.
+
+        :return: QSize
+        """
         return QSize(
             max(c.minimumSizeHint().width() for c in self._contents),
             max(c.minimumSizeHint().height() for c in self._contents)
@@ -51,12 +63,10 @@ class ModeSwitcher(QWidget):
 
     def turn(self, id):
         """
+        Starts animation of mode switching
 
         Args:
-          id: 
-
-        Returns:
-
+          id: int, number of contained widget to show
         """
         if id != self._id:
             self.disappear_anim = animate(self._contents[self._id], "geometry", settings.MODE_SWITCH_TIME,
@@ -71,20 +81,21 @@ class ModeSwitcher(QWidget):
                                        QRectF(0, 0, self.width(), self.height()))
 
     def _animation_finish(self):
-        """ """
         for id, content in enumerate(self._contents):
             if id != self._id:
                 content.setVisible(False)
 
     @property
     def current_widget(self):
-        """:return:"""
+        """:return: QWidget - contained widget"""
         return self._contents[self._id]
 
 
 # noinspection PyArgumentEqualDefault
 class MainWindow(QMainWindow):
-    """ """
+    """
+    Widget of the whole screen
+    """
     def __init__(self):
         super().__init__()
 
@@ -107,7 +118,7 @@ class MainWindow(QMainWindow):
         self._reset_layout.addWidget(self._reset_button)
         self._reset_layout.addWidget(self._full_reset_button)
         self._buttons.setLayout(self._reset_layout)
-        self._buttons.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
+        self._buttons.setSizePolicy(QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum))
         self._buttons.setFixedWidth(settings.BUTTONS_NAILS_WIDTH)
 
         # widget for each mode
@@ -143,26 +154,36 @@ class MainWindow(QMainWindow):
         self._full_reset_button.clicked.connect(self._full_reset)
         self._combo_box.currentIndexChanged.connect(self._change_mode)
 
+        # help
+        self.help_shown = False
+        self.help = Button(settings.INFO_IMAGE)
+        self.help.setParent(self)
+        self.help.clicked.connect(self._show_info)
+    
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.help.setGeometry(self.width() - settings.INFO_MARGIN_NAIL, 
+                              self.height() - settings.INFO_MARGIN_NAIL, 
+                              settings.INFO_SIZE_NAIL, settings.INFO_SIZE_NAIL)
+
+    def _show_info(self):
+        if self.help_shown:
+            self.help.updatePic(settings.INFO_IMAGE)
+            self._game_screen.splash.disappear()
+        else:
+            self.help.updatePic(settings.INFO_CLOSE_IMAGE)
+            self._game_screen.splash.appear(settings.INFO_BOX)
+        self.help_shown = not self.help_shown
+
     def _change_mode(self, id):
-        """
-
-        Args:
-          id: 
-
-        Returns:
-
-        """
         self._mode_widget.current_widget.exit_mode()
         self._mode_widget.turn(id)
         self._mode_widget.current_widget.enter_mode()
 
-        # focus!
         self._game_screen.setFocus()
 
     def _reset(self):
-        """ """
         self._mode_widget.current_widget.reset()
 
     def _full_reset(self):
-        """ """
         self._mode_widget.current_widget.full_reset()

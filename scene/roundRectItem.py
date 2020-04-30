@@ -14,23 +14,25 @@ class RoundRectItem(QGraphicsObject):
         self.pix = QPixmap()
         self.color = color
 
-        # self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
+        self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
 
     def setFill(self, fill):
         """
+        Changes the property of how the cell is filled.
 
         Args:
-          fill: 
-
-        Returns:
-
+          fill: QRectF
         """
         self.fillRect = fill
         self.update()
 
     @property
     def gradient(self):
-        """:return:"""
+        """
+        Computes color to fill cell with.
+        
+        Return: QLinearGradient
+        """
         gradient = QLinearGradient()
         gradient.setStart((self.bounds.topLeft() + self.bounds.topRight()) / 2)
         gradient.setFinalStop((self.bounds.bottomLeft() + self.bounds.bottomRight()) / 2)
@@ -40,14 +42,7 @@ class RoundRectItem(QGraphicsObject):
 
     def paint(self, painter, option, widget):
         """
-
-        Args:
-          painter: param option:
-          widget: 
-          option: 
-
-        Returns:
-
+        Standard Qt paint event.
         """
         if self.color:
             painter.setPen(Qt.NoPen)
@@ -73,22 +68,16 @@ class RoundRectItem(QGraphicsObject):
                 painter.drawPixmap(-self.pix.width() / 2, -self.pix.height() / 2, self.pix)
 
     def boundingRect(self):
-        """:return:"""
         return self.bounds.adjusted(0, 0, 2, 2)
 
     def pixmap(self):
-        """:return:"""
         return QPixmap(self.pix)
 
     def setPixmap(self, pixmap_path, rounded_pixmap=False):
         """
-
         Args:
           pixmap_path: param rounded_pixmap:
           rounded_pixmap:  (Default value = False)
-
-        Returns:
-
         """
         self._rounded_pixmap = rounded_pixmap
         self.pix = QPixmap(pixmap_path)
