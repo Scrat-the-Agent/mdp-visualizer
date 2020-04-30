@@ -47,7 +47,8 @@ class SplashItem(RoundRectItem):
     def appear(self, text):
         """ """
         self.text = text
-        self.disap = animate(self, 'opacity', 500, 1.0)
+        self.update()
 
+        self.disap = animate(self, 'opacity', 500, 1.0)
         self.setY(-190)
         self.move = animate(self, 'y', 500, -90)
