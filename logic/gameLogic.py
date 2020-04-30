@@ -1,18 +1,44 @@
 """
-gameLogic.py -- game logic
+Game Logic module
 ==================================
 
-This is game logic module.
+This module contains backend logic of the game and GameParams class for setting initial params of the game.
+
+Typical usage example:
+
+    params = GameParams(game_mode)
+    logic = GameLogic(params)
 """
+
 from random import shuffle
 
-from .actions_objects_list import Actions, Objects, Modes
+from .actions_objects_list import Actions, Objects
 from .gameObject import Scrat, Hippo, Watermelon
 
 
 class GameCell:
-    """GameCell class represents one cell of a game board."""
+    """GameCell class represents one cell of a game board.
+
+    Attributes:
+        reward: A float indicating the reward in the current cell.
+        is_terminal: A boolean indicating if this cell is terminal.
+        scrat_is_here: A boolean indicating if Scrat is standing on this cell.
+        hippo_is_here: A boolean indicating if Hippo is standing on this cell.
+        watermelon_is_here: A boolean indicating if Watermelon is lying on this cell.
+        lava_is_here: A boolean indicating if there is lava on this cell.
+        is_green: A boolean indicating if this cell is green (positive).
+    """
+
     def __init__(self, x, y, params):
+        """Constructs GameCell object.
+
+        Args:
+            x: Column.
+            y: Row.
+            params: A dictionary with keys 'reward', 'is_terminal', 'scrat_is_here', ' hippo_is_here',
+                'watermelon_is_here', 'lava_is_here', 'is_green' representing properties of the current cell.
+        """
+
         self._x = x
         self._y = y
         self.reward = params["reward"]
@@ -24,18 +50,21 @@ class GameCell:
         self.is_green = params["is_green"]
 
     @property
-    def x(self) -> int:
-        """Returns column"""
+    def x(self):
+        """Returns column."""
+
         return self._x
 
     @property
     def y(self):
-        """Returns row"""
+        """Returns row."""
+
         return self._y
 
 
 class GameBoard:
-    """ """
+    """Represents the game board which consists of game cells."""
+
     def __init__(self, params):
         self._board = []
 
@@ -61,16 +90,14 @@ class GameBoard:
             self._board.append(cur_row)
 
     def move_object(self, obj, old_position, new_position):
-        """
+        """Moves an object from the old position to the new position.
 
         Args:
-          obj: 
-          old_position: 
-          new_position: 
-
-        Returns:
-
+          obj: A Scrat, Hippo or Watermelon object.
+          old_position: A tuple representing the position to move the object from.
+          new_position: A tuple representing the position to move the object to.
         """
+
         if obj == Objects.SCRAT:
             self._board[old_position[1]][old_position[0]].scrat_is_here = False
             self._board[new_position[1]][new_position[0]].scrat_is_here = True
@@ -82,85 +109,98 @@ class GameBoard:
             self._board[new_position[1]][new_position[0]].watermelon_is_here = True
 
     def cell_reward(self, position):
-        """
+        """Returns the reward of the cell in specified position.
 
         Args:
-          position: return:
-
-        Returns:
-
+          position: A tuple representing position.
         """
+
         return self._board[position[1]][position[0]].reward
 
     def is_terminal(self, position):
-        """
+        """Returns True if the cell in specified position is terminal and False otherwise.
 
         Args:
-          position: return:
-
-        Returns:
-
+          position: A tuple representing position.
         """
+
         return self._board[position[1]][position[0]].is_terminal
 
     def is_green(self, position):
-        """
+        """Returns True if the cell in specified position is green (positive) and False otherwise.
 
         Args:
-          position: return:
-
-        Returns:
-
+          position: A tuple representing position.
         """
+
         return self._board[position[1]][position[0]].is_green
 
     def scrat_is_here(self, position):
-        """
+        """Returns True if Scrat stands in specified position and False otherwise.
 
         Args:
-          position: return:
-
-        Returns:
-
+          position: A tuple representing position.
         """
+
         return self._board[position[1]][position[0]].scrat_is_here
 
     def hippo_is_here(self, position):
-        """
+        """Returns True if Hippo stands in specified position and False otherwise.
 
         Args:
-          position: return:
-
-        Returns:
-
+          position: A tuple representing position.
         """
+
         return self._board[position[1]][position[0]].hippo_is_here
 
     def watermelon_is_here(self, position):
-        """
+        """Returns True if Watermelon lies in specified position and False otherwise.
 
         Args:
-          position: return:
-
-        Returns:
-
+          position: A tuple representing position.
         """
+
         return self._board[position[1]][position[0]].watermelon_is_here
 
     def lava_is_here(self, position):
-        """
+        """Returns True if the cell in specified position contains lava and False otherwise.
 
         Args:
-          position: return:
-
-        Returns:
-
+          position: A tuple representing position.
         """
+
         return self._board[position[1]][position[0]].lava_is_here
 
 
 class GameParams:
-    """ """
+    """Stores game parameters required for game start.
+
+    Attributes:
+        game_mode: Game mode.
+        game_height: Number of rows of the board.
+        game_width: Number of columns of the board.
+        scrat_random: Scrat position is generated randomly or not.
+        scrat_start_position: A tuple representing Scrat starting position.
+        hippo_random: Hippo position is generated randomly or not.
+        hippo_start_position: A tuple representing Hippo starting position.
+        hippo_move_prob: The probability of Hippo making a step.
+        hippo_fed_reward: The reward for feeding the Hippo.
+        watermelon_random: Watermelon position is generated randomly or not.
+        watermelon_start_position: A tuple representing Watermelon starting position.
+        watermelon_move_prob: The probability of Watermelon making a step.
+        lava_random: The number of lava cells generated randomly.
+        lava_cells: Explicitly specified positions of lava cells (tuple of tuples).
+        lava_is_terminal: Lava cells are terminal or not.
+        lava_reward: The reward of lava cells.
+        terminal_random: The number of terminal cells generated randomly.
+        terminal_cells: Explicitly specified terminal cells positions (tuple of tuples).
+        green_random: The number of green (positive) cells generated randomly.
+        green_cells: Explicitly specified green (positive) cells positions (tuple of tuples).
+        green_is_terminal: Green (positive) cells are terminal or not.
+        green_reward: The reward of green (positive) cells.
+        tick_penalty: The penalty for each tick of time.
+    """
+
     def __init__(self, game_mode, game_height=4, game_width=6,
                  scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100,
@@ -169,6 +209,34 @@ class GameParams:
                  terminal_random=False, terminal_cells=None,
                  green_random=False, green_cells=None, green_is_terminal=True, green_reward=10,
                  tick_penalty=0):
+        """Constructs GameParams object with game parameters."""
+
+        # Args:
+        #     game_mode: Game mode.
+        #         #     game_height: Number of rows of the board. Default: 4.
+        #         #     game_width: Number of columns of the board. Default: 6.
+        #         #     scrat_random: Scrat position is generated randomly or not. Default: True.
+        #         #     scrat_start_position: A tuple representing Scrat starting position. Default: None.
+        #         #     hippo_random: Hippo position is generated randomly or not. Default: False.
+        #         #     hippo_start_position: A tuple representing Hippo starting position. Default: None.
+        #         #     hippo_move_prob: The probability of Hippo making a step. Default: -1.
+        #         #     hippo_fed_reward: The reward for feeding the Hippo. Default: 100.
+        #         #     watermelon_random: Watermelon position is generated randomly or not. Default: False.
+        #         #     watermelon_start_position: A tuple representing Watermelon starting position. Default: None.
+        #         #     watermelon_move_prob: The probability of Watermelon making a step. Default: -1.
+        #         #     lava_random: The number of lava cells generated randomly. Default: False.
+        #         #     lava_cells: Explicitly specified positions of lava cells (tuple of tuples). Default: None.
+        #         #     lava_is_terminal: Lava cells are terminal or not. Default: True.
+        #         #     lava_reward: The reward of lava cells. Default: -10.
+        #         #     terminal_random: The number of terminal cells generated randomly. Default: False.
+        #         #     terminal_cells: Explicitly specified terminal cells positions (tuple of tuples). Default: None.
+        #         #     green_random: The number of green (positive) cells generated randomly. Default: False.
+        #         #     green_cells: Explicitly specified green (positive) cells positions (tuple of tuples). Default: None.
+        #         #     green_is_terminal: Green (positive) cells are terminal or not. Default: True.
+        #         #     green_reward: The reward of green (positive) cells. Default: 10.
+        #         #     tick_penalty: The penalty for each tick of time. Default: 0.
+        #         # """
+
         # main
         self.game_mode = game_mode
         self.game_height = game_height
@@ -213,20 +281,24 @@ class GameParams:
 
     @property
     def initial_terminal_cells(self):
-        """Returns initial terminal cells"""
+        """Terminal cells of the board which are specified explicitly."""
+
         return self._initial_terminal_cells
 
 
 class GameLogic:
-    """This class represents game logic. It is configured
-    via `GameParams` object. Game consists of board and
+    """Represents game logic. It is configured
+    via `GameParams` object. Game consists of a board and
     objects on the board which can move.
     """
+
     def __init__(self, params: GameParams):
-        """
+        """Constructs GameLogic object.
+
         Args:
-            params (GameParams): an instance of class GameParams with game settings
+            params (GameParams): An instance of class GameParams with game settings.
         """
+
         # params which define game type
         self._start_params = params
 
@@ -252,15 +324,16 @@ class GameLogic:
 
     # generator
     def _generate_random_positions(self, num_of_pos=1, exclude_cells=None):
-        """
+        """Generate a number of positions on the game board excluding the specified cells.
 
         Args:
-          num_of_pos:  (Default value = 1)
-          exclude_cells:  (Default value = None)
+            num_of_pos:  Number of positions to generate. Default: 1.
+            exclude_cells:  A tuple of tuples representing positions which shouldn't be generated. Default: None.
 
         Returns:
-
+            A list of tuples with generated positions.
         """
+
         exclude_cells = set(exclude_cells or [])
         positions = [(x, y) for y in range(self.game_size[1]) for x in range(self.game_size[0])]
         shuffle(positions)
@@ -275,14 +348,12 @@ class GameLogic:
         return out
 
     def _fill_start_params(self, resample=False):
-        """
+        """Reverts the params to the initial condition with or without resampling before restart ot the game.
 
         Args:
-          resample:  (Default value = False)
-
-        Returns:
-
+            resample: Turn on resampling of random values or not. Default: False.
         """
+
         self._last_action = None
         self._last_reward = 0
         self._full_reward = 0
@@ -348,7 +419,8 @@ class GameLogic:
             self._start_params.watermelon_start_position = self._generate_random_positions(exclude_cells=exclude)[0]
 
     def _generate_new_game(self):
-        """ """
+        """Initializes GameLogic inner objects at the start of the game."""
+
         # fill params
         self._fill_start_params()
 
@@ -376,14 +448,20 @@ class GameLogic:
 
     # other
     def step(self, action):
-        """
+        """Makes a game step with specified action.
 
         Args:
-          action: int from 0 to self.n_actions
+            action: int from 0 to self.n_actions.
 
         Returns:
+            A tuple of (state, reward, done, info):
 
+            state: An encoded Scrat position on the board.
+            reward: Received reward.
+            done: The game is finished or not.
+            info: None.
         """
+
         assert 0 <= action <= self._n_actions, "Invalid action got into step function"
 
         # save last action
@@ -441,15 +519,13 @@ class GameLogic:
         return state, reward, done, info
 
     def _move_object(self, obj, direction):  # with watermelon if it is taken
-        """
+        """Moves the specified object in specified direction.
 
         Args:
-          obj: 
-          direction: 
-
-        Returns:
-
+            obj: Scrat, Hippo or Watermelon object.
+            direction: Value of one of LEFT, UP, RIGHT or DOWN actions of Actions class.
         """
+
         if obj == Objects.SCRAT:
             self._scrat.change_position(*direction)
             self._game_board.move_object(obj, self._scrat.prev_position, self.scrat_position)
@@ -466,14 +542,12 @@ class GameLogic:
             self._game_board.move_object(obj, self._watermelon.prev_position, self.watermelon_position)
 
     def _interact_with_watermelon(self, action):
-        """
+        """Updates objects' parameters which are connected to the Watermelon.
 
         Args:
-          action: 
-
-        Returns:
-
+          action: TAKE, PUT or FEED action of Actions class.
         """
+
         if action == Actions.TAKE:
             self._scrat.take_watermelon()
             self._watermelon.become_taken()
@@ -486,14 +560,12 @@ class GameLogic:
             self._watermelon.become_eaten()
 
     def _interact_with_hippo(self, action):
-        """
+        """Updates objects' parameters which are connected to the Hippo.
 
         Args:
-          action: 
-
-        Returns:
-
+          action: FEED action of Actions class.
         """
+
         assert action == Actions.FEED
 
         if action == Actions.FEED:
@@ -504,123 +576,144 @@ class GameLogic:
     # main properties
     @property
     def game_mode(self):
-        """:return:"""
+        """Game mode."""
+
         return self._start_params.game_mode
 
     @property
     def game_size(self):
-        """Returns a tuple of width, height"""
+        """A tuple with game size (width, height)."""
+
         return self._start_params.game_width, self._start_params.game_height
 
     @property
     def game_board(self):
-        """:return:"""
+        """Game board."""
+
         return self._game_board
 
     @property
     def start_params(self):
-        """:return:"""
+        """Start parameters of the game."""
+
         return self._start_params
 
     @property
     def done(self):
-        """:return:"""
+        """The game is finished or not."""
         return self._done
 
     # actions
     @property
     def n_actions(self):
-        """:return:"""
+        """Number of game actions."""
+
         return self._n_actions
 
     @property
     def last_action(self):
-        """:return:"""
+        """Last action made."""
+
         return self._last_action
 
     @property
     def n_states(self):
-        """:return:"""
+        """Number of game states."""
+
         return self._start_params.game_width * self._start_params.game_height
 
     # rewards
     @property
     def last_reward(self):
-        """:return:"""
+        """Last received reward."""
+
         return self._last_reward
 
     @property
     def full_reward(self):
-        """:return:"""
+        """Full received reward."""
+
         return self._full_reward
 
     # scrat
     @property
     def scrat(self):
-        """:return:"""
+        """Scrat object."""
+
         return self._scrat
 
     @property
     def scrat_position(self):
-        """:return:"""
+        """Scrat position."""
+
         return self._scrat.cur_position
 
     @property
     def scrat_carrying_watermelon(self):
-        """:return:"""
+        """Scrat is carrying the Watermelon or not."""
+
         return self._scrat.carrying_watermelon
 
     # hippo
     @property
     def hippo(self):
-        """:return:"""
+        """Hippo object."""
+
         return self._hippo
 
     @property
     def hippo_position(self):
-        """:return:"""
+        """Hippo position."""
+
         if self._hippo:
             return self._hippo.cur_position
 
     @property
     def hippo_is_fed(self):
-        """:return:"""
+        """Hippo is fed or not."""
+
         if self._hippo:
             return self._hippo.is_fed
 
     # watermelon
     @property
     def watermelon(self):
-        """:return:"""
+        """Watermelon object."""
+
         return self._watermelon
 
     @property
     def watermelon_position(self):
-        """:return:"""
+        """Watermelon position."""
+
         if self._watermelon:
             return self._watermelon.cur_position
 
     # lava
     @property
     def lava_cells(self):
-        """:return:"""
+        """Tuple of lava cells."""
+
         return self._start_params.lava_cells
 
     # terminal
     @property
     def terminal_cells(self):
-        """:return:"""
+        """Tuple of terminal cells."""
+
         return self._start_params.terminal_cells
 
     # green
     @property
     def green_cells(self):
-        """:return:"""
+        """Tuple of green (positive) cells."""
+
         return self._start_params.green_cells
 
     # reset
     def _reset_objects(self):
-        """ """
+        """Reset game logic objects to initial parameters."""
+
         # game board
         self._game_board = GameBoard(self._start_params)
 
@@ -643,11 +736,8 @@ class GameLogic:
             self._watermelon.become_not_eaten()
 
     def reset(self):  # without resampling of random values
-        """
+        """Reset game logic to initial parameters without resampling of random values."""
 
-        Returns:
-
-        """
         self._fill_start_params()
         self._reset_objects()
         x, y = self.scrat_position
@@ -655,6 +745,7 @@ class GameLogic:
         return self._start_params.game_width * y + x
 
     def full_reset(self):  # with resampling of random values
-        """ """
+        """Reset game logic to initial parameters with resampling of random values."""
+
         self._fill_start_params(resample=True)
         self._reset_objects()

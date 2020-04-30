@@ -1,3 +1,10 @@
+"""
+I Am RL Agent module
+=================
+
+This module contains IAmRLAgent mode widget.
+"""
+
 from random import shuffle
 
 from PyQt5.QtCore import pyqtSignal, QTimer, Qt
@@ -12,8 +19,19 @@ from .button import Button
 
 
 class RewardLabel(QLabel):
-    """ """
+    """Implements a reward label for pretty showing of reward.
+
+    Attributes:
+        nut: A QLabel for a nut picture.
+        reward: A QLabel for current reward text.
+        value: Current reward value for animated update.
+    """
+
     def __init__(self):
+        """A constructor of reward label.
+
+        """
+
         super().__init__()
         self.setFixedSize(225, 150)
         self.setPixmap(QPixmap(settings.REWARD_FRAME_IMAGE))
@@ -33,31 +51,28 @@ class RewardLabel(QLabel):
         self._timer.timeout.connect(self._update_value)
 
     def resizeEvent(self, e):
-        """
+        """Sets geometry of the nut and reward QLabels.
 
         Args:
-          e: 
-
-        Returns:
-
+            e: bla-bla
         """
+
         self.nut.setGeometry(self.height() / 4, self.height() / 4, self.height() / 2, self.height() / 2)
         self.reward.setGeometry(self.height() / 2, 0, self.width() - self.height() / 2, self.height())
 
     def set_value(self, new_value):
-        """
+        """Sets a new target value.
 
         Args:
-          new_value: 
-
-        Returns:
-
+            new_value: A new target value.
         """
+
         self._target_value = new_value
         self._timer.start(settings.VALUE_UPDATE_TIME)
 
     def _update_value(self):
-        """ """
+        """Updates a value."""
+
         self.value, stop_timer = value_update(self.value, self._target_value)
         if stop_timer:
             self._timer.stop()
@@ -67,12 +82,17 @@ class RewardLabel(QLabel):
 
 # noinspection PyArgumentEqualDefault
 class IAmRLAgent(QWidget):
-    """ """
-    clicked_mode = pyqtSignal()
+    """A widget for IAmRLAgent game mode.
+
+    Attributes:
+        require_reset: The game requires reset or not.
+    """
+
     made_step_signal = pyqtSignal()
 
     def _init_ui(self):
-        """ """
+        """Initializes user interface of the widget for IAmRLAgent mode."""
+
         # Text label
         self._description_label = QLabel()
         self._description_label.setFont(QFont("Pacifico", 14, QFont.Normal))
@@ -101,6 +121,12 @@ class IAmRLAgent(QWidget):
         self.setLayout(self._command_layout)
 
     def __init__(self, game_screen):
+        """Initializes IAmRLAgent widget and starts the game.
+
+        Args:
+            game_screen: GameScreen object with the graphics scene.
+        """
+
         super().__init__()       
 
         # I Am RL Agent game logic and parameters
@@ -128,16 +154,19 @@ class IAmRLAgent(QWidget):
         self.made_step_signal.connect(game_screen.update_screen)
 
     def enter_mode(self):
-        """ """
+        """Turns on IAmRlAgent mode."""
+
         self._game_screen.change_logic(self._logic)
         self._reward_label.set_value(self._logic.full_reward)
 
     def exit_mode(self):
-        """ """
+        """Turns off IAmRlAgent mode."""
+
         self._game_screen.splash.disappear()
 
     def _action_chosen(self):
-        """ """
+        """Sends the chosen action to the logic and updates the screen."""
+
         if not self.require_reset:
             clicked_button = self.sender()
             action = -1
@@ -156,7 +185,8 @@ class IAmRLAgent(QWidget):
             self.made_step_signal.emit()
 
     def reset(self):
-        """ """
+        """Resets the board to the initial state without resampling of random values."""
+
         self._logic.reset()
         self.require_reset = False
         self._reward_label.set_value(self._logic.full_reward)
@@ -164,7 +194,8 @@ class IAmRLAgent(QWidget):
         self._game_screen.splash.disappear()
 
     def full_reset(self):
-        """ """
+        """Resets the board to the initial state with resampling of random values."""
+
         self._logic.full_reset()
         shuffle(self._actions_correspondence)
         self.require_reset = False

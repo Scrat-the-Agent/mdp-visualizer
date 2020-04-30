@@ -1,4 +1,11 @@
-from PyQt5.QtCore import Qt, QTimer
+"""
+Game Screen module
+=================
+
+This module contains implementation of game screen with the graphical scene on it.
+"""
+
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
@@ -8,16 +15,22 @@ from .splash import SplashItem
 
 
 class GameScreen(QGraphicsView):
-    """ """
+    """Class GameScreen which manages the screen with the graphical scene and connection to the logic of the game.
+
+    Attributes:
+        logic: GameLogic object, the logic of the game which is being visualized.
+        splash: SplashItem object, the splash message.
+        pad: FlippablePad object, the game pad.
+        objects_pictures: A list of ObjectPictures of game objects.
+    """
+
     def _init_with_logic(self, logic):
-        """
+        """Initializes the screen with game board and objects from the new logic.
 
         Args:
-          logic: 
-
-        Returns:
-
+          logic: GameLogic object.
         """
+
         self.logic = logic
 
         scene = QGraphicsScene(self)
@@ -56,6 +69,8 @@ class GameScreen(QGraphicsView):
         #     self._make_rotated()
 
     def __init__(self):
+        """A constructor. Only consturct base class object."""
+
         super().__init__()
 
         # # the fact the pad was rotated to pseudo-3d
@@ -63,35 +78,33 @@ class GameScreen(QGraphicsView):
 
     @property
     def cells(self):
-        """:return:"""
+        """List of lists of Cell objects corresponding to game cells."""
+
         return self.pad.cells
 
     def set_cell_value(self, column, row, value):
-        """
+        """Set a specific value to the cell in specified position.
 
         Args:
-          column: param row:
-          value: 
-          row: 
-
-        Returns:
-
+          column: Column of the cell.
+          row: Row of the cell.
+          value: A value to set.
         """
+
         self.pad.set_cell_value(column, row, value)
 
     def change_logic(self, logic):
-        """
+        """Changes the logic of the visualized game.
 
         Args:
-          logic: 
-
-        Returns:
-
+          logic: A new GameLogic object.
         """
+
         self._init_with_logic(logic)
 
     def update_screen(self):
-        """ """
+        """Resets cells and objects on the screen."""
+
         # cells
         for cell in self.cells:
             cell.reset_lava()
@@ -103,32 +116,21 @@ class GameScreen(QGraphicsView):
         self.setFocus()
 
     def _make_rotated(self):
-        """ """
+        """Rotate the pad and animate the objects during rotation."""
+
         self.pad.rotate()
         for obj in self.objects_pictures:
             obj.pad_rotated()
 
     def keyPressEvent(self, event):
-        """
+        """Rotate the pad if T key is pressed. Overrides the base class method. See base class method."""
 
-        Args:
-          event: 
-
-        Returns:
-
-        """
         if event.nativeVirtualKey() == Qt.Key_T:
             self._make_rotated()
             # self.rotated = not self.rotated
 
     def resizeEvent(self, event):
-        """
+        """Resizes the screen. Overrides the base class method. See base class method."""
 
-        Args:
-          event: 
-
-        Returns:
-
-        """
         super().resizeEvent(event)
         self.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)

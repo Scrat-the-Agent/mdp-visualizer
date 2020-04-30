@@ -33,7 +33,7 @@ class QLearning:
         """Resets Q-values and environment if needed.
 
         Args:
-            env: new environment
+            env: New environment.
         """
         env = env or self.env
         self.Q = np.zeros([env.n_states, env.n_actions])
@@ -59,10 +59,10 @@ class QLearning:
         self.state = self.env.reset()
 
     def get_q_values(self, state=None):
-        """Returns all Q-values or for specific state
+        """Returns all Q-values or for specific state.
 
         Args:
-            state: optional state to take Q-values from.
+            state: Optional state to take Q-values from.
 
         Returns:
             np.array: Q-values for all states or for the given state.
@@ -79,7 +79,7 @@ class QLearning:
         """Computes V function of state `state`.
 
         Args:
-            state: the state, value of which we want to know.
+            state: The state, value of which we want to know.
 
         Returns:
             float: V(`state`)
