@@ -53,10 +53,18 @@ msgstr ""
 
 #: settings.py:13
 msgid ""
-"Episode has finished!\n"
-"Press reset to start a new one!"
+"Episode has finished!\n
+"Your score: "
 msgstr ""
 "Эпизод завершился!\n"
+"Собранная награда: "
+
+#: settings.py:13
+msgid ""
+"\n"
+"Press reset to start a new one!"
+msgstr ""
+"\n"
 "Нажмите reset, чтобы начать новый!"
 
 #: settings.py:13

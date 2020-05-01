@@ -16,7 +16,8 @@ Q_LEARNING_DESCRIPTION = _("Press play to launch\nQ-learning algorithm!\n"
 IAMRLAGENT_DESCRIPTION = _("Select one of 6 possible actions.\n"
                            "\nLearn how to get as much \nreward per episode as possible!\n")
 
-EPISODE_END_MESSAGE = _("Episode has finished!\nPress reset to start a new one!")
+EPISODE_END_MESSAGE1 = _("Episode has finished!\nYour score: ")
+EPISODE_END_MESSAGE2 = _("\nPress reset to start a new one!")
 INFO_BOX = _("Press T to rotate the game view!")
 
 # IMAGES -----------------------------------------------------------------------

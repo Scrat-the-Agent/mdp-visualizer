@@ -174,7 +174,11 @@ class IAmRLAgent(QWidget):
 
             if done:
                 self.require_reset = True
-                self._game_screen.splash.appear(settings.EPISODE_END_MESSAGE)
+                
+                text = settings.EPISODE_END_MESSAGE1
+                text += f"{self._logic.full_reward:.1f}"
+                text += settings.EPISODE_END_MESSAGE2
+                self._game_screen.splash.appear(text)
 
             self.made_step_signal.emit()
 
