@@ -49,11 +49,11 @@ class Cell(RoundRectItem):
         """
         if self.logic.game_mode == Modes.IAMRLAGENT:
             if self.logic.game_board.lava_is_here((self.x, self.y)):
-                self.color = None
+                self._color = None
                 self.setPixmap(settings.LAVA_IMAGE, True)
             else:
                 self._pix = QPixmap()
-                self.color = self._compute_color()
+                self._color = self._compute_color()
 
             self.update()
 
@@ -81,7 +81,7 @@ class Cell(RoundRectItem):
         """
         Qt paint event standard definition.
         """
-        self.color = self._compute_color()
+        self._color = self._compute_color()
         super().paint(painter, option, widget)
 
         if self.value is not None:
