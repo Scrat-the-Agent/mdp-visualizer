@@ -52,7 +52,7 @@ class TestEnv:
 def test_q_learning_frozen_lake():
     env = TestEnv()
     num_episodes = 5000
-    Q = None
+    q_table = None
     min_epsilon, max_epsilon = 0.001, 1.0
     decay_rate = 0.005
 
@@ -60,7 +60,7 @@ def test_q_learning_frozen_lake():
     for e in range(num_episodes):
         s = env.reset()
         eps = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * e)
-        r, Q, s, done, info = q_learning(env, s, n_steps=100, q_table=Q, lr=0.3, gamma=0.95, eps=eps)
+        r, q_table, s, done, info = q_learning(env, s, n_steps=100, q_table=q_table, lr=0.3, gamma=0.95, eps=eps)
         r_all.append(r)
 
     mean_reward = np.mean(r_all)
@@ -72,13 +72,13 @@ def test_q_learning_class():
     qlearning = QLearning(env)
 
     s = qlearning.reset()
-    Q = qlearning.get_q_values()
-    assert (Q == 0.).all()
+    q_table = qlearning.get_q_values()
+    assert (q_table == 0.).all()
 
     qlearning.step(lr=0.)
 
-    Q = qlearning.get_q_values()
-    assert (Q == 0.).all()
+    q_table = qlearning.get_q_values()
+    assert (q_table == 0.).all()
 
     num_episodes = 5000
     min_epsilon, max_epsilon = 0.001, 1.0
