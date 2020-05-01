@@ -11,10 +11,10 @@ from PyQt5.QtCore import pyqtSignal, QTimer, Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QFont
 
-import settings
-from utils import value_update
-from logic.gameLogic import GameLogic, GameParams
-from logic.actions_objects_list import Modes
+from .. import settings
+from ..utils import value_update
+from ..logic.gameLogic import GameLogic, GameParams
+from ..logic.actions_objects_list import Modes
 from .button import Button
 
 

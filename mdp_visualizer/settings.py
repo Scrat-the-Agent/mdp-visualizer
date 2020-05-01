@@ -2,6 +2,8 @@ from PyQt5.QtCore import Qt, QRectF, QSize
 from PyQt5.QtGui import QColor, QFont, QFontDatabase
 import gettext
 
+from .utils import path
+
 # LOCALISATION AND TEXTS -------------------------------------------------------
 
 ru = gettext.translation('game', 'locale', languages=['ru'])
@@ -17,34 +19,35 @@ INFO_BOX = _("Press T to rotate the game view!")
 
 # IMAGES -----------------------------------------------------------------------
 
-BACKGROUND_IMAGE = "./images/blue_angle_swirl.jpg"
-REWARD_FRAME_IMAGE = "./images/frame.png"
-REWARD_ICON_IMAGE = "./images/nut"
 
-SCRAT_IMAGE = "./images/scrat_drawing2.png"
-SCRAT_AND_WATERMELON_IMAGE = "./images/scrat_drawing2_and_watermelon.png"
-SCRAT_WITH_WATERMELON_IMAGE = "./images/scrat_drawing2_with_watermelon.png"
-SCRAT_HIPPO_IMAGE = "./images/scrat_hippo.png"
-SCRAT_HIPPO_AND_WATERMELON_IMAGE = "./images/scrat_hippo_and_watermelon.png"
-SCRAT_WITH_WATERMELON_HIPPO_IMAGE = "./images/scrat_with_watermelon_hippo.png"
-SCRAT_HIPPO_FED_IMAGE = "./images/scrat_hippo_fed.png"
-HIPPO_IMAGE = "./images/hippo_drawing_mirrored.png"
-HIPPO_AND_WATERMELON_IMAGE = "./images/hippo_drawing_mirrored_and_watermelon.png"
-WATERMELON_IMAGE = "./images/watermelon_drawing_small_rotated.png"
-LAVA_IMAGE = "./images/lava_drawing.png"
+BACKGROUND_IMAGE = path("images/blue_angle_swirl.jpg")
+REWARD_FRAME_IMAGE = path("images/frame.png")
+REWARD_ICON_IMAGE = path("images/nut")
 
-PLAY_BUTTON_IMAGE = "./images/play"
-STEP_BUTTON_IMAGE = "./images/step"
-RESET_BUTTON_IMAGE = "./images/repeat"
-FULL_RESET_BUTTON_IMAGE = "./images/newgame"
-STOP_BUTTON_IMAGE = "./images/stop"
-INFO_IMAGE = "./images/info"
-INFO_CLOSE_IMAGE = "./images/infopressed"
+SCRAT_IMAGE = path("images/scrat_drawing2.png")
+SCRAT_AND_WATERMELON_IMAGE = path("images/scrat_drawing2_and_watermelon.png")
+SCRAT_WITH_WATERMELON_IMAGE = path("images/scrat_drawing2_with_watermelon.png")
+SCRAT_HIPPO_IMAGE = path("images/scrat_hippo.png")
+SCRAT_HIPPO_AND_WATERMELON_IMAGE = path("images/scrat_hippo_and_watermelon.png")
+SCRAT_WITH_WATERMELON_HIPPO_IMAGE = path("images/scrat_with_watermelon_hippo.png")
+SCRAT_HIPPO_FED_IMAGE = path("images/scrat_hippo_fed.png")
+HIPPO_IMAGE = path("images/hippo_drawing_mirrored.png")
+HIPPO_AND_WATERMELON_IMAGE = path("images/hippo_drawing_mirrored_and_watermelon.png")
+WATERMELON_IMAGE = path("images/watermelon_drawing_small_rotated.png")
+LAVA_IMAGE = path("images/lava_drawing.png")
 
-RIGHT_ARROW_BUTTON_IMAGE = "./images/right"
-LEFT_ARROW_BUTTON_IMAGE = "./images/left"
-DOWN_ARROW_BUTTON_IMAGE = "./images/down"
-UP_ARROW_BUTTON_IMAGE = "./images/up"
+PLAY_BUTTON_IMAGE = path("images/play")
+STEP_BUTTON_IMAGE = path("images/step")
+RESET_BUTTON_IMAGE = path("images/repeat")
+FULL_RESET_BUTTON_IMAGE = path("images/newgame")
+STOP_BUTTON_IMAGE = path("images/stop")
+INFO_IMAGE = path("images/info")
+INFO_CLOSE_IMAGE = path("images/infopressed")
+
+RIGHT_ARROW_BUTTON_IMAGE = path("images/right")
+LEFT_ARROW_BUTTON_IMAGE = path("images/left")
+DOWN_ARROW_BUTTON_IMAGE = path("images/down")
+UP_ARROW_BUTTON_IMAGE = path("images/up")
 
 # ANIMATION TIME ---------------------------------------------------------------
 

@@ -8,7 +8,7 @@ This module contains Q-learning in two forms:
 """
 
 import numpy as np
-import settings
+from .. import settings
 
 __all__ = ('QLearning', 'q_learning')
 

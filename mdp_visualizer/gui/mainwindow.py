@@ -3,13 +3,12 @@ from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtCore import Qt, QRectF, QSize
 from PyQt5.QtGui import QPixmap, QBrush, QPalette, QFont, QFontDatabase
 
-import settings
-from utils import animate
+from .. import settings
+from ..utils import animate
 from .automaticrl import AutomaticRL
 from .iamrlagent import IAmRLAgent
-from logic.actions_objects_list import Modes
 
-from scene.gamescreen import GameScreen
+from ..scene.gamescreen import GameScreen
 from .button import Button
 
 
@@ -100,7 +99,9 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         # background image
-        sh = f"background-image: url({settings.BACKGROUND_IMAGE})"
+        background_path = settings.BACKGROUND_IMAGE.replace('\\', '/')
+        sh = f"background-image: url({background_path})"
+        print(sh)
         self.setStyleSheet("MainWindow {" + sh + "}")
 
         # mode switcher

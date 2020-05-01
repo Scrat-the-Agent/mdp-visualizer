@@ -1,6 +1,7 @@
+import os
 from PyQt5.QtCore import QEasingCurve, QPropertyAnimation
 
-import settings
+from . import settings
 
 
 def animate(obj, prop, time, val):
@@ -48,3 +49,9 @@ def value_update(value : float, target_value : float, min_step : float = 0.1):
         return value + step, False
     else:
         return value - step, False
+
+
+def path(relative_path):
+    """Returns absolute path given relative path"""
+    script_dir = os.path.dirname(__file__)
+    return os.path.join(script_dir, relative_path)

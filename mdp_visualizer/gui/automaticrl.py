@@ -9,13 +9,13 @@ from PyQt5.QtCore import pyqtSignal, QTimer, Qt, QSize
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QFont
 
-import settings
-from utils import value_update
+from .. import settings
+from ..utils import value_update
 
-from scene.gamescreen import GameScreen
-from logic.q_learning import QLearning
-from logic.gameLogic import GameLogic, GameParams
-from logic.actions_objects_list import Modes
+from ..scene.gamescreen import GameScreen
+from ..logic.q_learning import QLearning
+from ..logic.gameLogic import GameLogic, GameParams
+from ..logic.actions_objects_list import Modes
 
 from .button import Button
 

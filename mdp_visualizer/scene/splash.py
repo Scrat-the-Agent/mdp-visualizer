@@ -2,7 +2,7 @@ from PyQt5.QtCore import QEasingCurve, QPropertyAnimation, QRectF, Qt
 from PyQt5.QtGui import QColor, QFont, QPen
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
 
-from utils import animate
+from ..utils import animate
 from .roundRectItem import RoundRectItem
 
 

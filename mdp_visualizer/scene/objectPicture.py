@@ -10,11 +10,11 @@ from math import cos, pi
 from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QPixmap, QTransform
 
-import settings
-from utils import animate
+from .. import settings
+from ..utils import animate
 
 from .roundRectItem import RoundRectItem
-from logic.gameObject import Scrat, Hippo, Watermelon
+from ..logic.gameObject import Scrat, Hippo, Watermelon
 
 
 class ObjectPicture:

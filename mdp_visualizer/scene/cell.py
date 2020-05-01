@@ -1,11 +1,11 @@
 from PyQt5.QtCore import pyqtSignal, Qt, QPointF, QTimer
 from PyQt5.QtGui import QColor, QPixmap
 
-import settings
-from utils import animate, value_update
+from .. import settings
+from ..utils import animate, value_update
 
 from .roundRectItem import RoundRectItem
-from logic.actions_objects_list import Modes
+from ..logic.actions_objects_list import Modes
 
 
 class Cell(RoundRectItem):

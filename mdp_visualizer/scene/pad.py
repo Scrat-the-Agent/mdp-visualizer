@@ -1,8 +1,8 @@
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QGraphicsRotation, QGraphicsScale
 
-import settings
-from utils import animate
+from .. import settings
+from ..utils import animate
 
 from .cell import Cell
 from .roundRectItem import RoundRectItem

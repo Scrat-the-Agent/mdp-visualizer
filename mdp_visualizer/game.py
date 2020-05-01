@@ -9,15 +9,16 @@ import os
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon, QFontDatabase
 
-from gui.mainwindow import MainWindow
+from .gui.mainwindow import MainWindow
+from .utils import path
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    
+
     app.setStyle('Fusion')
     app.setApplicationName("Agent Scrat")
 
-    app_icon = QIcon('./images/nut.png')
+    app_icon = QIcon(path('images/nut.png'))
     app.setWindowIcon(app_icon)
 
     # windows taskbar icon issues
@@ -26,8 +27,8 @@ if __name__ == '__main__':
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('Agent Scrat')
 
     # must be done after application initialization
-    QFontDatabase.addApplicationFont("./fonts/Pacifico-Regular.ttf")
-    
+    QFontDatabase.addApplicationFont(path("fonts/Pacifico-Regular.ttf"))
+
     mainwindow = MainWindow()
     mainwindow.show()
 
