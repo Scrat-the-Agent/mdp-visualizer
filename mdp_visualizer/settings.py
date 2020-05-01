@@ -6,7 +6,7 @@ from .utils import path
 
 # LOCALISATION AND TEXTS -------------------------------------------------------
 
-ru = gettext.translation('game', 'locale', languages=['ru'])
+ru = gettext.translation('game', path('locale'), languages=['ru'])
 ru.install()
 
 I_AM_RL_AGENT = _("I Am RL Agent")
