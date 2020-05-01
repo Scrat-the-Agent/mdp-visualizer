@@ -97,7 +97,8 @@ class IAmRLAgent(QWidget):
         self._actions_layout = QGridLayout()
         self._action_buttons = []
         for i in range(self._logic.n_actions):
-            self._action_buttons.append(Button("./images/symbol" + str(i)))
+            path = settings.BUTTONS_PATHS[i]
+            self._action_buttons.append(Button(path))
             self._actions_layout.addWidget(self._action_buttons[i], i // 3, i % 3)
         self._actions_widget.setLayout(self._actions_layout)
         self._actions_widget.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))

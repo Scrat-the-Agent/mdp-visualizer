@@ -49,6 +49,11 @@ LEFT_ARROW_BUTTON_IMAGE = path("images/left")
 DOWN_ARROW_BUTTON_IMAGE = path("images/down")
 UP_ARROW_BUTTON_IMAGE = path("images/up")
 
+BUTTONS_PATHS = [
+    path("images/symbol" + str(i))
+    for i in range(6)
+]
+
 # ANIMATION TIME ---------------------------------------------------------------
 
 MOVE_TIME = 300
