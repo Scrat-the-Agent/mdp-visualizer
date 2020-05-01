@@ -11,9 +11,12 @@ from PyQt5.QtGui import QPixmap, QFont
 
 import settings
 from utils import value_update
+
+from scene.gamescreen import GameScreen
 from logic.q_learning import QLearning
 from logic.gameLogic import GameLogic, GameParams
 from logic.actions_objects_list import Modes
+
 from .button import Button
 
 __all__ = ('AutomaticRL',)
@@ -94,8 +97,14 @@ class QLabelsVisualization(QWidget):
         if all_done:
             self._timer.stop()
 
-    def values_updates(self, x, y):
-        """Notifies widget that cell with coordinates x, y has updated Q-values"""
+    def values_updates(self, x : int, y : int):
+        """
+        Notifies widget that cell with coordinates x, y has updated Q-values
+        
+        Args:
+            x - int
+            y - int
+        """
         if (x, y) == self._displayed_coords:
             qvalues = self._q_learning.get_q_values(self._displayed_coords)
             self._target_qvalues = [qvalues[2], qvalues[0], qvalues[3], qvalues[1]]
@@ -112,8 +121,8 @@ class AutomaticRL(QWidget):
     as an environment for RL agent.
     """
 
-    clicked_mode = pyqtSignal()
     made_step_signal = pyqtSignal()
+    user_interacted = pyqtSignal()
 
     def _init_ui(self):
         self._command_layout = QVBoxLayout()
@@ -144,13 +153,15 @@ class AutomaticRL(QWidget):
 
         self.setLayout(self._command_layout)
 
-    def __init__(self, game_screen):
-        """Constructs an AutomaticRL widget.
+    def __init__(self, game_screen : GameScreen):
+        """
+        Constructs an AutomaticRL widget.
 
         AutomaticRL widget needs `game_screen` to update
         information in cells about Q-values.
+        
         Args:
-            game_screen: screen which draws the game.
+            game_screen - GameScreen instance.
         """
         super().__init__()
 
@@ -183,18 +194,22 @@ class AutomaticRL(QWidget):
         self.init_cells()
 
     def exit_mode(self):
-        """Stops playing. Used when the mode is being changed."""
+        """Stops playing. Used when current mode is being changed."""
         if self._playing:
             self._playing = False
             self._timer.stop()
             return
 
     def init_cells(self):
-        """Reinitializes self if cells have changed.
+        """
+        Reinitializes self if cells have changed.
 
         Internally does two things:
             1. Connects signals to new cells;
             2. Resets values for each cell.
+
+        #TODO: if graphic scene will be switched without scene reinitialization
+        (see issue #44), this function will not be required.
         """
 
         # connecting mouse hover from cells to our q-values visualization
@@ -203,7 +218,6 @@ class AutomaticRL(QWidget):
             cell.leave_signal.connect(self._qlabels.cell_left)
 
         # initialize values
-        # TODO: should not it happen in redrawing?
         for i in range(self._logic.game_size[0]):
             for j in range(self._logic.game_size[1]):
                 self._game_screen.set_cell_value(i, j, 0.)
@@ -213,6 +227,7 @@ class AutomaticRL(QWidget):
             self._game_screen.set_cell_value(pos[0], pos[1], reward)
 
     def _next_step_click(self):
+        self.user_interacted.emit()
         self._stop_playing()
         self._next_step()
 
@@ -253,6 +268,8 @@ class AutomaticRL(QWidget):
         self.made_step_signal.emit()
 
     def _play(self):
+        self.user_interacted.emit()
+        
         if self._playing:
             self._playing = False
             self._timer.stop()

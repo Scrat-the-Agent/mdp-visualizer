@@ -30,7 +30,7 @@ class RewardLabel(QLabel):
     def __init__(self):
         """A constructor of reward label."""
         super().__init__()
-        self.setFixedSize(225, 150)
+        self.setFixedSize(settings.REWARD_LABEL_NAILS)
         self.setPixmap(QPixmap(settings.REWARD_FRAME_IMAGE))
         self.setScaledContents(True)
         
@@ -83,6 +83,7 @@ class IAmRLAgent(QWidget):
         require_reset: The game requires reset or not.
     """
 
+    user_interacted = pyqtSignal()
     made_step_signal = pyqtSignal()
 
     def _init_ui(self):
@@ -161,8 +162,9 @@ class IAmRLAgent(QWidget):
 
     def _action_chosen(self):
         """Sends the chosen action to the logic and updates the screen."""
-
         if not self.require_reset:
+            self.user_interacted.emit()
+
             clicked_button = self.sender()
             action = -1
             for i, button in enumerate(self._action_buttons):

@@ -159,6 +159,9 @@ class MainWindow(QMainWindow):
         self.help = Button(settings.INFO_IMAGE)
         self.help.setParent(self)
         self.help.clicked.connect(self._show_info)
+
+        self._iAmRLAgent.user_interacted.connect(self._hide_info)
+        self._automaticRL.user_interacted.connect(self._hide_info)
     
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -168,14 +171,20 @@ class MainWindow(QMainWindow):
 
     def _show_info(self):
         if self.help_shown:
-            self.help.updatePic(settings.INFO_IMAGE)
-            self._game_screen.splash.disappear()
+            self._hide_info()
         else:
             self.help.updatePic(settings.INFO_CLOSE_IMAGE)
             self._game_screen.splash.appear(settings.INFO_BOX)
-        self.help_shown = not self.help_shown
+            self.help_shown = True
+
+    def _hide_info(self):
+        if self.help_shown:
+            self.help.updatePic(settings.INFO_IMAGE)
+            self._game_screen.splash.disappear()
+            self.help_shown = False
 
     def _change_mode(self, id):
+        self._hide_info()
         self._mode_widget.current_widget.exit_mode()
         self._mode_widget.turn(id)
         self._mode_widget.current_widget.enter_mode()
@@ -183,7 +192,9 @@ class MainWindow(QMainWindow):
         self._game_screen.setFocus()
 
     def _reset(self):
+        self._hide_info()
         self._mode_widget.current_widget.reset()
 
     def _full_reset(self):
+        self._hide_info()
         self._mode_widget.current_widget.full_reset()

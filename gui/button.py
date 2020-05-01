@@ -7,7 +7,7 @@ class Button(QToolButton):
     """
     General class for buttons in GUI
     """
-    def __init__(self, name):
+    def __init__(self, name : str):
         """
         Args:
             name - picture name
@@ -19,7 +19,7 @@ class Button(QToolButton):
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         # picture change
-        self.name = name
+        self._name = name
         self._pressed = False
         self.updatePic()
 
@@ -28,11 +28,7 @@ class Button(QToolButton):
 
     # size kludges :/
     def resizeEvent(self, e):
-        """Processes resizing of this widget
-
-        Args:
-          e: event details
-        """
+        """Internal Qt method to processes resizing of this widget"""
         super().resizeEvent(e)
         self.setIconSize(self.size())
 
@@ -60,6 +56,6 @@ class Button(QToolButton):
         Args:
           name: new picture name or None (Default value = None)
         """
-        self.name = name or self.name
-        pixmap = QPixmap(self.name + ("pr" if self._pressed else ""))
+        self._name = name or self._name
+        pixmap = QPixmap(self._name + ("pr" if self._pressed else ""))
         self.setIcon(QIcon(pixmap))

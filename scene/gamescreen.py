@@ -60,21 +60,9 @@ class GameScreen(QGraphicsView):
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setMinimumSize(50, 50)
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
-        # self.setCacheMode(QGraphicsView.CacheBackground)
+        self.setCacheMode(QGraphicsView.CacheBackground)
         self.setRenderHints(QPainter.Antialiasing |
                             QPainter.SmoothPixmapTransform | QPainter.TextAntialiasing)
-
-        # # rotate if mode was switched
-        # if self.rotated:
-        #     self._make_rotated()
-
-    def __init__(self):
-        """A constructor. Only consturct base class object."""
-
-        super().__init__()
-
-        # # the fact the pad was rotated to pseudo-3d
-        # self.rotated = False
 
     @property
     def cells(self):
@@ -105,11 +93,9 @@ class GameScreen(QGraphicsView):
     def update_screen(self):
         """Resets cells and objects on the screen."""
 
-        # cells
         for cell in self.cells:
             cell.reset_lava()
 
-        # objects
         for obj in self.objects_pictures:
             obj.change_position()
 
@@ -127,7 +113,6 @@ class GameScreen(QGraphicsView):
 
         if event.nativeVirtualKey() == Qt.Key_T:
             self._make_rotated()
-            # self.rotated = not self.rotated
 
     def resizeEvent(self, event):
         """Resizes the screen. Overrides the base class method. See base class method."""
