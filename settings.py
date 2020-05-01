@@ -1,5 +1,5 @@
 from PyQt5.QtCore import Qt, QRectF, QSize
-from PyQt5.QtGui import QColor, QFont
+from PyQt5.QtGui import QColor, QFont, QFontDatabase
 import gettext
 
 # LOCALISATION AND TEXTS -------------------------------------------------------
