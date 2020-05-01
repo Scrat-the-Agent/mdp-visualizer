@@ -1,0 +1,4 @@
+include *.md
+recursive-include mdp_visualizer/fonts *
+recursive-include mdp_visualizer/images *
+recursive-include mdp_visualizer/locale *
