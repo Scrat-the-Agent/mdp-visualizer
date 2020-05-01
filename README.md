@@ -1,51 +1,96 @@
 # MDP Visualizer
 
-Семестровый проект MDP Visualizer по курсу "Совместная разработка приложений на Python3"
+This is a semester project MDP Visualizer developed on the course ["Python3 collaborative application development"](http://uneex.ru/LecturesCMC/PythonDevelopment2020).
 
-### Постановка задачи:
 
-Создать программу для визуализации марковских процессов принятия решений ([MDP](https://en.wikipedia.org/wiki/Markov_decision_process)).
-#### Основные подзадачи:
+### A Brief Description
+
+The application supports 2 modes:
+- **I Am RL Agent** mode
+
+    In this mode you are invited to try to feed the Hippo by pressing the action buttons on the left. Your current reward is shown in the lower-left corner of the screen. 
+    
+    ![](mdp_visualizer/images/IAmRLAgent_example.png)
+
+- **Automatic RL, Please** mode
+
+    Here you may run the QLearning RL algorithm in step-by-step or continuous mode.
+    
+    ![](mdp_visualizer/images/AutomaticRL_example.png)
+
+The modes can be switched in the combo box in the upper-left corner.
+
+You can reset the game or start a new one by pressing big blue buttons in the upper-left corner in both modes. 
+
+
+### The Problem:
+
+Develop a program for visualization of [Markov Decision Processes (MDPs)](https://en.wikipedia.org/wiki/Markov_decision_process).
+
+
+#### Key Tasks:
  
-- Создать анимированный интерфейс для перемещения агента по MDP.
-- Реализовать возможность задать MDP вручную (в перспективе --- не только на сетке).
-- Реализовать алгоритмы [Value iteration](https://en.wikipedia.org/wiki/Markov_decision_process#Value_iteration) / [Policy iteration](https://en.wikipedia.org/wiki/Markov_decision_process#Policy_iteration) обучения с подкреплением ([RL](https://en.wikipedia.org/wiki/Reinforcement_learning)) и их визуализацию.
-- Реализовать алгоритмы [Q-learning](https://en.wikipedia.org/wiki/Q-learning) и [SARSA](https://en.wikipedia.org/wiki/State%E2%80%93action%E2%80%93reward%E2%80%93state%E2%80%93action) и их визуализацию. 
+- Develop the animated interface for the agent's movement in state space of the MDP.
+- Implement a possibility to specify the MDP manually.
+- Implement the [Q-learning](https://en.wikipedia.org/wiki/Q-learning) algorithm for [reinforcement learning](https://en.wikipedia.org/wiki/Reinforcement_learning) and its visualization. 
 
-### Авторы:
 
-> [Иванов Сергей, группа 617](https://git.cs.msu.ru/s02180174)
+### The Authors:
 
-> [Януш Виктор, группа 617](https://git.cs.msu.ru/s02180104)
+> Sergey Ivanov, 617 group (@FortsAndMills)
 
-> [Серов Сергей, группа 617](https://git.cs.msu.ru/s02140303)
+> Viktor Yanush, 617 group (@justanothercoder)
 
-### Проект интерфейса:
+> Sergey Serov, 617 group (@sserov)
 
-Базовая конструкция планирует выглядеть примерно так:
 
-![](images/PLAN.png)
+### Interface Design Plan:
 
-### Используемый фреймворк:
+![](mdp_visualizer/images/PLAN.png)
+
+
+### The Framework:
 
 > PyQT 5
 
-### Установка и запуск
-Для установки в качестве пакета следует запустить `setup.py`
+
+### How to Install and Run the Game
+
+There are 2 possibilites of distribution after the cloning.
+
+1. You may install the package with the command 
     
-    python setup.py install
-Чтобы запустить игру, достаточно выполнить команду
+        python setup.py install
+   in the project directory.
+        
+   To run the game execute the command
+    
+        python -m mdp_visualizer.game
+   in the terminal.
+        
+2. You may run the command
 
-    python -m mdp_visualizer.game
-Если установка не была произведена, то делать это нужно в директории проекта.
+        python -m mdp_visualizer.game
+   **in the project directory** in the terminal.
 
-Для запуска тестов можно выполнить команду 
+
+### Localization
+
+The application is now available with two localizations which are set corresponding to your system language.
+
+
+### Testing
+
+To run the tests use the command 
 
     python -m pytest
-в директории проекта
+in the project directory.
 
-### Документация
-Для сборки документации необходимо выполнить команду 
+
+### The Documentation
+To build the docs run the command 
     
     make html
-в директории `sphinx`, после чего в `sphinx/_build/html/index.html` будет собрана документация по проекту.
+in `sphinx` folder.
+
+The docs will appear in `sphinx/_build/html/index.html`.
