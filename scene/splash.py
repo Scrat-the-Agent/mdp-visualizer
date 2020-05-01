@@ -23,7 +23,7 @@ class SplashItem(RoundRectItem):
 
         # Text
         font = QFont()
-        font.setPixelSize(32)
+        font.setPixelSize(26)
         painter.setPen(Qt.black)
         painter.setFont(font)
         textRect = self.boundingRect().adjusted(10, 10, -10, -10)
