@@ -19,7 +19,7 @@ class Cell(RoundRectItem):
         """
         Args:
             x, y - ints, coordinates of cell
-            pad - Pad reference
+            pad - FlippablePad instance
             logic - GameLogic instance
         """
         self.x, self.y = x, y
@@ -112,7 +112,7 @@ class Cell(RoundRectItem):
         self.anim = animate(self, "opacity", 100, settings.BASE_CELL_OPACITY)
         self.leave_signal.emit()
 
-    def set_value(self, new_value):
+    def set_value(self, new_value : float):
         """
         Starts animation of changing value to new_value 
 
@@ -120,7 +120,7 @@ class Cell(RoundRectItem):
           new_value: float
         """
         self._target_value = new_value
-        self._timer.start(10)  # TODO: settings!
+        self._timer.start(settings.VALUE_UPDATE_TIME)
 
     def _update_value(self):
         self.value, stop_timer = value_update(self.value, self._target_value)
@@ -129,7 +129,7 @@ class Cell(RoundRectItem):
 
         self.update()
 
-    def posForLocation(self, column, row):
+    def posForLocation(self, column : int, row : int):
         """
         Computes coordinates of the cell
 

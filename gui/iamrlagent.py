@@ -48,20 +48,16 @@ class RewardLabel(QLabel):
         self._timer.timeout.connect(self._update_value)
 
     def resizeEvent(self, e):
-        """Sets geometry of nut picture and reward QLabels.
-
-        Args:
-            e: events additional information
-        """
-
+        """Internal Qt function to process resizing of widget"""
+        super().resizeEvent(e)
         self.nut.setGeometry(self.height() / 4, self.height() / 4, self.height() / 2, self.height() / 2)
         self.reward.setGeometry(self.height() / 2, 0, self.width() - self.height() / 2, self.height())
 
-    def set_value(self, new_value):
+    def set_value(self, new_value : float):
         """Sets a new target value.
 
         Args:
-            new_value: A new target value.
+            new_value - new target value.
         """
 
         self._target_value = new_value

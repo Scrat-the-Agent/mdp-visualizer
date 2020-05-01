@@ -90,7 +90,7 @@ class QLabelsVisualization(QWidget):
     def _update(self):
         all_done = True
         for i in range(4):
-            self._qvalues[i], done = value_update(self._qvalues[i], self._target_qvalues[i])
+            self._qvalues[i], done = value_update(self._qvalues[i], self._target_qvalues[i], 0.01)
             all_done = all_done and done
             self._q_labels[i].setText(f"{self._qvalues[i]:.2f}")
 

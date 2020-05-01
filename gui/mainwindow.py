@@ -164,6 +164,7 @@ class MainWindow(QMainWindow):
         self._automaticRL.user_interacted.connect(self._hide_info)
     
     def resizeEvent(self, event):
+        """Internal Qt function to process resizing of widget"""
         super().resizeEvent(event)
         self.help.setGeometry(self.width() - settings.INFO_MARGIN_NAIL, 
                               self.height() - settings.INFO_MARGIN_NAIL, 

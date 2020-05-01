@@ -18,16 +18,7 @@ class SplashItem(RoundRectItem):
         self.setOpacity(0)
 
     def paint(self, painter, option, widget):
-        """
-
-        Args:
-          painter: param option:
-          widget: 
-          option: 
-
-        Returns:
-
-        """
+        """Standard Qt paint event."""
         super().paint(painter, option, widget)
 
         # Text
@@ -39,13 +30,18 @@ class SplashItem(RoundRectItem):
         painter.drawText(textRect, Qt.AlignCenter, self.text)
 
     def disappear(self):
-        """ """
+        """animates disappearance of this screen"""
         self.disap = animate(self, 'opacity', 500, 0.0)
 
         self.move = animate(self, 'y', 500, -190)
 
-    def appear(self, text):
-        """ """
+    def appear(self, text : str):
+        """
+        Animates appearance of this screen and sets new text
+        
+        Args:
+            text - str
+        """
         self.text = text
         self.update()
 

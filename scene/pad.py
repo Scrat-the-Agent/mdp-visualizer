@@ -46,10 +46,19 @@ class FlippablePad(RoundRectItem):
         self.cellAt(column, row).set_value(new_value)
 
     def cellAt(self, column, row):
+        """
+        Args:
+          column, row - ints, coordinates
+
+        Returns: Cell
+        """
         return self._cells[row][column]
 
     @property
     def cells(self):
+        """
+        Returns: generator of all Cell in the widget
+        """
         width, height = self._logic.game_size
         return (self._cells[y][x] for y in range(height) for x in range(width))
 

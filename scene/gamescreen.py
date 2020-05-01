@@ -34,12 +34,12 @@ class GameScreen(QGraphicsView):
         self.logic = logic
 
         scene = QGraphicsScene(self)
-        # TODO: do we need this? scene.setSceneRect(scene.itemsBoundingRect())
+        scene.setSceneRect(scene.itemsBoundingRect())
         self.setScene(scene)
         self.setWindowFlags(Qt.FramelessWindowHint)
-
         self.setStyleSheet("background: transparent")
 
+        # info box aka splash screen
         self.splash = SplashItem()
         scene.addItem(self.splash)
 
@@ -55,10 +55,9 @@ class GameScreen(QGraphicsView):
             self.objects_pictures.append(ObjectPicture(self.logic.hippo, scene, self.pad, self.logic))
         self.objects_pictures.append(ObjectPicture(self.logic.scrat, scene, self.pad, self.logic))
 
-        # general
+        # general flags
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.setMinimumSize(50, 50)
         self.setViewportUpdateMode(QGraphicsView.FullViewportUpdate)
         self.setCacheMode(QGraphicsView.CacheBackground)
         self.setRenderHints(QPainter.Antialiasing |
@@ -70,7 +69,7 @@ class GameScreen(QGraphicsView):
 
         return self.pad.cells
 
-    def set_cell_value(self, column, row, value):
+    def set_cell_value(self, column : int, row : int, value : float):
         """Set a specific value to the cell in specified position.
 
         Args:
@@ -115,7 +114,7 @@ class GameScreen(QGraphicsView):
             self._make_rotated()
 
     def resizeEvent(self, event):
-        """Resizes the screen. Overrides the base class method. See base class method."""
+        """Resizes the screen. Overrides the base class method."""
 
         super().resizeEvent(event)
         self.fitInView(self.scene().sceneRect(), Qt.KeepAspectRatio)

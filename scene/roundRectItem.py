@@ -5,80 +5,80 @@ from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsObject
 
 # noinspection PyArgumentEqualDefault
 class RoundRectItem(QGraphicsObject):
-    """ """
+    """ 
+    Base class for most graphic objects in our scene
+    """
     def __init__(self, bounds, color=None, parent=None):
+        """ 
+        Args:
+            bounds - QRectF, geometry of object
+            color - QColor or None
+            parent - widget to contain this graphic item or None
+        """
         super(RoundRectItem, self).__init__(parent)
 
-        self.fillRect = False
-        self.bounds = QRectF(bounds)
-        self.pix = QPixmap()
-        self.color = color
+        self._fillRect = False
+        self._bounds = QRectF(bounds)
+        self._pix = QPixmap()
+        self._color = color
 
         self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
 
-    def setFill(self, fill):
+    def setFill(self, fill : bool):
         """
         Changes the property of how the cell is filled.
 
         Args:
-          fill: QRectF
+          fill: bool
         """
-        self.fillRect = fill
+        self._fillRect = fill
         self.update()
 
     @property
-    def gradient(self):
-        """
-        Computes color to fill cell with.
-        
-        Return: QLinearGradient
-        """
+    def _gradient(self):
         gradient = QLinearGradient()
-        gradient.setStart((self.bounds.topLeft() + self.bounds.topRight()) / 2)
-        gradient.setFinalStop((self.bounds.bottomLeft() + self.bounds.bottomRight()) / 2)
-        gradient.setColorAt(0, self.color)
-        gradient.setColorAt(1, self.color.darker(200))
+        gradient.setStart((self._bounds.topLeft() + self._bounds.topRight()) / 2)
+        gradient.setFinalStop((self._bounds.bottomLeft() + self._bounds.bottomRight()) / 2)
+        gradient.setColorAt(0, self._color)
+        gradient.setColorAt(1, self._color.darker(200))
         return gradient
 
     def paint(self, painter, option, widget):
-        """
-        Standard Qt paint event.
-        """
-        if self.color:
+        """Standard Qt paint event."""
+        if self._color:
             painter.setPen(Qt.NoPen)
             painter.setBrush(QColor(0, 0, 0, 64))
-            painter.drawRoundedRect(self.bounds.translated(2, 2), 25.0, 25.0)
+            painter.drawRoundedRect(self._bounds.translated(2, 2), 25.0, 25.0)
 
-            if self.fillRect:
+            if self._fillRect:
                 painter.setBrush(QApplication.palette().brush(QPalette.Window))
             else:
-                painter.setBrush(self.gradient)
+                painter.setBrush(self._gradient)
 
             painter.setPen(QPen(Qt.black, 1))
-            painter.drawRoundedRect(self.bounds, 25.0, 25.0)
+            painter.drawRoundedRect(self._bounds, 25.0, 25.0)
 
-        if not self.pix.isNull():
+        if not self._pix.isNull():
             if self._rounded_pixmap:
                 painter.setRenderHint(QPainter.Antialiasing, True)
-                brush = QBrush(self.pix.scaled(self.bounds.width(), self.bounds.height()))
+                brush = QBrush(self._pix.scaled(self._bounds.width(), self._bounds.height()))
                 painter.setBrush(brush)
-                painter.drawRoundedRect(self.bounds, 25.0, 25.0)
+                painter.drawRoundedRect(self._bounds, 25.0, 25.0)
             else:
-                painter.scale(self.bounds.width() / self.pix.width(), self.bounds.height() / self.pix.height())
-                painter.drawPixmap(-self.pix.width() / 2, -self.pix.height() / 2, self.pix)
+                painter.scale(self._bounds.width() / self._pix.width(), self._bounds.height() / self._pix.height())
+                painter.drawPixmap(-self._pix.width() / 2, -self._pix.height() / 2, self._pix)
 
     def boundingRect(self):
-        return self.bounds.adjusted(0, 0, 2, 2)
+        return self._bounds.adjusted(0, 0, 2, 2)
 
-    def pixmap(self):
-        return QPixmap(self.pix)
-
-    def setPixmap(self, pixmap_path, rounded_pixmap=False):
+    def setPixmap(self, pixmap_path : str, rounded_pixmap=False):
         """
+        Sets new pixmap for this graphic object.
+
         Args:
-          pixmap_path: param rounded_pixmap:
-          rounded_pixmap:  (Default value = False)
+          pixmap_path: path to image for pixmap
+          rounded_pixmap: make the picture rounded (used, e.g., for lava in the cells)
         """
         self._rounded_pixmap = rounded_pixmap
-        self.pix = QPixmap(pixmap_path)
+        self._pix = QPixmap(pixmap_path)
         self.update()
