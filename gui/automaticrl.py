@@ -10,6 +10,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QGridLayo
 from PyQt5.QtGui import QPixmap, QFont
 
 import settings
+from utils import value_update
 from logic.q_learning import QLearning
 from logic.gameLogic import GameLogic, GameParams
 from logic.actions_objects_list import Modes
@@ -59,23 +60,47 @@ class QLabelsVisualization(QWidget):
             _arrow.setPixmap(QPixmap(pic).scaled(50, 50, Qt.KeepAspectRatio))
             _arrow.setScaledContents(False)
 
+        self._displayed_coords = None
+        self._timer = QTimer()
+        self._timer.setInterval(settings.VALUE_UPDATE_TIME)
+        self._timer.timeout.connect(self._update)
+
         self.setLayout(self._layout)
         self.setFixedSize(settings.Q_VISUALIZATION_NAILS)
 
     def cell_entered(self):
         """Updates Q-values on the arrows"""
         cell = self.sender()
-        x, y = cell.x, cell.y
-        qvalues = self._q_learning.get_q_values((x, y))
-        qvalues = [qvalues[2], qvalues[0], qvalues[3], qvalues[1]]
-
+        self._displayed_coords = cell.x, cell.y
+        
+        qvalues = self._q_learning.get_q_values(self._displayed_coords)
+        self._qvalues = [qvalues[2], qvalues[0], qvalues[3], qvalues[1]]
+        
         for i in range(4):
-            self._q_labels[i].setText(f"{qvalues[i]:.2f}")
+            self._q_labels[i].setText(f"{self._qvalues[i]:.2f}")
 
     def cell_left(self):
         """Removes text from arrows if cursor hovers over nothing"""
         for i in range(4):
             self._q_labels[i].setText("")
+
+    def _update(self):
+        all_done = True
+        for i in range(4):
+            self._qvalues[i], done = value_update(self._qvalues[i], self._target_qvalues[i])
+            all_done = all_done and done
+            self._q_labels[i].setText(f"{self._qvalues[i]:.2f}")
+
+        if all_done:
+            self._timer.stop()
+
+    def values_updates(self, x, y):
+        """Notifies widget that cell with coordinates x, y has updated Q-values"""
+        if (x, y) == self._displayed_coords:
+            qvalues = self._q_learning.get_q_values(self._displayed_coords)
+            self._target_qvalues = [qvalues[2], qvalues[0], qvalues[3], qvalues[1]]
+
+            self._timer.start()
 
 
 # noinspection PyArgumentEqualDefault,PyCompatibility
@@ -198,7 +223,12 @@ class AutomaticRL(QWidget):
             old_x, old_y = self._logic.scrat_position
             reward, done, info = self._q_learning.step()
             new_value = max(self._q_learning.get_q_values((old_x, old_y)))
+            
+            # updating value on the cell in gamefield
             self._game_screen.set_cell_value(old_x, old_y, new_value)
+            
+            # updating q-visualization
+            self._qlabels.values_updates(old_x, old_y)
 
         self.made_step_signal.emit()
 
