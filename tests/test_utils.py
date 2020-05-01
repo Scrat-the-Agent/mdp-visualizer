@@ -2,6 +2,7 @@ import pytest
 
 from mdp_visualizer.utils import value_update
 
+
 def test_value_update():
     new_val, done = value_update(10, 100, 1)
     assert not done

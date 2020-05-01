@@ -64,7 +64,7 @@ def test_q_learning_frozen_lake():
         r_all.append(r)
 
     mean_reward = np.mean(r_all)
-    assert mean_reward >= 0.5
+    assert mean_reward >= 0.45
 
 
 def test_q_learning_class():
@@ -97,4 +97,4 @@ def test_q_learning_class():
         r_all.append(total_r)
 
     mean_reward = np.mean(r_all)
-    assert mean_reward >= 0.5
+    assert mean_reward >= 0.45
