@@ -11,6 +11,7 @@ Typical usage example:
 """
 
 from random import shuffle
+from copy import deepcopy
 
 from .actions_objects_list import Actions, Objects
 from .gameObject import Scrat, Hippo, Watermelon
@@ -263,12 +264,12 @@ class GameParams:
 
         # lava
         self.lava_random = lava_random
-        self.lava_cells = lava_cells or ()
+        self.lava_cells = lava_cells or []
         self.lava_is_terminal = lava_is_terminal
 
         # green
         self.green_random = green_random
-        self.green_cells = green_cells or ()
+        self.green_cells = green_cells or []
         self.green_is_terminal = green_is_terminal
 
         # terminal
@@ -360,7 +361,8 @@ class GameLogic:
 
         # firstly lava cells not to set scrat, hippo and watermelon in lava
         if (len(self._start_params.lava_cells) == 0 or resample) and self._start_params.lava_random:
-            self._start_params.lava_cells = list(self._generate_random_positions(int(self._start_params.lava_random)))
+            self._start_params.lava_cells = self._generate_random_positions(int(self._start_params.lava_random))
+            # print(self.lava_cells)
 
         # secondly green cells
         if (len(self._start_params.green_cells) == 0 or resample) and self._start_params.green_random:
@@ -376,7 +378,7 @@ class GameLogic:
             self._start_params.terminal_cells = self._start_params.initial_terminal_cells.copy()
 
         if (len(self._start_params.terminal_cells) == 0 or resample) and self._start_params.terminal_random:
-            exclude = ()
+            exclude = []
 
             # lava is terminal
             if self._start_params.lava_is_terminal:

@@ -101,7 +101,6 @@ class MainWindow(QMainWindow):
         # background image
         background_path = settings.BACKGROUND_IMAGE.replace('\\', '/')
         sh = f"background-image: url({background_path})"
-        print(sh)
         self.setStyleSheet("MainWindow {" + sh + "}")
 
         # mode switcher
