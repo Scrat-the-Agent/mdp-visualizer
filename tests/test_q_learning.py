@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import gym
 
-from logic.q_learning import q_learning, QLearning
+from mdp_visualizer.logic.q_learning import q_learning, QLearning
 
 
 class TestEnv:
