@@ -52,7 +52,7 @@ class Cell(RoundRectItem):
                 self.color = None
                 self.setPixmap(settings.LAVA_IMAGE, True)
             else:
-                self.pix = QPixmap()
+                self._pix = QPixmap()
                 self.color = self._compute_color()
 
             self.update()
