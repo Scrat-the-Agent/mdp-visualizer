@@ -69,7 +69,7 @@ class GameScreen(QGraphicsView):
 
         return self.pad.cells
 
-    def set_cell_value(self, column : int, row : int, value : float):
+    def set_cell_value(self, column: int, row: int, value: float):
         """Set a specific value to the cell in specified position.
 
         Args:

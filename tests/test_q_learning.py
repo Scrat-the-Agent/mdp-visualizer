@@ -60,7 +60,7 @@ def test_q_learning_frozen_lake():
     for e in range(num_episodes):
         s = env.reset()
         eps = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * e)
-        r, Q, s, done, info = q_learning(env, s, n_steps=100, Q=Q, lr=0.3, gamma=0.95, eps=eps)
+        r, Q, s, done, info = q_learning(env, s, n_steps=100, q_table=Q, lr=0.3, gamma=0.95, eps=eps)
         r_all.append(r)
 
     mean_reward = np.mean(r_all)

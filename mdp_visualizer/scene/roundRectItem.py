@@ -8,6 +8,7 @@ class RoundRectItem(QGraphicsObject):
     """ 
     Base class for most graphic objects in our scene
     """
+
     def __init__(self, bounds, color=None, parent=None):
         """ 
         Args:
@@ -24,7 +25,7 @@ class RoundRectItem(QGraphicsObject):
 
         self.setCacheMode(QGraphicsItem.ItemCoordinateCache)
 
-    def setFill(self, fill : bool):
+    def setFill(self, fill: bool):
         """
         Changes the property of how the cell is filled.
 
@@ -71,7 +72,7 @@ class RoundRectItem(QGraphicsObject):
     def boundingRect(self):
         return self._bounds.adjusted(0, 0, 2, 2)
 
-    def setPixmap(self, pixmap_path : str, rounded_pixmap=False):
+    def setPixmap(self, pixmap_path: str, rounded_pixmap=False):
         """
         Sets new pixmap for this graphic object.
 

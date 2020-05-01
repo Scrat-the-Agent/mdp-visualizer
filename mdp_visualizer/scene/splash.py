@@ -10,6 +10,7 @@ class SplashItem(RoundRectItem):
     """ 
     Information box to demonstrate on the screen.
     """
+
     def __init__(self):
         super().__init__(QRectF(0, 0, 500, 180), QColor(179, 179, 255, 235))
 
@@ -26,8 +27,8 @@ class SplashItem(RoundRectItem):
         font.setPixelSize(26)
         painter.setPen(Qt.black)
         painter.setFont(font)
-        textRect = self.boundingRect().adjusted(10, 10, -10, -10)
-        painter.drawText(textRect, Qt.AlignCenter, self.text)
+        text_rect = self.boundingRect().adjusted(10, 10, -10, -10)
+        painter.drawText(text_rect, Qt.AlignCenter, self.text)
 
     def disappear(self):
         """animates disappearance of this screen"""
@@ -35,7 +36,7 @@ class SplashItem(RoundRectItem):
 
         self.move = animate(self, 'y', 500, -190)
 
-    def appear(self, text : str):
+    def appear(self, text: str):
         """
         Animates appearance of this screen and sets new text
         

@@ -51,7 +51,7 @@ class QLearning:
             tuple: (cumulative reward, done, info about states, actions and rewards)
         """
         params = dict(lr=lr, gamma=gamma, eps=eps, n_steps=1)
-        r_all, self.Q, self.state, done, info = q_learning(self.env, self.state, Q=self.Q, **params)
+        r_all, self.Q, self.state, done, info = q_learning(self.env, self.state, q_table=self.Q, **params)
         return r_all, done, info
 
     def reset(self):
@@ -87,14 +87,14 @@ class QLearning:
         return np.max(self.Q[state])
 
 
-def q_learning(env, s, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
+def q_learning(env, s, n_steps, q_table=None, lr=0.1, gamma=0.95, eps=0.5):
     """Implements Q-learning.
 
     Args:
         env: Environment to train on.
         s: Initial state.
         n_steps (int): Maximum number of steps.
-        Q (np.array): Initial Q-values.
+        q_table (np.array): Initial Q-values.
         lr (float): Learning rate.
         gamma (float): Discount coefficient.
         eps (float): Epsilon from eps-greedy.
@@ -102,8 +102,8 @@ def q_learning(env, s, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
     Returns:
         tuple: (Cumulative reward, new Q-values, last state, done, info about rewards, actions, states)
     """
-    if Q is None:
-        Q = np.zeros([env.n_states, env.n_actions])
+    if q_table is None:
+        q_table = np.zeros([env.n_states, env.n_actions])
 
     info = {
         'rewards': [],
@@ -112,15 +112,17 @@ def q_learning(env, s, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
     }
 
     r_all = 0.
+    done = False
+
     for i in range(n_steps):
         if np.random.rand() < eps:
             a = np.random.choice(env.n_actions)
         else:
-            qvalues = Q[s, :]
-            V = max(qvalues)
-            a = np.random.choice(np.where(np.abs(qvalues - V) < settings.MAX_FLOAT_DIFF)[0])
+            qvalues = q_table[s, :]
+            value = max(qvalues)
+            a = np.random.choice(np.where(np.abs(qvalues - value) < settings.MAX_FLOAT_DIFF)[0])
         s1, r, done, _ = env.step(a)
-        Q[s, a] = Q[s, a] + lr * (r + gamma * np.max(Q[s1, :]) - Q[s, a])
+        q_table[s, a] = q_table[s, a] + lr * (r + gamma * np.max(q_table[s1, :]) - q_table[s, a])
 
         info['states'].append(s1)
         info['rewards'].append(r)
@@ -132,4 +134,4 @@ def q_learning(env, s, n_steps, Q=None, lr=0.1, gamma=0.95, eps=0.5):
         if done:
             break
 
-    return r_all, Q, s, done, info
+    return r_all, q_table, s, done, info

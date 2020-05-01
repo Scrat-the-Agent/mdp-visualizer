@@ -22,7 +22,8 @@ if __name__ == '__main__':
     app.setWindowIcon(app_icon)
 
     # windows taskbar icon issues
-    # solution from https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
+    # solution from
+    # https://stackoverflow.com/questions/1551605/how-to-set-applications-taskbar-icon-in-windows-7/1552105#1552105
     if os.name == 'nt':
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('Agent Scrat')
 

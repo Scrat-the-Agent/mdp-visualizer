@@ -28,7 +28,7 @@ def animate(obj, prop, time, val):
     return anim
 
 
-def value_update(value : float, target_value : float, min_step : float = 0.1):
+def value_update(value: float, target_value: float, min_step: float = 0.1):
     """By current value and target value returns value after one animation step (float)
 
     Args:

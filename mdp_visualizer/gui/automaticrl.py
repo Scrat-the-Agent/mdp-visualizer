@@ -75,10 +75,10 @@ class QLabelsVisualization(QWidget):
         """Updates Q-values on the arrows"""
         cell = self.sender()
         self._displayed_coords = cell.x, cell.y
-        
+
         qvalues = self._q_learning.get_q_values(self._displayed_coords)
         self._qvalues = [qvalues[2], qvalues[0], qvalues[3], qvalues[1]]
-        
+
         for i in range(4):
             self._q_labels[i].setText(f"{self._qvalues[i]:.2f}")
 
@@ -97,7 +97,7 @@ class QLabelsVisualization(QWidget):
         if all_done:
             self._timer.stop()
 
-    def values_updates(self, x : int, y : int):
+    def values_updates(self, x: int, y: int):
         """
         Notifies widget that cell with coordinates x, y has updated Q-values
         
@@ -153,7 +153,7 @@ class AutomaticRL(QWidget):
 
         self.setLayout(self._command_layout)
 
-    def __init__(self, game_screen : GameScreen):
+    def __init__(self, game_screen: GameScreen):
         """
         Constructs an AutomaticRL widget.
 
@@ -238,10 +238,10 @@ class AutomaticRL(QWidget):
             old_x, old_y = self._logic.scrat_position
             reward, done, info = self._q_learning.step()
             new_value = max(self._q_learning.get_q_values((old_x, old_y)))
-            
+
             # updating value on the cell in gamefield
             self._game_screen.set_cell_value(old_x, old_y, new_value)
-            
+
             # updating q-visualization
             self._qlabels.values_updates(old_x, old_y)
 
@@ -269,7 +269,7 @@ class AutomaticRL(QWidget):
 
     def _play(self):
         self.user_interacted.emit()
-        
+
         if self._playing:
             self._playing = False
             self._timer.stop()

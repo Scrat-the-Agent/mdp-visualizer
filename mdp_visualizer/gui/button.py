@@ -7,7 +7,8 @@ class Button(QToolButton):
     """
     General class for buttons in GUI
     """
-    def __init__(self, name : str):
+
+    def __init__(self, name: str):
         """
         Args:
             name - picture name

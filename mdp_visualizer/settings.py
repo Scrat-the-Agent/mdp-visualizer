@@ -11,8 +11,10 @@ ru.install()
 
 I_AM_RL_AGENT = _("I Am RL Agent")
 AUTOMATIC_RL = _("Automatic RL, Please")
-Q_LEARNING_DESCRIPTION = _("Press play to launch\nQ-learning algorithm!\n\nHover over cells to watch\nQ-values for them.\n")
-IAMRLAGENT_DESCRIPTION = _("Select one of 6 possible actions.\n\nLearn how to get as much \nreward per episode as possible!\n")
+Q_LEARNING_DESCRIPTION = _("Press play to launch\nQ-learning algorithm!\n"
+                           "\nHover over cells to watch\nQ-values for them.\n")
+IAMRLAGENT_DESCRIPTION = _("Select one of 6 possible actions.\n"
+                           "\nLearn how to get as much \nreward per episode as possible!\n")
 
 EPISODE_END_MESSAGE = _("Episode has finished!\nPress reset to start a new one!")
 INFO_BOX = _("Press T to rotate the game view!")

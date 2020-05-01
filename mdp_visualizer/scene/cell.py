@@ -112,7 +112,7 @@ class Cell(RoundRectItem):
         self.anim = animate(self, "opacity", 100, settings.BASE_CELL_OPACITY)
         self.leave_signal.emit()
 
-    def set_value(self, new_value : float):
+    def set_value(self, new_value: float):
         """
         Starts animation of changing value to new_value 
 
@@ -129,7 +129,7 @@ class Cell(RoundRectItem):
 
         self.update()
 
-    def posForLocation(self, column : int, row : int):
+    def posForLocation(self, column: int, row: int):
         """
         Computes coordinates of the cell
 

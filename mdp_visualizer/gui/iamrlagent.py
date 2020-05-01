@@ -33,7 +33,7 @@ class RewardLabel(QLabel):
         self.setFixedSize(settings.REWARD_LABEL_NAILS)
         self.setPixmap(QPixmap(settings.REWARD_FRAME_IMAGE))
         self.setScaledContents(True)
-        
+
         self.nut = QLabel(parent=self)
         self.nut.setPixmap(QPixmap(settings.REWARD_ICON_IMAGE))
         self.nut.setScaledContents(True)
@@ -53,7 +53,7 @@ class RewardLabel(QLabel):
         self.nut.setGeometry(self.height() / 4, self.height() / 4, self.height() / 2, self.height() / 2)
         self.reward.setGeometry(self.height() / 2, 0, self.width() - self.height() / 2, self.height())
 
-    def set_value(self, new_value : float):
+    def set_value(self, new_value: float):
         """Sets a new target value.
 
         Args:
@@ -91,7 +91,7 @@ class IAmRLAgent(QWidget):
         self._description_label.setAlignment(Qt.AlignCenter)
         self._description_label.setText(settings.IAMRLAGENT_DESCRIPTION)
         self._description_label.setFixedSize(settings.IAMRLAGENT_DESCRIPTION_NAILS)
-        
+
         # Actions layout
         self._actions_widget = QWidget()
         self._actions_layout = QGridLayout()
@@ -102,10 +102,10 @@ class IAmRLAgent(QWidget):
             self._actions_layout.addWidget(self._action_buttons[i], i // 3, i % 3)
         self._actions_widget.setLayout(self._actions_layout)
         self._actions_widget.setSizePolicy(QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum))
-        
+
         # Reward label
         self._reward_label = RewardLabel()
-        
+
         # Unite everything in vertical layout!
         self._command_layout = QVBoxLayout()
         self._command_layout.addWidget(self._description_label, 0, Qt.AlignHCenter)
@@ -120,7 +120,7 @@ class IAmRLAgent(QWidget):
             game_screen: GameScreen object with the graphics scene.
         """
 
-        super().__init__()       
+        super().__init__()
 
         # I Am RL Agent game logic and parameters
         self._game_screen = game_screen

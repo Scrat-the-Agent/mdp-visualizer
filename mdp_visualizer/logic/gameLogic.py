@@ -212,32 +212,6 @@ class GameParams:
                  tick_penalty=0):
         """Constructs GameParams object with game parameters."""
 
-        # Args:
-        #     game_mode: Game mode.
-        #         #     game_height: Number of rows of the board. Default: 4.
-        #         #     game_width: Number of columns of the board. Default: 6.
-        #         #     scrat_random: Scrat position is generated randomly or not. Default: True.
-        #         #     scrat_start_position: A tuple representing Scrat starting position. Default: None.
-        #         #     hippo_random: Hippo position is generated randomly or not. Default: False.
-        #         #     hippo_start_position: A tuple representing Hippo starting position. Default: None.
-        #         #     hippo_move_prob: The probability of Hippo making a step. Default: -1.
-        #         #     hippo_fed_reward: The reward for feeding the Hippo. Default: 100.
-        #         #     watermelon_random: Watermelon position is generated randomly or not. Default: False.
-        #         #     watermelon_start_position: A tuple representing Watermelon starting position. Default: None.
-        #         #     watermelon_move_prob: The probability of Watermelon making a step. Default: -1.
-        #         #     lava_random: The number of lava cells generated randomly. Default: False.
-        #         #     lava_cells: Explicitly specified positions of lava cells (tuple of tuples). Default: None.
-        #         #     lava_is_terminal: Lava cells are terminal or not. Default: True.
-        #         #     lava_reward: The reward of lava cells. Default: -10.
-        #         #     terminal_random: The number of terminal cells generated randomly. Default: False.
-        #         #     terminal_cells: Explicitly specified terminal cells positions (tuple of tuples). Default: None.
-        #         #     green_random: The number of green (positive) cells generated randomly. Default: False.
-        #         #     green_cells: Explicitly specified green (positive) cells positions (tuple of tuples). Default: None.
-        #         #     green_is_terminal: Green (positive) cells are terminal or not. Default: True.
-        #         #     green_reward: The reward of green (positive) cells. Default: 10.
-        #         #     tick_penalty: The penalty for each tick of time. Default: 0.
-        #         # """
-
         # main
         self.game_mode = game_mode
         self.game_height = game_height
