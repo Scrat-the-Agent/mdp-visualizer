@@ -1,7 +1,7 @@
-game module
-===========
+setup module
+============
 
-.. automodule:: game
+.. automodule:: setup
    :members:
    :undoc-members:
    :show-inheritance:

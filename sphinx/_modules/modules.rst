@@ -1,12 +1,7 @@
-mdp-visualizer
+mdp_visualizer
 ==============
 
 .. toctree::
    :maxdepth: 4
 
-   game
-   gui
-   logic
-   scene
-   settings
-   utils
+   mdp_visualizer
