@@ -31,7 +31,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon'
 ]
-autodoc_mock_imports = ['settings']
+autodoc_mock_imports = ['settings', 'setup']
 # autosummary_generate = True
 # autosummary_imported_members = True
 
