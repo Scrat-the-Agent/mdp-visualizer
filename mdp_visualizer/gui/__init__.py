@@ -1,3 +1,4 @@
+"""GUI package"""
 from .automaticrl import AutomaticRL
 from .iamrlagent import IAmRLAgent
 from .mainwindow import MainWindow

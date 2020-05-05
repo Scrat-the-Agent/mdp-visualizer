@@ -17,6 +17,7 @@ from .roundRectItem import RoundRectItem
 from ..logic.gameObject import Scrat, Hippo, Watermelon
 
 
+# pylint: disable=R0902
 class ObjectPicture:
     """Class ObjectPicture which contains graphical interface for a game object.
 
@@ -28,6 +29,7 @@ class ObjectPicture:
         disappearing_pic: A picture which is now disappearing.
     """
 
+    # pylint: disable=R0912,R0915
     def __init__(self, obj, scene, pad, logic):
         """A constructor that saves object position and game logic and sets object specific pictures.
 
@@ -218,6 +220,7 @@ class ObjectPicture:
         self.anim = animate(self.active_pic, "opacity", 100, 1)
         self.anim2 = animate(self.disappearing_pic, "opacity", 100, 0)
 
+    # pylint: disable=R0912,R0915
     def change_position(self):
         """Change the position of the object and update the neighborhood properties and active picture if needed."""
 
@@ -250,7 +253,7 @@ class ObjectPicture:
                 elif self.cur_position == self._logic.watermelon_position:
                     self._set_active_pic(1)  # 1 -- near watermelon
 
-            elif self.is_near_hippo and self.is_near_watermelon and self.cur_position == self._logic.hippo_position and\
+            elif self.is_near_hippo and self.is_near_watermelon and self.cur_position == self._logic.hippo_position and \
                     self.cur_position != self._logic.watermelon_position:  # stay near hippo but now far from watermelon
                 self._set_active_pic(3)  # near hippo without watermelon
 
@@ -267,10 +270,10 @@ class ObjectPicture:
             elif self.is_near_watermelon and self.cur_position != self._logic.watermelon_position:  # became not near
                 self._set_active_pic(0)  # 0 -- without watermelon
 
-            elif self._obj.carrying_watermelon and self.cur_position != self._logic.hippo_position and\
+            elif self._obj.carrying_watermelon and self.cur_position != self._logic.hippo_position and \
                     self.active_pic is not self.pics[2]:  # took watermelon
                 self._set_active_pic(2)  # 2 -- with watermelon
-            elif not self._obj.carrying_watermelon and self.cur_position != self._logic.hippo_position and\
+            elif not self._obj.carrying_watermelon and self.cur_position != self._logic.hippo_position and \
                     self.active_pic is self.pics[2]:  # put watermelon
                 self._set_active_pic(1)  # 1 -- near watermelon
 
@@ -284,10 +287,10 @@ class ObjectPicture:
                     self.active_pic = self.pics[0]  # 0 -- without watermelon
                 self.anim = animate(self.active_pic, "opacity", 100, 1)
 
-            elif not self.is_near_watermelon and self.cur_position == self._logic.watermelon_position and\
+            elif not self.is_near_watermelon and self.cur_position == self._logic.watermelon_position and \
                     self.cur_position != self._logic.scrat_position:  # became near
                 self._set_active_pic(1)  # 1 -- near watermelon
-            elif self.is_near_watermelon and self.cur_position != self._logic.watermelon_position and\
+            elif self.is_near_watermelon and self.cur_position != self._logic.watermelon_position and \
                     self.cur_position != self._logic.scrat_position:  # became not near
                 self._set_active_pic(0)  # 0 -- without watermelon
 
@@ -295,7 +298,7 @@ class ObjectPicture:
             if self.active_pic.opacity() > 0 and (self.cur_position == self._logic.scrat_position or
                                                   self.cur_position == self._logic.hippo_position):  # near object
                 self.anim = animate(self.active_pic, "opacity", 100, 0)
-            elif self.active_pic.opacity() < 1 and self.cur_position != self._logic.scrat_position and\
+            elif self.active_pic.opacity() < 1 and self.cur_position != self._logic.scrat_position and \
                     self.cur_position != self._logic.hippo_position:  # far from object
                 self.anim = animate(self.active_pic, "opacity", 100, 1)
 
@@ -315,7 +318,7 @@ class ObjectPicture:
         self.sel_pos = animate(self.selection, "pos", time, pos)
 
         # turning the Scrat picture turned out to be a quest :(
-        trans = QTransform()        
+        trans = QTransform()
         trans.translate(pos.x() - self.pad.x(), pos.y() - self.pad.y())
         trans.scale(self.pad.goal_scale, self.pad.goal_scale)
         trans.rotate(-self.pad.goal_rotation, Qt.XAxis)

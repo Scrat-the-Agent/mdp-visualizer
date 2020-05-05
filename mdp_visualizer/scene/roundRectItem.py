@@ -1,3 +1,5 @@
+"""RoundRectItem module"""
+
 from PyQt5.QtCore import QRectF, Qt
 from PyQt5.QtGui import QColor, QLinearGradient, QPalette, QPen, QPixmap, QPainter, QBrush
 from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsObject
@@ -5,12 +7,10 @@ from PyQt5.QtWidgets import QApplication, QGraphicsItem, QGraphicsObject
 
 # noinspection PyArgumentEqualDefault
 class RoundRectItem(QGraphicsObject):
-    """ 
-    Base class for most graphic objects in our scene
-    """
+    """Base class for most graphic objects in our scene"""
 
     def __init__(self, bounds, color=None, parent=None):
-        """ 
+        """
         Args:
             bounds - QRectF, geometry of object
             color - QColor or None
@@ -70,6 +70,7 @@ class RoundRectItem(QGraphicsObject):
                 painter.drawPixmap(-self._pix.width() / 2, -self._pix.height() / 2, self._pix)
 
     def boundingRect(self):
+        """returns bounding rectangle"""
         return self._bounds.adjusted(0, 0, 2, 2)
 
     def setPixmap(self, pixmap_path: str, rounded_pixmap=False):

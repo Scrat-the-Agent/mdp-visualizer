@@ -1,3 +1,5 @@
+"""Entry point for running the game"""
+
 # QDirIterator
 # pyqtSignal
 # pyqtProperty

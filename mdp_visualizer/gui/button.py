@@ -1,5 +1,7 @@
+"""Button module"""
+
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtWidgets import QToolButton, QSizePolicy
+from PyQt5.QtWidgets import QToolButton
 from PyQt5.QtGui import QPixmap, QIcon
 
 

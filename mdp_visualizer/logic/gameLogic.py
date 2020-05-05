@@ -11,7 +11,6 @@ Typical usage example:
 """
 
 from random import shuffle
-from copy import deepcopy
 
 from .actions_objects_list import Actions, Objects
 from .gameObject import Scrat, Hippo, Watermelon
@@ -173,6 +172,7 @@ class GameBoard:
         return self._board[position[1]][position[0]].lava_is_here
 
 
+# pylint: disable=R0902,R0903
 class GameParams:
     """Stores game parameters required for game start.
 
@@ -202,6 +202,7 @@ class GameParams:
         tick_penalty: The penalty for each tick of time.
     """
 
+    # pylint: disable=R0913,R0914
     def __init__(self, game_mode, game_height=4, game_width=6,
                  scrat_random=True, scrat_start_position=None,
                  hippo_random=False, hippo_start_position=None, hippo_move_prob=-1, hippo_fed_reward=100,
@@ -261,6 +262,7 @@ class GameParams:
         return self._initial_terminal_cells
 
 
+# pylint: disable=R0904
 class GameLogic:
     """Represents game logic. It is configured
     via `GameParams` object. Game consists of a board and
@@ -322,6 +324,7 @@ class GameLogic:
 
         return out
 
+    # pylint: disable=R0912
     def _fill_start_params(self, resample=False):
         """Reverts the params to the initial condition with or without resampling before restart ot the game.
 
@@ -345,9 +348,10 @@ class GameLogic:
                                                                              exclude_cells=exclude)
 
         # thirdly terminal cells not to set scrat or watermelon in terminal cell
-        if resample and (self._start_params.terminal_random or
-                         self._start_params.lava_random and self._start_params.lava_is_terminal or
-                         self._start_params.green_random and self._start_params.green_is_terminal):
+        any_terminal_is_random = self._start_params.terminal_random or \
+                                 self._start_params.lava_random and self._start_params.lava_is_terminal or \
+                                 self._start_params.green_random and self._start_params.green_is_terminal
+        if resample and any_terminal_is_random:
             # restore
             self._start_params.terminal_cells = self._start_params.initial_terminal_cells.copy()
 
@@ -423,6 +427,7 @@ class GameLogic:
             self._n_actions = 4  # Actions class
 
     # other
+    # pylint: disable=R0912
     def step(self, action):
         """Makes a game step with specified action.
 
@@ -463,15 +468,15 @@ class GameLogic:
 
         if action == 0 and self.scrat_position[0] > 0:
             self._move_object(Objects.SCRAT, Actions.LEFT.value)
-        elif action == 1 and self.scrat_position[1] > 0:
+        if action == 1 and self.scrat_position[1] > 0:
             self._move_object(Objects.SCRAT, Actions.UP.value)
-        elif action == 2 and self.scrat_position[0] < self.game_size[0] - 1:
+        if action == 2 and self.scrat_position[0] < self.game_size[0] - 1:
             self._move_object(Objects.SCRAT, Actions.RIGHT.value)
-        elif action == 3 and self.scrat_position[1] < self.game_size[1] - 1:
+        if action == 3 and self.scrat_position[1] < self.game_size[1] - 1:
             self._move_object(Objects.SCRAT, Actions.DOWN.value)
-        elif action == Actions.TAKE.value and self.scrat_position == self.watermelon_position:
+        if action == Actions.TAKE.value and self.scrat_position == self.watermelon_position:
             self._interact_with_watermelon(Actions.TAKE)
-        elif action == Actions.PUT_FEED.value and self.scrat_carrying_watermelon:
+        if action == Actions.PUT_FEED.value and self.scrat_carrying_watermelon:
             if self.scrat_position == self.hippo_position and self.scrat_position == last_hippo_position:
                 self._interact_with_watermelon(Actions.FEED)
                 action_reward = self._interact_with_hippo(Actions.FEED)
@@ -548,6 +553,8 @@ class GameLogic:
             self._hippo.become_fed()
 
             return self._start_params.hippo_fed_reward
+
+        return 0.
 
     # main properties
     @property
@@ -644,12 +651,16 @@ class GameLogic:
         if self._hippo:
             return self._hippo.cur_position
 
+        raise RuntimeError("No hippo")
+
     @property
     def hippo_is_fed(self):
         """Hippo is fed or not."""
 
         if self._hippo:
             return self._hippo.is_fed
+
+        raise RuntimeError("No hippo")
 
     # watermelon
     @property
@@ -664,6 +675,8 @@ class GameLogic:
 
         if self._watermelon:
             return self._watermelon.cur_position
+
+        raise RuntimeError("No watermelon")
 
     # lava
     @property

@@ -8,7 +8,7 @@ This module contains IAmRLAgent mode widget.
 from random import shuffle
 
 from PyQt5.QtCore import pyqtSignal, QTimer, Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QPushButton, QVBoxLayout, QHBoxLayout, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QLabel, QGridLayout, QVBoxLayout, QSizePolicy
 from PyQt5.QtGui import QPixmap, QFont
 
 from .. import settings
@@ -132,7 +132,7 @@ class IAmRLAgent(QWidget):
                                   tick_penalty=settings.TICK_PENALTY)
         self._logic = GameLogic(self._params)
 
-        # Shuffle actions meaning   
+        # Shuffle actions meaning
         self._actions_correspondence = list(range(self._logic.n_actions))
         shuffle(self._actions_correspondence)
 
@@ -174,7 +174,7 @@ class IAmRLAgent(QWidget):
 
             if done:
                 self.require_reset = True
-                
+
                 text = settings.EPISODE_END_MESSAGE1
                 text += f"{self._logic.full_reward:.1f}"
                 text += settings.EPISODE_END_MESSAGE2

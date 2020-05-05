@@ -100,7 +100,7 @@ class QLabelsVisualization(QWidget):
     def values_updates(self, x: int, y: int):
         """
         Notifies widget that cell with coordinates x, y has updated Q-values
-        
+
         Args:
             x - int
             y - int
@@ -113,6 +113,7 @@ class QLabelsVisualization(QWidget):
 
 
 # noinspection PyArgumentEqualDefault,PyCompatibility
+# pylint: disable=R0902
 class AutomaticRL(QWidget):
     """
     This class represents a widget for the Q-learning mode.
@@ -159,7 +160,7 @@ class AutomaticRL(QWidget):
 
         AutomaticRL widget needs `game_screen` to update
         information in cells about Q-values.
-        
+
         Args:
             game_screen - GameScreen instance.
         """
@@ -236,10 +237,11 @@ class AutomaticRL(QWidget):
             self._q_learning.reset()
         else:
             old_x, old_y = self._logic.scrat_position
+            # pylint: disable=W0612
             reward, done, info = self._q_learning.step()
             new_value = max(self._q_learning.get_q_values((old_x, old_y)))
 
-            # updating value on the cell in gamefield
+            # updating value on the cell in game field
             self._game_screen.set_cell_value(old_x, old_y, new_value)
 
             # updating q-visualization

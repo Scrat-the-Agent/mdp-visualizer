@@ -87,6 +87,7 @@ class QLearning:
         return np.max(self.Q[state])
 
 
+# pylint: disable=R0913,R0914
 def q_learning(env, s, n_steps, q_table=None, lr=0.1, gamma=0.95, eps=0.5):
     """Implements Q-learning.
 
@@ -114,7 +115,7 @@ def q_learning(env, s, n_steps, q_table=None, lr=0.1, gamma=0.95, eps=0.5):
     r_all = 0.
     done = False
 
-    for i in range(n_steps):
+    for _ in range(n_steps):
         if np.random.rand() < eps:
             a = np.random.choice(env.n_actions)
         else:

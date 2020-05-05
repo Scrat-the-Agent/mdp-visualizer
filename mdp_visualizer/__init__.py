@@ -1,3 +1,1 @@
-"""
-
-"""
+"""MDP Visualizer package"""

@@ -1,13 +1,15 @@
+"""Settings module"""
+
+import gettext
 from PyQt5.QtCore import Qt, QRectF, QSize
 from PyQt5.QtGui import QColor, QFont
-import gettext
 
 from .utils import path
 
 # LOCALISATION AND TEXTS -------------------------------------------------------
 
 ru = gettext.translation('game', path('locale'), languages=['ru'])
-ru.install()
+_ = ru.gettext
 
 I_AM_RL_AGENT = _("I Am RL Agent")
 AUTOMATIC_RL = _("Automatic RL, Please")

@@ -1,3 +1,5 @@
+"""Utils module"""
+
 import os
 from PyQt5.QtCore import QEasingCurve, QPropertyAnimation
 

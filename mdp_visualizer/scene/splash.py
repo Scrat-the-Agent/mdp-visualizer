@@ -1,15 +1,14 @@
-from PyQt5.QtCore import QEasingCurve, QPropertyAnimation, QRectF, Qt
-from PyQt5.QtGui import QColor, QFont, QPen
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsObject
+"""Splash module"""
+
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QColor, QFont
 
 from ..utils import animate
 from .roundRectItem import RoundRectItem
 
 
 class SplashItem(RoundRectItem):
-    """ 
-    Information box to demonstrate on the screen.
-    """
+    """Information box to demonstrate on the screen."""
 
     def __init__(self):
         super().__init__(QRectF(0, 0, 500, 180), QColor(179, 179, 255, 235))
@@ -39,7 +38,7 @@ class SplashItem(RoundRectItem):
     def appear(self, text: str):
         """
         Animates appearance of this screen and sets new text
-        
+
         Args:
             text - str
         """

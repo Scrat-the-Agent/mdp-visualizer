@@ -1,3 +1,5 @@
+"""Pad module"""
+
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtWidgets import QGraphicsRotation, QGraphicsScale
 
@@ -12,6 +14,7 @@ class FlippablePad(RoundRectItem):
     """
     Game Field visualization.
     """
+
     def __init__(self, logic):
         super().__init__(self.boundsFromSize(logic), settings.PAD_COLOR)
         self._logic = logic
@@ -40,7 +43,7 @@ class FlippablePad(RoundRectItem):
         Changes value of one cell
 
         Args:
-          column, row - ints, coordinates 
+          column, row - ints, coordinates
           new_value - float
         """
         self.cellAt(column, row).set_value(new_value)
@@ -83,7 +86,7 @@ class FlippablePad(RoundRectItem):
         """
         self.goal_rotation = settings.ROTATION_ANGLE if self.goal_rotation == 0 else 0
         self.rot = animate(self.yRotation, 'angle', settings.ROTATION_TIME, self.goal_rotation)
-        
+
         self.goal_scale = 1 if self.goal_rotation == 0 else settings.SCALE_WHEN_ROTATED
         self.scx = animate(self.scaleTransform, 'xScale', settings.ROTATION_TIME, self.goal_scale)
         self.scy = animate(self.scaleTransform, 'yScale', settings.ROTATION_TIME, self.goal_scale)

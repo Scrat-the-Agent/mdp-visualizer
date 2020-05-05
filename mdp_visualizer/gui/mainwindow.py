@@ -1,7 +1,8 @@
-from PyQt5.QtWidgets import QMainWindow, QComboBox, QWidget, QLabel
+"""Main window module"""
+from PyQt5.QtWidgets import QMainWindow, QComboBox, QWidget
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QSizePolicy
 from PyQt5.QtCore import Qt, QRectF, QSize
-from PyQt5.QtGui import QPixmap, QBrush, QPalette, QFont, QFontDatabase
+from PyQt5.QtGui import QFont
 
 from .. import settings
 from ..utils import animate
@@ -16,6 +17,7 @@ class ModeSwitcher(QWidget):
     """
     Responsible for switch of mode widgets and animation of switching
     """
+
     def __init__(self, contents):
         """
         Args:
@@ -91,10 +93,10 @@ class ModeSwitcher(QWidget):
 
 
 # noinspection PyArgumentEqualDefault
+# pylint: disable=R0902
 class MainWindow(QMainWindow):
-    """
-    Widget of the whole screen
-    """
+    """Widget of the whole screen"""
+
     def __init__(self):
         super().__init__()
 
@@ -162,12 +164,12 @@ class MainWindow(QMainWindow):
 
         self._iAmRLAgent.user_interacted.connect(self._hide_info)
         self._automaticRL.user_interacted.connect(self._hide_info)
-    
+
     def resizeEvent(self, event):
         """Internal Qt function to process resizing of widget"""
         super().resizeEvent(event)
-        self.help.setGeometry(self.width() - settings.INFO_MARGIN_NAIL, 
-                              self.height() - settings.INFO_MARGIN_NAIL, 
+        self.help.setGeometry(self.width() - settings.INFO_MARGIN_NAIL,
+                              self.height() - settings.INFO_MARGIN_NAIL,
                               settings.INFO_SIZE_NAIL, settings.INFO_SIZE_NAIL)
 
     def _show_info(self):

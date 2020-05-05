@@ -1,3 +1,5 @@
+"""Cell module"""
+
 from PyQt5.QtCore import pyqtSignal, Qt, QPointF, QTimer
 from PyQt5.QtGui import QColor, QPixmap
 
@@ -114,7 +116,7 @@ class Cell(RoundRectItem):
 
     def set_value(self, new_value: float):
         """
-        Starts animation of changing value to new_value 
+        Starts animation of changing value to new_value
 
         Args:
           new_value: float
@@ -134,7 +136,7 @@ class Cell(RoundRectItem):
         Computes coordinates of the cell
 
         Args:
-          column, row - ints 
+          column, row - ints
 
         Returns: QPointF
         """

@@ -69,7 +69,7 @@ class GameObject:
           params: GameParams object with game parameters.
         """
 
-        pass
+        raise NotImplementedError
 
     def change_position(self, dx, dy):
         """Move the object by dx in x and dy in y.
@@ -103,11 +103,11 @@ class GameObject:
                         random_action = Actions.UP.value
                         action_taken = True
                     elif random_action == 2 and self.x < self._game_width - 1 and (
-                                                                            self.x + 1, self.y) not in self._lava_cells:
+                            self.x + 1, self.y) not in self._lava_cells:
                         random_action = Actions.RIGHT.value
                         action_taken = True
                     elif random_action == 3 and self.y < self._game_height - 1 and (
-                                                                            self.x, self.y + 1) not in self._lava_cells:
+                            self.x, self.y + 1) not in self._lava_cells:
                         random_action = Actions.DOWN.value
                         action_taken = True
 
