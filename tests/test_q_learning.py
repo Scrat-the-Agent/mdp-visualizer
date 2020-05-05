@@ -60,6 +60,7 @@ def test_q_learning_frozen_lake():
     for e in range(num_episodes):
         s = env.reset()
         eps = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * e)
+        # pylint: disable=W0612
         r, q_table, s, done, info = q_learning(env, s, n_steps=100, q_table=q_table, lr=0.3, gamma=0.95, eps=eps)
         r_all.append(r)
 
@@ -67,11 +68,12 @@ def test_q_learning_frozen_lake():
     assert mean_reward >= 0.45
 
 
+# pylint: disable=R0914
 def test_q_learning_class():
     env = TestEnv()
     qlearning = QLearning(env)
 
-    s = qlearning.reset()
+    qlearning.reset()
     q_table = qlearning.get_q_values()
     assert (q_table == 0.).all()
 
@@ -87,10 +89,11 @@ def test_q_learning_class():
     r_all = []
 
     for e in range(num_episodes):
-        s = env.reset()
+        qlearning.reset()
         eps = min_epsilon + (max_epsilon - min_epsilon) * np.exp(-decay_rate * e)
         total_r = 0.
         for s in range(n_steps):
+            # pylint: disable=W0612
             r, done, info = qlearning.step(lr=0.3, gamma=0.95, eps=eps)
             total_r += r
 

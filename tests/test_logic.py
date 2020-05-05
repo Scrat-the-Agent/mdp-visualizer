@@ -1,5 +1,7 @@
-import pytest
 from random import randint
+
+# pylint: disable=W0611
+import pytest
 
 from mdp_visualizer.logic.gameLogic import GameLogic, GameParams
 from mdp_visualizer.logic.actions_objects_list import Modes, Actions
@@ -13,14 +15,14 @@ def test_board_steps():
     num_logics = 20
     num_steps = 1000
 
-    for i in range(num_logics):
+    for _ in range(num_logics):
         params = GameParams(game_mode=Modes.IAMRLAGENT, game_height=3, game_width=4,
                             scrat_random=True,
                             hippo_random=True, hippo_move_prob=1,
                             watermelon_random=True, watermelon_move_prob=1)
         logic = GameLogic(params)
 
-        for j in range(num_steps):
+        for _ in range(num_steps):
             prev_scrat_pos = logic.scrat_position
             prev_hippo_pos = logic.hippo_position
             prev_watermelon_pos = logic.watermelon_position
@@ -51,7 +53,7 @@ def test_watermelon_hippo_actions():
                         watermelon_random=True, watermelon_move_prob=0)
     logic = GameLogic(params)
 
-    for i in range(num_logics):
+    for _ in range(num_logics):
         for j in range(num_steps):
             if logic.scrat_position == logic.watermelon_position and not logic.scrat_carrying_watermelon:
                 action = Actions.TAKE.value
@@ -86,8 +88,8 @@ def test_with_lava():
                         lava_random=1, lava_is_terminal=True)
     logic = GameLogic(params)
 
-    for i in range(num_logics):
-        for j in range(num_steps):
+    for _ in range(num_logics):
+        for _ in range(num_steps):
             action = take_random_action(logic, max_action=3)
 
             _, _, done, _ = logic.step(action)
