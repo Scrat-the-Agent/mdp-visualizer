@@ -651,7 +651,7 @@ class GameLogic:
         if self._hippo:
             return self._hippo.cur_position
 
-        raise RuntimeError("No hippo")
+        return None
 
     @property
     def hippo_is_fed(self):
@@ -660,7 +660,7 @@ class GameLogic:
         if self._hippo:
             return self._hippo.is_fed
 
-        raise RuntimeError("No hippo")
+        return None
 
     # watermelon
     @property
@@ -676,7 +676,7 @@ class GameLogic:
         if self._watermelon:
             return self._watermelon.cur_position
 
-        raise RuntimeError("No watermelon")
+        return None
 
     # lava
     @property
